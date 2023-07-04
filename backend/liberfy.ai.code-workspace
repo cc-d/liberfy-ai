@@ -1,0 +1,14 @@
+{
+	"folders": [
+		{
+			"path": ".."
+		}
+	],
+	"settings": {
+		"python.analysis.autoImportCompletions": true,
+		"python.analysis.extraPaths": [
+			"/Users/work/liberfy.ai/venv/lib/python3.11/site-packages",
+		]
+
+	}
+}
