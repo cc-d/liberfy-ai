@@ -1,8 +1,8 @@
 version: "3"
 services:
-  backend:
+  api:
     build:
-      context: ./backend
+      context: ./api
     ports:
       - "8000:8000"
   frontend:
@@ -16,7 +16,7 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - backend
+      - api
       - frontend
   db:
     image: postgres:15
