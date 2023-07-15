@@ -1,5 +1,22 @@
 {
+  "[python]": {
+    "editor.defaultFormatter": "ms-python.black-formatter",
+    "editor.formatOnSave": true
+  },
+  "python.linting.enabled": true,
+  "python.linting.flake8Enabled": true,
   "python.formatting.provider": "black",
-  "editor.formatOnSave": true,
-  "editor.formatOnPaste": true
+  "python.analysis.extraPaths": [
+    "/Users/work/liberfy-ai/backend/venv/lib/python3.11/site-packages",
+  ],
+  "python.formatting.blackArgs": [
+    "--line-length=88",
+    "--skip-string-normalization",
+    "--skip-magic-trailing-comma",
+    "--target-version=py311"
+  ],
+  "python.formatting.autopep8Args": [
+    "--max-line-length=88"
+  ],
+  "python.formatting.autopep8Path": "autoflake"
 }
