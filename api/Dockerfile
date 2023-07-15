@@ -2,16 +2,16 @@
 FROM python:3.11
 
 # Set the working directory in the container
-WORKDIR /app
-
-# Copy the requirements file to the working directory
-COPY requirements.txt .
-
-# Install the Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+WORKDIR /api
 
 # Copy the entire backend directory into the container
 COPY . .
+
+RUN python -m venv venv
+ENV VIRTUAL_ENV=/api/venv
+ENV PATH=/api/venv/bin:$PATH
+
+RUN pip install -r requirements.txt
 
 # Expose the port on which the application will run (default: 8000)
 EXPOSE 8000

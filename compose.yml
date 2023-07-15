@@ -23,6 +23,6 @@ services:
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_USER=devuser
-      - POSTGRES_PASSWORD=devpass
-      - POSTGRES_DB=devdb
+      - POSTGRES_USER=pguser
+      - POSTGRES_PASSWORD=pgpass
+      - POSTGRES_DB=pgdb
