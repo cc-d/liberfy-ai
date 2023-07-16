@@ -1,17 +1,19 @@
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
-from .models import User, Base
-from .schemas import UserLogin, UserInDB, Token
-from .security import (
+import sys
+from models import User, Base
+from schemas import UserLogin, UserInDB, Token
+from security import (
     hash_passwd,
     create_access_token,
     verify_passwd,
     ACCESS_TOKEN_EXPIRE_MINUTES,
 )
-from .dependencies import get_tokenuser
-from .database import engine, SessionLocal, get_db
+from dependencies import get_tokenuser
+from database import engine, SessionLocal, get_db
 from datetime import timedelta
 from sqlalchemy.orm import Session
+
 
 Base.metadata.create_all(bind=engine)
 
