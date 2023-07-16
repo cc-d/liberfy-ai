@@ -13,7 +13,7 @@ from dependencies import get_tokenuser
 from database import engine, SessionLocal, get_db
 from datetime import timedelta
 from sqlalchemy.orm import Session
-
+from schemas import BaseUser
 
 Base.metadata.create_all(bind=engine)
 
@@ -41,6 +41,7 @@ async def token_login(
     return {'access_token': atoken, 'token_type': 'bearer'}
 
 
-@app.get('/users/me', response_model=User)
+@app.get('/users/me', response_model=BaseUser)
 async def users_me(curuser: User = Depends(get_tokenuser)):
-    return curuser
+    user_resp = BaseUser(id=curuser.id, email=curuser.email)
+    return user_resp

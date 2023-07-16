@@ -1,13 +1,24 @@
 from pydantic import BaseModel
 from typing import Optional
+from models import User
 
 
-class User(BaseModel):
+class BaseUser(BaseModel):
+    id: int
     email: str
 
 
-class UserInDB(User):
-    hashed_password: str
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Mapped
+
+from models import Base
+
+
+class UserInDB(Base):
+    __tablename__ = 'users'
+    __table_args__ = {'extend_existing': True}
+
+    hpassword = Column(String)
 
 
 class UserLogin(BaseModel):

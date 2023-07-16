@@ -5,11 +5,7 @@ FROM python:3.11
 WORKDIR /api
 
 # Copy the entire backend directory into the container
-COPY . .
-
-RUN python -m venv venv
-ENV VIRTUAL_ENV=/api/venv
-ENV PATH=/api/venv/bin:$PATH
+COPY . ./
 
 RUN pip install -r requirements.txt
 

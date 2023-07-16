@@ -1,8 +1,7 @@
 from sqlalchemy import Column, ForeignKeyConstraint
 from sqlalchemy.sql.base import SchemaEventTarget
 from sqlalchemy.sql.elements import ColumnClause
-from sqlalchemy.sql.visitors import VisitableType
-from sqlalchemy.sql.schema import SchemaItem, _schema_item_copy_attr, CheckConstraint
+from sqlalchemy.sql.schema import SchemaItem, CheckConstraint
 from sqlalchemy.sql.ddl import DDLElement
 
 from sqlalchemy.sql.type_api import TypeEngine
@@ -43,9 +42,6 @@ class IColumn(Column):
 
     global TypeEngine
     __visit_name__ = "column"
-
-    onupdate: Any = _schema_item_copy_attr('onupdate')
-    default: Any = _schema_item_copy_attr('default')
 
     def __init__(
         self,

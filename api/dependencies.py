@@ -1,4 +1,4 @@
-from jose import JWTError, jwt
+import jwt
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 from security import SECRET_KEY, ALGORITHM

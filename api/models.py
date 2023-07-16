@@ -5,11 +5,11 @@ from sqlalchemy.orm import sessionmaker, Mapped
 from database import Base
 
 
-from custom import IColumn
+# from custom import IColumn
 
 
 class User(Base):
     __tablename__ = 'users'
-    id: Mapped[int] = IColumn(Integer, primary_key=True)
-    email: Mapped[str] = IColumn(String, unique=True)
+    id: Mapped[int] = Column(Integer, primary_key=True)
+    email: Mapped[str] = Column(String, unique=True)
     hpassword: Mapped[str] = Column(String)
