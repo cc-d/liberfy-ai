@@ -7,7 +7,7 @@ const ChatPage = () => {
 
   const sendMessage = async () => {
     try {
-      const res = await axios.post('http://localhost:8000/api/chat', { message });
+      const res = await axios.post('http://localhost:8888/api/chat', { message });
       setResponse(res.data);
     } catch (error) {
       console.error(error);
