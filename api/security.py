@@ -2,12 +2,10 @@ import jwt
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from dependencies import get_tokenuser
+from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User
+from dbutils import get_tokenuser
 
-SECRET_KEY = 'secret'
-ALGORITHM = 'HS256'
-ACCESS_TOKEN_EXPIRE_MINUTES = 600
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
@@ -67,3 +65,12 @@ def valid_user_pass(db: Session, email: str, passwd: str) -> bool:
         if verify_passwd(passwd, user.hpassword):
             return True
     return False
+
+
+def create_user(db: Session, user_email: str, user_password: str):
+    hashed_password = hash_passwd(user_password)
+    db_user = User(email=user_email, hpassword=hashed_password)
+    db.add(db_user)
+    db.commit()
+    db.refresh(db_user)
+    return db_user

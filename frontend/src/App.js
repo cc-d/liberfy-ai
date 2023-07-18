@@ -1,10 +1,9 @@
-import React, { Component } from 'react';
-import { useState, useEffect } from 'react';
-
+import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
-
 import HomePage from './comps/HomePage';
 import ChatPage from './comps/ChatPage';
+import LoginForm from './comps/LoginForm';  // make sure to import LoginForm
+
 const App = () => {
   return (
     <Router>
@@ -15,6 +14,9 @@ const App = () => {
               <Link to="/">Home</Link>
             </li>
             <li>
+              <Link to="/login">Login</Link>
+            </li>
+            <li>
               <Link to="/chat">Chat</Link>
             </li>
           </ul>
@@ -22,6 +24,7 @@ const App = () => {
 
         <Routes>
           <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginForm />} />  // add a route for login
           <Route path="/chat" element={<ChatPage />} />
         </Routes>
       </div>
@@ -29,6 +32,4 @@ const App = () => {
   );
 };
 
-
 export default App;
-

@@ -1,40 +1,30 @@
-import os
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-import sys
-from models import User, Base
-from schemas import UserLogin, UserInDB, Token
-from security import (
-    hash_passwd,
-    create_access_token,
-    verify_passwd,
-    ACCESS_TOKEN_EXPIRE_MINUTES,
-)
-from dependencies import get_tokenuser
-from database import engine, SessionLocal, get_db
-from datetime import timedelta
 from sqlalchemy.orm import Session
-from schemas import BaseUser
-
+from datetime import timedelta
 from fastapi.openapi.utils import get_openapi
 from pydantic import schema
 
+from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from database import engine, SessionLocal, get_db
+from models import User, Base
+from schemas import UserLogin, UserInDB, Token, BaseUser
+from security import hash_passwd, create_access_token, verify_passwd, create_user
+from dbutils import get_tokenuser
 from myfuncs import runcmd
-
 
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI(openapi_prefix='/api/')
+app = FastAPI()
+arouter = APIRouter()
 
-DEBUG = True
 
-
-@app.get('/')
+@arouter.get('/')
 async def hello():
-    return {"message": "hello, world"}
+    return {"status": "ok"}
 
 
-@app.post('/token', response_model=Token)
+@arouter.post('/token', response_model=Token)
 async def token_login(
     formdata: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
@@ -50,16 +40,24 @@ async def token_login(
     return {'access_token': atoken, 'token_type': 'bearer'}
 
 
-@app.get('/users/me', response_model=BaseUser)
+@arouter.get('/users/me', response_model=BaseUser)
 async def users_me(curuser: User = Depends(get_tokenuser)):
     user_resp = BaseUser(id=curuser.id, email=curuser.email)
     return user_resp
 
 
+@arouter.post("/register", response_model=BaseUser)
+def register(user: UserLogin, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == user.email).first()
+    if db_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    return create_user(db=db, user=user)
+
+
+app = FastAPI()
+app.include_router(arouter, prefix="/api")
+
+
 @app.get("/openapi.json")
 async def get_openapi_schema():
     return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
-
-
-if __name__ == "__main__":
-    app.run(host='0.0.0.0', port=8888, debug=True)

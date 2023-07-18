@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import axios from 'axios';
+import apios from '../apios';
 
 const ChatPage = () => {
   const [message, setMessage] = useState('');
@@ -7,7 +7,7 @@ const ChatPage = () => {
 
   const sendMessage = async () => {
     try {
-      const res = await axios.post('http://localhost:8888/api/chat', { message });
+      const res = await apios.post('/chat', { message });
       setResponse(res.data);
     } catch (error) {
       console.error(error);
