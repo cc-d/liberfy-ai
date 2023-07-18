@@ -42,3 +42,4 @@ passlib==1.7.4
 python-multipart==0.0.6
 myfuncs==1.1.0
 pydantic[email]
+uvicorn

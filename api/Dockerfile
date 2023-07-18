@@ -7,11 +7,16 @@ WORKDIR /api
 # Copy the entire backend directory into the container
 COPY . ./
 
-RUN pip install -r requirements.txt
-
 # Expose the port on which the application will run (default: 8888)
 EXPOSE 8888
 
+RUN python -m venv /api/venv
+ENV VIRTUAL_ENV=/api/venv
+ENV PATH=/api/venv/bin:$PATH
+
+RUN pip install -r requirements.txt
+
+
 # Set the command to run the FastAPI application
-CMD ["uvicorn", "main:app", "--host", "127.0.0.1", "--port", "8888"]
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8888"]
 
