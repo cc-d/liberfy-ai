@@ -40,4 +40,5 @@ uvicorn==0.23.0
 webencodings==0.5.1
 pyjwt==2.7.0
 passlib==1.7.4
-python-multipart
+python-multipart==0.0.6
+myfuncs==1.1.0

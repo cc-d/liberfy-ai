@@ -1,8 +1,9 @@
 import jwt
+from jwt import PyJWTError
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
-from security import SECRET_KEY, ALGORITHM
 from models import User
+from config import SECRET_KEY, ALGORITHM
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl='token')
 
@@ -20,7 +21,7 @@ async def get_tokenuser(token: str = Depends(oauth2_scheme)):
             raise creds_except
         tokendata = User(email=email)
         return tokendata
-    except JWTError:
+    except PyJWTError:
         raise creds_except
     except Exception:
         raise

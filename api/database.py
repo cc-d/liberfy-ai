@@ -4,7 +4,7 @@ from sqlalchemy.orm import sessionmaker
 
 Base = declarative_base()
 
-PGDBIP = '172.18.0.2'
+PGDBIP = '172.18.0.1'
 
 SQLALCHEMY_DATABASE_URL = f'postgresql://pguser:pgpass@{PGDBIP}:5432/pgdb'
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
@@ -16,9 +16,5 @@ def get_db():
     db = SessionLocal()
     try:
         yield db
-    except Exception as e:
-        print("Error connecting to the database:")
-        print(e)
-        raise
     finally:
         db.close()

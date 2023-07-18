@@ -1,3 +1,4 @@
+import os
 from fastapi import FastAPI, Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordRequestForm
 import sys
@@ -15,9 +16,15 @@ from datetime import timedelta
 from sqlalchemy.orm import Session
 from schemas import BaseUser
 
+from fastapi.openapi.utils import get_openapi
+from pydantic import schema
+
+from myfuncs import runcmd
+
+
 Base.metadata.create_all(bind=engine)
 
-app = FastAPI()
+app = FastAPI(openapi_prefix='/api/')
 
 
 @app.get('/')
@@ -45,3 +52,8 @@ async def token_login(
 async def users_me(curuser: User = Depends(get_tokenuser)):
     user_resp = BaseUser(id=curuser.id, email=curuser.email)
     return user_resp
+
+
+@app.get("/openapi.json")
+async def get_openapi_schema():
+    return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)

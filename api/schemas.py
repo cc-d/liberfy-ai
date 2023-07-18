@@ -1,17 +1,13 @@
 from pydantic import BaseModel
 from typing import Optional
-from models import User
+from models import User, Base
+from sqlalchemy import Column, Integer, String
+from sqlalchemy.orm import Mapped
 
 
 class BaseUser(BaseModel):
     id: int
     email: str
-
-
-from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import Mapped
-
-from models import Base
 
 
 class UserInDB(Base):
