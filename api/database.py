@@ -1,12 +1,13 @@
+import os
 from sqlalchemy import Column, Integer, String, create_engine
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
+from config import HOST
+
 Base = declarative_base()
 
-PGDBIP = '127.0.0.1'
-
-SQLALCHEMY_DATABASE_URL = f'postgresql://pguser:pgpass@db:5432/pgdb'
+SQLALCHEMY_DATABASE_URL = f'postgresql://pguser:pgpass@{HOST}:5432/pgdb'
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
