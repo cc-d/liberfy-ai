@@ -9,8 +9,8 @@ function LoginForm() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        const response = await apios.post("/token", {
-            username: email,
+        const response = await apios.post("/token_login", {
+            email: email,
             password: password,
         });
         // save the response token somewhere (e.g., local storage)

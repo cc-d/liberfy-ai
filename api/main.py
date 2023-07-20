@@ -9,7 +9,7 @@ from pydantic import schema
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
 from models import User, Base
-from schemas import UserLogin, UserInDB, Token, BaseUser
+from schemas import EmailPassData, UserInDB, Token, BaseUser
 from security import hash_passwd, create_access_token, verify_passwd, create_user
 from dbutils import get_tokenuser
 from myfuncs import runcmd
@@ -32,7 +32,7 @@ async def hello():
     return {"status": "ok"}
 
 
-@arouter.post('/token', response_model=Token)
+@arouter.post('/token_login')
 async def token_login(
     formdata: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
@@ -55,11 +55,11 @@ async def users_me(curuser: User = Depends(get_tokenuser)):
 
 
 @arouter.post("/register", response_model=BaseUser)
-def register(user: UserLogin, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == user.email).first()
+def register(epdata: EmailPassData, db: Session = Depends(get_db)):
+    db_user = db.query(User).filter(User.email == epdata.email).first()
     if db_user:
         raise HTTPException(status_code=400, detail="Email already registered")
-    return create_user(db=db, user=user)
+    return create_user(user_email=epdata.email, user_password=epdata.password, db=db)
 
 
 @app.get("/openapi.json")

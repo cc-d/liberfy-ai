@@ -17,7 +17,7 @@ class UserInDB(Base):
     hpassword = Column(String)
 
 
-class UserLogin(BaseModel):
+class EmailPassData(BaseModel):
     email: str
     password: str
 

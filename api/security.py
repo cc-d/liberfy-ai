@@ -4,7 +4,9 @@ from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User
+from database import get_db
 from dbutils import get_tokenuser
+from fastapi import Depends
 
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
@@ -48,7 +50,7 @@ def hash_passwd(cleartext: str) -> str:
     return pwd_context.hash(cleartext)
 
 
-def valid_user_pass(db: Session, email: str, passwd: str) -> bool:
+def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> bool:
     """
     Validate if a user with the given email and password exists in the database.
 
@@ -67,7 +69,7 @@ def valid_user_pass(db: Session, email: str, passwd: str) -> bool:
     return False
 
 
-def create_user(db: Session, user_email: str, user_password: str):
+def create_user(user_email: str, user_password: str, db: Session):
     hashed_password = hash_passwd(user_password)
     db_user = User(email=user_email, hpassword=hashed_password)
     db.add(db_user)
