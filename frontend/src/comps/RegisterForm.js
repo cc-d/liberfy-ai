@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import apios from '../apios';
-
+import { EmailPassData } from '../api/index';
 
 const RegisterForm = () => {
     const [email, setEmail] = useState('');
@@ -10,9 +10,9 @@ const RegisterForm = () => {
         e.preventDefault();
 
         try {
-            await apios.post('/register', {
-                email,
-                password,
+            const resp = await apios.post('/register', {
+                email: email,
+                password: password,
             });
 
             alert("Successfully registered");
