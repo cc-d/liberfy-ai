@@ -7,14 +7,11 @@ WORKDIR /frontend
 # Copy package.json and package-lock.json into the working directory
 COPY package*.json ./
 
-# Install the Node.js dependencies
-RUN npm install
-
 # Copy the rest of the frontend code into the working directory
-COPY . .
+COPY . ./
 
-# Build the app
-RUN npm run build
+# Install the Node.js dependencies
+RUN npm install && npm run build
 
 # Expose port 3000 for the app
 EXPOSE 3000

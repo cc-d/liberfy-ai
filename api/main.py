@@ -3,6 +3,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from datetime import timedelta
 from fastapi.openapi.utils import get_openapi
+from fastapi.middleware.cors import CORSMiddleware
 from pydantic import schema
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
@@ -16,6 +17,13 @@ from myfuncs import runcmd
 Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # Allows all origins
+    allow_credentials=True,
+    allow_methods=["*"],  # Allows all methods
+    allow_headers=["*"],  # Allows all headers
+)
 arouter = APIRouter()
 
 
@@ -54,10 +62,9 @@ def register(user: UserLogin, db: Session = Depends(get_db)):
     return create_user(db=db, user=user)
 
 
-app = FastAPI()
-app.include_router(arouter, prefix="/api")
-
-
 @app.get("/openapi.json")
 async def get_openapi_schema():
     return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
+
+
+app.include_router(arouter, prefix="/api")

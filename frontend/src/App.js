@@ -2,7 +2,8 @@ import React from 'react';
 import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
 import HomePage from './comps/HomePage';
 import ChatPage from './comps/ChatPage';
-import LoginForm from './comps/LoginForm';  // make sure to import LoginForm
+import LoginForm from './comps/LoginForm';
+import RegisterForm from './comps/RegisterForm';
 
 const App = () => {
   return (
@@ -19,6 +20,9 @@ const App = () => {
             <li>
               <Link to="/chat">Chat</Link>
             </li>
+            <li>
+              <Link to="/register">Register</Link>
+            </li>
           </ul>
         </nav>
 
@@ -26,6 +30,7 @@ const App = () => {
           <Route path="/" element={<HomePage />} />
           <Route path="/login" element={<LoginForm />} />  // add a route for login
           <Route path="/chat" element={<ChatPage />} />
+          <Route path="/register" element={<RegisterForm />} />
         </Routes>
       </div>
     </Router>
