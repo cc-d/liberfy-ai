@@ -62,7 +62,7 @@ def register(epdata: EmailPassData, db: Session = Depends(get_db)):
     return create_user(user_email=epdata.email, user_password=epdata.password, db=db)
 
 
-@app.get("/openapi.json")
+@arouter.get("/openapi.json")
 async def get_openapi_schema():
     return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
 
