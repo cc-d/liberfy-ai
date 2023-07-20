@@ -1,7 +1,7 @@
 // LoginForm.js
 import React, { useState } from 'react';
 import apios from '../apios';
-import { EmailPassData } from '../api/index';
+import { EmailPassData } from '../api/index.ts';
 
 
 function LoginForm() {

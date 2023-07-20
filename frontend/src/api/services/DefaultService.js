@@ -1,40 +1,28 @@
-/* generated using openapi-typescript-codegen -- do no edit */
-/* istanbul ignore file */
-/* tslint:disable */
-/* eslint-disable */
-import type { AccessToken } from '../models/AccessToken';
-import type { BaseUser } from '../models/BaseUser';
-import type { Body_token_login_api_token_login_post } from '../models/Body_token_login_api_token_login_post';
-import type { EmailPassData } from '../models/EmailPassData';
-
-import type { CancelablePromise } from '../core/CancelablePromise';
-import { OpenAPI } from '../core/OpenAPI';
-import { request as __request } from '../core/request';
-
-export class DefaultService {
-
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.DefaultService = void 0;
+const OpenAPI_1 = require("../core/OpenAPI");
+const request_1 = require("../core/request");
+class DefaultService {
     /**
      * Hello
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static helloApiGet(): CancelablePromise<any> {
-        return __request(OpenAPI, {
+    static helloApiGet() {
+        return (0, request_1.request)(OpenAPI_1.OpenAPI, {
             method: 'GET',
             url: '/api/',
         });
     }
-
     /**
      * Token Login
      * @param formData
      * @returns AccessToken Successful Response
      * @throws ApiError
      */
-    public static tokenLoginApiTokenLoginPost(
-        formData: Body_token_login_api_token_login_post,
-    ): CancelablePromise<AccessToken> {
-        return __request(OpenAPI, {
+    static tokenLoginApiTokenLoginPost(formData) {
+        return (0, request_1.request)(OpenAPI_1.OpenAPI, {
             method: 'POST',
             url: '/api/token_login',
             formData: formData,
@@ -44,29 +32,25 @@ export class DefaultService {
             },
         });
     }
-
     /**
      * Users Me
      * @returns BaseUser Successful Response
      * @throws ApiError
      */
-    public static usersMeApiUsersMeGet(): CancelablePromise<BaseUser> {
-        return __request(OpenAPI, {
+    static usersMeApiUsersMeGet() {
+        return (0, request_1.request)(OpenAPI_1.OpenAPI, {
             method: 'GET',
             url: '/api/users/me',
         });
     }
-
     /**
      * Register
      * @param requestBody
      * @returns BaseUser Successful Response
      * @throws ApiError
      */
-    public static registerApiRegisterPost(
-        requestBody: EmailPassData,
-    ): CancelablePromise<BaseUser> {
-        return __request(OpenAPI, {
+    static registerApiRegisterPost(requestBody) {
+        return (0, request_1.request)(OpenAPI_1.OpenAPI, {
             method: 'POST',
             url: '/api/register',
             body: requestBody,
@@ -76,17 +60,16 @@ export class DefaultService {
             },
         });
     }
-
     /**
      * Get Openapi Schema
      * @returns any Successful Response
      * @throws ApiError
      */
-    public static getOpenapiSchemaApiOpenapiJsonGet(): CancelablePromise<any> {
-        return __request(OpenAPI, {
+    static getOpenapiSchemaApiOpenapiJsonGet() {
+        return (0, request_1.request)(OpenAPI_1.OpenAPI, {
             method: 'GET',
             url: '/api/openapi.json',
         });
     }
-
 }
+exports.DefaultService = DefaultService;

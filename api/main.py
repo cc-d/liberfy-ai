@@ -5,7 +5,10 @@ from datetime import timedelta
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import schema
-
+from starlette.middleware import Middleware
+from starlette.middleware.cors import CORSMiddleware
+from starlette.middleware.base import BaseHTTPMiddleware
+from starlette.types import ASGIApp
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
 from models import User, Base
@@ -16,14 +19,28 @@ from myfuncs import runcmd
 
 Base.metadata.create_all(bind=engine)
 
+
+class CSPMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        response = await call_next(request)
+        response.headers["Content-Security-Policy"] = "default-src 'self'"
+        return response
+
+
 app = FastAPI()
+
+# fuck CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],  # Allows all origins
-    allow_credentials=True,
-    allow_methods=["*"],  # Allows all methods
-    allow_headers=["*"],  # Allows all headers
+    allow_origins=["*"],  # Allow any origin
+    allow_methods=["*"],
+    allow_headers=["*"],
+    allow_credentials=True,  # Allow credentials (cookies, authorization headers, etc.)
 )
+
+# CSP middleware
+app.add_middleware(CSPMiddleware)
+
 arouter = APIRouter()
 
 

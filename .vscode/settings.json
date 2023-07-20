@@ -8,6 +8,7 @@
   "python.formatting.provider": "black",
   "python.analysis.extraPaths": [
     "/Users/work/liberfy-ai/api/venv/lib/python3.11/site-packages",
+    "/home/udesk/liberfy-ai/api/venv/lib/python3.11/site-packages"
   ],
   "python.formatting.blackArgs": [
     "--line-length=88",

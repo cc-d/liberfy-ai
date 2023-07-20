@@ -44,6 +44,7 @@
   },
   "devDependencies": {
     "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "openapi-typescript-codegen": "^0.25.0"
+    "openapi-typescript-codegen": "^0.25.0",
+    "typescript": "^5.1.6"
   }
 }
