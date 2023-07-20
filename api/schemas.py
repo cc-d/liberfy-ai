@@ -22,6 +22,6 @@ class EmailPassData(BaseModel):
     password: str
 
 
-class Token(BaseModel):
+class AccessToken(BaseModel):
     access_token: str
     token_type: str

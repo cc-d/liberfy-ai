@@ -9,7 +9,7 @@ from pydantic import schema
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
 from models import User, Base
-from schemas import EmailPassData, UserInDB, Token, BaseUser
+from schemas import EmailPassData, UserInDB, AccessToken, BaseUser
 from security import hash_passwd, create_access_token, verify_passwd, create_user
 from dbutils import get_tokenuser
 from myfuncs import runcmd
@@ -32,7 +32,7 @@ async def hello():
     return {"status": "ok"}
 
 
-@arouter.post('/token_login')
+@arouter.post('/token_login', response_model=AccessToken)
 async def token_login(
     formdata: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
 ):
@@ -45,7 +45,7 @@ async def token_login(
         )
     atoken_exp = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     atoken = create_access_token(data={'sub': user.email}, expires_delta=atoken_exp)
-    return {'access_token': atoken, 'token_type': 'bearer'}
+    return AccessToken(access_token=atoken, token_type='bearer')
 
 
 @arouter.get('/users/me', response_model=BaseUser)
