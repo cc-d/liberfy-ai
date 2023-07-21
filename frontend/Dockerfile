@@ -13,8 +13,8 @@ COPY . ./
 # Install the Node.js dependencies
 RUN npm install && npm run build
 
-# Expose port 3000 for the app
-EXPOSE 3000
+# Expose port 3333 for the app
+EXPOSE 3333
 
 # Start the app
 CMD ["npm", "start"]

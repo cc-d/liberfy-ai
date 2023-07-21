@@ -13,4 +13,4 @@ export type OpenAPIConfig = {
     ENCODE_PATH?: ((path: string) => string) | undefined;
 };
 export declare const OpenAPI: OpenAPIConfig;
-export {};
+export { };

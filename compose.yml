@@ -22,7 +22,7 @@ services:
     build:
       context: ./frontend
     ports:
-      - "3000:3000"
+      - "3333:3333"
     depends_on:
       - api
   nginx:

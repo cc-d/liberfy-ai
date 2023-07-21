@@ -2,7 +2,7 @@
   "name": "liberfy-ai-frontend",
   "version": "1.0.0",
   "description": "General ChatGPT UI enhancement and life AI assistant tool primarily designed for personal use",
-  "main": "src/index.js",
+  "main": "src/api/index.ts",
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -19,16 +19,15 @@
   "bugs": {
     "url": "https://github.com/liberfy-ai/repository/issues"
   },
-  "homepage": "http://localhost:3000",
+  "homepage": "http://localhost:3333",
   "dependencies": {
-    "axios": "^1.4.0",
-    "material-ui": "^0.20.2",
-    "openapi-typescript-codegen": "^0.25.0",
-    "react": "^16.14.0",
-    "react-dom": "^16.14.0",
-    "react-router-dom": "^6.14.1",
-    "react-scripts": "^5.0.1",
-    "web-vitals": "^3.4.0"
+    "axios": "latest",
+    "material-ui": "*",
+    "react": "latest",
+    "react-dom": "latest",
+    "react-router-dom": "latest",
+    "react-scripts": "latest",
+    "web-vitals": "latest"
   },
   "browserslist": {
     "production": [
@@ -43,8 +42,8 @@
     ]
   },
   "devDependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
-    "openapi-typescript-codegen": "^0.25.0",
-    "typescript": "^5.1.6"
+    "@babel/plugin-proposal-private-property-in-object": "latest",
+    "openapi-typescript-codegen": "latest",
+    "typescript": "latest"
   }
 }
