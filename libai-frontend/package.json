@@ -16,7 +16,6 @@
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.14.2",
     "react-scripts": "5.0.1",
-    "typescript": "^4.9.5",
     "web-vitals": "^2.1.4"
   },
   "homepage": "http://localhost:3333",
@@ -45,6 +44,7 @@
     ]
   },
   "devDependencies": {
-    "openapi-typescript-codegen": "^0.25.0"
+    "openapi-typescript-codegen": "^0.25.0",
+    "typescript": "^5.1.6"
   }
 }
