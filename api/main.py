@@ -59,7 +59,9 @@ async def hello():
 async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == formdata.email).first()
     if not user:
-        user = create_user(user_email=formdata.email, user_password=formdata.password)
+        user = create_user(
+            user_email=formdata.email, user_password=formdata.password, db=db
+        )
     # if not verify_passwd(formdata.password, user.hpassword):
     #    raise HTTPException(
     #        status_code=status.HTTP_401_UNAUTHORIZED,

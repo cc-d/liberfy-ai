@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useState, useEffect } from 'react';
+import React, { createContext, useContext, useState } from 'react';
 import apios from './apios';
 import { useNavigate } from 'react-router-dom';
 import { BaseUser } from './api';
@@ -8,7 +8,7 @@ interface AuthContextProps {
   isLoading: boolean;
   login: (data: {email: string, password: string}) => Promise<void>;
   logout: () => void;
-  setUser: (user: BaseUser | null) => void;
+  setUser: (user: BaseUser | null) => void; // Include this line
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -26,22 +26,12 @@ export const AuthProvider: React.FC<any> = ({children}) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  useEffect(() => {
-    const email = localStorage.getItem('email');
-    if (! email && !isLoading) {
-      setIsLoading(true);
-      apios.post('/user/login', { email })
-        .then(response => setUser(response.data))
-        .catch(() => setUser(null))
-        .finally(() => setIsLoading(false));
-    }
-  }, [user]);
-
   const login = async (data: {email: string, password: string}) => {
     setIsLoading(true);
     try {
-      const newUser: (BaseUser | null) = await apios.post('/user/login', data).data;
-      if ( newUser ) {
+      const response = await apios.post('/user/login', data);
+      const newUser: (BaseUser | null) = response.data;
+      if (newUser) {
         localStorage.setItem('email', newUser.email);
         setUser(newUser);
       } else {
@@ -66,5 +56,5 @@ export const AuthProvider: React.FC<any> = ({children}) => {
       {children}
     </AuthContext.Provider>
   );
-};
 
+};

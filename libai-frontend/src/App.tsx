@@ -1,6 +1,7 @@
 import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import LoginForm from './components/AuthForm';
+import { LoginForm } from './components/AuthForm';
+
 import Home from './components/Home';
 import { AuthProvider } from './AuthContext';
 import NavBar  from './components/NavBar';

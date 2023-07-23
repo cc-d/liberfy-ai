@@ -22,5 +22,6 @@
   ],
   "workbench.colorCustomizations": {
     "sideBarSectionHeader.background": "#18540d"
-  }
+  },
+  "git.ignoreLimitWarning": true
 }
