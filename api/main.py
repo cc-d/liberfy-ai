@@ -62,12 +62,12 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
         user = create_user(
             user_email=formdata.email, user_password=formdata.password, db=db
         )
-    # if not verify_passwd(formdata.password, user.hpassword):
-    #    raise HTTPException(
-    #        status_code=status.HTTP_401_UNAUTHORIZED,
-    #        detail="Incorrect password for email.",
-    #        headers={"WWW-Authenticate": "Bearer"},
-    #    )
+    if not verify_passwd(formdata.password, user.hpassword):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect password for email.",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
     return BaseUser(email=user.email, id=user.id)  # returning the user email
 
 
