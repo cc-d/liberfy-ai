@@ -1,26 +1,28 @@
 import jwt
+from jwt import PyJWTError
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from models import User
+from models import User, Token
 from database import get_db
-from dbutils import get_tokenuser
-from fastapi import Depends
+from fastapi import Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer
+import random
+from logfunc import logf
+from schema import EmailPassData, BaseUser
+import logging
 
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
 
 pwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
-
-def create_access_token(data: dict, expires_delta: timedelta = None):
-    encode_data = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES / 2)
-    encode_data.update({'exp': expire})
-    encjwt = jwt.encode(encode_data, SECRET_KEY, algorithm=ALGORITHM)
-    return encjwt
+credentials_exception = HTTPException(
+    status_code=status.HTTP_401_UNAUTHORIZED,
+    detail="Could not validate credentials",
+    headers={"WWW-Authenticate": "Bearer"},
+)
 
 
 def verify_passwd(cleartext: str, hashed: str) -> bool:
@@ -69,9 +71,18 @@ def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> b
     return False
 
 
-def create_user(user_email: str, user_password: str, db: Session):
-    hashed_password = hash_passwd(user_password)
-    db_user = User(email=user_email, hpassword=hashed_password)
+def rantoken(n: int = 32) -> str:
+    chars = list("0123456789abcdef")
+
+    s = ""
+    for i in range(n):
+        s += random.choice(chars)
+    return s
+
+
+def create_user(user_email: str, user_password: str, db: Session) -> User:
+    hpassword = hash_passwd(user_password)
+    db_user = User(email=user_email, hpassword=hpassword)
     db.add(db_user)
     db.commit()
     db.refresh(db_user)

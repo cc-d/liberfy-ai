@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type BaseUser = {
-    id: number;
+    id: (number | null);
     email: string;
 };
 

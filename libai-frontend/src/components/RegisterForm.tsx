@@ -1,15 +1,20 @@
 import React, { useState } from 'react';
 import apios from '../apios';
+import { useNavigate } from 'react-router-dom';
+import { useAuthContext } from '../AuthContext';
+import { BaseUser } from '../api';
 
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { login } = useAuthContext();
+  const nav = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
     try {
-      const response = await apios.post('/register', { email, password });
-      // Handle registration success...
+      await apios.post('/user/register', { email, password });
+      login({ email, password });
     } catch (error) {
       // Handle error...
     }
