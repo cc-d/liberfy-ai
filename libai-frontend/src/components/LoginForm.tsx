@@ -1,24 +1,24 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import apios from '../apios';
 import { useAuthContext } from '../AuthContext';
-import { useNavigate } from 'react-router-dom';
 
 const LoginForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuthContext();
+  const useAuthContext = useAuthContext();
 
-  const nav = useNavigate();
-
-// LoginForm.tsx
-const handleSubmit = async (event: React.FormEvent) => {
-  event.preventDefault();
-  try {
-    login({ email, password });
-  } catch (error) {
-    // Handle error...
-  }
-};
+  const handleSubmit = async (event: React.FormEvent) => {
+    event.preventDefault();
+    try {
+      const response = await apios.post('/user/login', { email, password });
+      if (response.status === 200) {
+        localStorage.setItem('email', email);
+      }
+    } catch (error) {
+      // Handle error...
+    }
+  };
 
   return (
     <form onSubmit={handleSubmit}>

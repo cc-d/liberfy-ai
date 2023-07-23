@@ -7,7 +7,7 @@ import { BaseUser } from '../api';
 const RegisterForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const { login } = useAuthContext();
+  const { login, setUser, user } = useAuthContext();
   const nav = useNavigate();
 
   const handleSubmit = async (event: React.FormEvent) => {
