@@ -39,8 +39,9 @@ export const AuthProvider: React.FC<any> = ({children}) => {
     try {
       localStorage.setItem('email', data.email);
       const user = await fetchCurrentUser();
+      setIsLoading(false);
       if (user) {
-        setUser(user.data);
+        setUser(user);
         navigate('/');
       }
     } catch (error) {
@@ -55,9 +56,11 @@ export const AuthProvider: React.FC<any> = ({children}) => {
 
   useEffect(() => {
     if (!user && !isLoading) {
+        setIsLoading(true);
         fetchCurrentUser();
+        setIsLoading(false);
     }
-  }, [user]);
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, isLoading, login, logout }}>

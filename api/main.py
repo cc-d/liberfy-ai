@@ -13,7 +13,7 @@ import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
-from models import User, Base, Token
+from models import User, Base
 from schema import EmailPassData, BaseUser
 from security import hash_passwd, verify_passwd, create_user
 from myfuncs import runcmd
@@ -59,11 +59,7 @@ async def hello():
 async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == formdata.email).first()
     if not user:
-        raise HTTPException(
-            status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"Email {formdata.email} not found",
-            headers={'WWW-Authenticate': 'Bearer'},
-        )
+        user = create_user(user_email=formdata.email, user_password=formdata.password)
     # if not verify_passwd(formdata.password, user.hpassword):
     #    raise HTTPException(
     #        status_code=status.HTTP_401_UNAUTHORIZED,
@@ -71,15 +67,6 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     #        headers={"WWW-Authenticate": "Bearer"},
     #    )
     return BaseUser(email=user.email, id=user.id)  # returning the user email
-
-
-@arouter.post("/user/register", response_model=BaseUser)
-def register(epdata: EmailPassData, db: Session = Depends(get_db)):
-    db_user = db.query(User).filter(User.email == epdata.email).first()
-    if db_user:
-        raise HTTPException(status_code=400, detail="Email already registered")
-
-    return create_user(user_email=epdata.email, user_password=epdata.password, db=db)
 
 
 @arouter.get("/openapi.json")

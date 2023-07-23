@@ -44,26 +44,6 @@ export class DefaultService {
     }
 
     /**
-     * Register
-     * @param requestBody
-     * @returns BaseUser Successful Response
-     * @throws ApiError
-     */
-    public static registerApiUserRegisterPost(
-        requestBody: EmailPassData,
-    ): CancelablePromise<BaseUser> {
-        return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/user/register',
-            body: requestBody,
-            mediaType: 'application/json',
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-
-    /**
      * Get Openapi Schema
      * @returns any Successful Response
      * @throws ApiError
