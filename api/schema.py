@@ -23,3 +23,22 @@ class BaseChat(BaseModel):
     name: str
     user_id: int
     user: BaseUser
+
+
+class BaseMessage(BaseModel):
+    id: Optional[int]
+    role: str
+    content: str
+    name: str
+    function_call: str
+    convo_id: int
+    convo: "BaseConvo"
+
+
+class BaseConvo:
+    id: Optional[int]
+    chat_id: int
+    chat: BaseChat
+    user_id: int
+    user: BaseUser
+    messages: List[BaseMessage]
