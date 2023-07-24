@@ -8,7 +8,7 @@ const NavBar = () => {
   const { user, logout } = useAuthContext();
 
   return (
-    <nav style={{backgroundColor: "#666666"}}>
+    <nav>
       <ul>
         <li>
           <Link to="/">Home</Link>

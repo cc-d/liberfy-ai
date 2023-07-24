@@ -5,6 +5,8 @@ import { LoginForm } from './components/AuthForm';
 import Home from './components/Home';
 import { AuthProvider } from './AuthContext';
 import NavBar  from './components/NavBar';
+import ChatPage from './components/ChatPage';
+import ChatListPage from './components/ChatListPage';
 
 function App() {
   return (
@@ -14,6 +16,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginForm />} />
+          <Route path="/chats" element={<ChatListPage />} />
         </Routes>
 
         </AuthProvider>

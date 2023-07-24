@@ -1,6 +1,6 @@
 from pydantic import BaseModel
-from typing import Optional
-from sqlalchemy import Column, Integer, String
+from typing import Optional, List, Dict, Any, Union, TypeVar, Generic, Type, Callable
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped
 
 
@@ -16,3 +16,10 @@ class BaseUserDB(BaseUser):
 class EmailPassData(BaseModel):
     email: str
     password: str
+
+
+class BaseChat(BaseModel):
+    id: Optional[int]
+    name: str
+    user_id: int
+    user: BaseUser

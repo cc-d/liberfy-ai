@@ -8,13 +8,14 @@ from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
+from typing import List, Optional, Dict, Any, Union, TypeVar, Generic, Type, Callable
 
 import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
-from models import User, Base
-from schema import EmailPassData, BaseUser
+from models import User, Base, Chat, Message, Convo
+from schema import EmailPassData, BaseUser, BaseChat
 from security import hash_passwd, verify_passwd, create_user
 from myfuncs import runcmd
 
@@ -47,15 +48,15 @@ app.add_middleware(CSPMiddleware)
 
 arouter = APIRouter()
 
-print('loading routes')
+print("loading routes")
 
 
-@arouter.get('/')
+@arouter.get("/")
 async def hello():
     return {"status": "ok"}
 
 
-@arouter.post('/user/login', response_model=BaseUser)
+@arouter.post("/user/login", response_model=BaseUser)
 async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == formdata.email).first()
     if not user:
@@ -71,12 +72,27 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     return BaseUser(email=user.email, id=user.id)  # returning the user email
 
 
+@arouter.post('/user/chats', response_model=List[BaseChat])
+async def get_chats(user_id: int, db: Session = Depends(get_db)):
+    chats = list(db.query(Chat).filter(Chat.user_id == user_id).all())
+    return chats
+
+
 @arouter.get("/openapi.json")
 async def get_openapi_schema():
     return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
 
 
+@arouter.get("/chat/new", response_model=BaseChat)
+async def new_chat(name: str, user_id: int, db: Session = Depends(get_db)):
+    chat = Chat(name=name, user_id=user_id)
+    db.add(chat)
+    db.commit()
+    return chat
+
+
 app.include_router(arouter, prefix="/api")
 
-if (__name__) == '__main__':
+
+if (__name__) == "__main__":
     runcmd(f"uvicorn main:app --host {HOST} --port {PORT} --reload", output=False)

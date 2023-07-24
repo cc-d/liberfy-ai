@@ -7,6 +7,7 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
+export type { BaseChat } from './models/BaseChat';
 export type { BaseUser } from './models/BaseUser';
 export type { EmailPassData } from './models/EmailPassData';
 export type { HTTPValidationError } from './models/HTTPValidationError';

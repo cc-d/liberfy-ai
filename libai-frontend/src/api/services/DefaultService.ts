@@ -2,6 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
+import type { BaseChat } from '../models/BaseChat';
 import type { BaseUser } from '../models/BaseUser';
 import type { EmailPassData } from '../models/EmailPassData';
 
@@ -44,6 +45,27 @@ export class DefaultService {
     }
 
     /**
+     * Get Chats
+     * @param userId
+     * @returns BaseChat Successful Response
+     * @throws ApiError
+     */
+    public static getChatsApiUserChatsPost(
+        userId: number,
+    ): CancelablePromise<Array<BaseChat>> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/user/chats',
+            query: {
+                'user_id': userId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Get Openapi Schema
      * @returns any Successful Response
      * @throws ApiError
@@ -52,6 +74,30 @@ export class DefaultService {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/openapi.json',
+        });
+    }
+
+    /**
+     * New Chat
+     * @param name
+     * @param userId
+     * @returns BaseChat Successful Response
+     * @throws ApiError
+     */
+    public static newChatApiChatNewGet(
+        name: string,
+        userId: number,
+    ): CancelablePromise<BaseChat> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/chat/new',
+            query: {
+                'name': name,
+                'user_id': userId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
         });
     }
 
