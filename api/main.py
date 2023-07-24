@@ -14,9 +14,20 @@ import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
-from models import User, Base, Chat, Message, Convo
-from schema import EmailPassData, BaseUser, BaseChat
-from security import hash_passwd, verify_passwd, create_user
+from models import User, Base, Chat, Message, Convo, UserToken
+from schema import (
+    EmailPassData,
+    BaseUser,
+    BaseChat,
+    BaseMessage,
+    BaseConvo,
+    BaseUserDB,
+    BaseToken,
+    TokensBaseUser,
+    BaseUserToken,
+    BaseTokenData,
+)
+from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
 from logfunc import logf
 
@@ -57,20 +68,42 @@ async def hello():
     return {"status": "ok"}
 
 
-@arouter.post("/user/login", response_model=BaseUser)
+@arouter.post("/user/login", response_model=BaseUserToken)
 async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == formdata.email).first()
     if not user:
         user = create_user(
             user_email=formdata.email, user_password=formdata.password, db=db
         )
+        token = create_user_token(user.id, db)
+        return BaseUserToken(email=user.email, id=user.id, token=token.token)
+
     if not verify_passwd(formdata.password, user.hpassword):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password for email.",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    return BaseUser(email=user.email, id=user.id)  # returning the user email
+
+    return BaseUserToken(email=user.email, id=user.id, token=None)
+
+
+@arouter.post("/user/user_from_token", response_model=BaseUser)
+async def user_from_token(formdata: BaseTokenData, db: Session = Depends(get_db)):
+    token = db.query(UserToken).filter(UserToken.token == formdata.token).first()
+
+    if not token:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Token not found"
+        )
+
+    user = db.query(User).filter(User.id == token.user_id).first()
+    print('user', user)
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
+        )
+    return BaseUser(email=user.email, id=user.id)
 
 
 @logf()

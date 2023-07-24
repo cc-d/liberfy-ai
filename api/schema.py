@@ -4,9 +4,26 @@ from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped
 
 
+class BaseToken(BaseModel):
+    user_id: int
+    token: str
+
+
 class BaseUser(BaseModel):
     id: Optional[int]
     email: str
+
+
+class TokensBaseUser(BaseUser):
+    tokens: List[BaseToken]
+
+
+class BaseUserToken(BaseUser):
+    token: Optional[str]
+
+
+class BaseTokenData(BaseModel):
+    token: str
 
 
 class BaseUserDB(BaseUser):

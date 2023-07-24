@@ -1,11 +1,15 @@
 // components/NavBar.tsx
 
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../AuthContext';
 
 const NavBar = () => {
-  const { user, logout } = useAuthContext();
+  const { user, logout, autoTokenLogin } = useAuthContext();
+
+  useEffect(() => {
+    autoTokenLogin();
+}, []);
 
   return (
     <nav>

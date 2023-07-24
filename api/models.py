@@ -5,6 +5,7 @@ from sqlalchemy.orm.session import Session
 from typing import Optional
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, relationship, backref
+from uuid import uuid4
 
 from database import Base
 
@@ -46,3 +47,11 @@ class Convo(Base):
     user: Mapped[User] = relationship("User", back_populates="convos")
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
     messages: "Mapped[Message]" = relationship("Message", back_populates="convo")
+
+
+class UserToken(Base):
+    __tablename__ = "usertokens"
+    user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
+    token: Mapped[str] = Column(
+        String, unique=True, primary_key=True, default=lambda: str(uuid4())
+    )

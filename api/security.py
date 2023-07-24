@@ -3,14 +3,15 @@ from jwt import PyJWTError
 from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
-from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from models import User
 from database import get_db
 from fastapi import Depends, HTTPException, status
 from fastapi.security import OAuth2PasswordBearer
 import random
 from logfunc import logf
-from schema import EmailPassData, BaseUser
+from typing import Union
+from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from models import User, UserToken, Chat, Convo
+from schema import EmailPassData, BaseUser, TokensBaseUser, BaseToken
 import logging
 
 logger = logging.getLogger()
@@ -71,13 +72,13 @@ def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> b
     return False
 
 
-def rantoken(n: int = 32) -> str:
-    chars = list("0123456789abcdef")
-
-    s = ""
-    for i in range(n):
-        s += random.choice(chars)
-    return s
+def create_user_token(user_id: Union[str, int], db: Session) -> UserToken:
+    user = db.query(User).filter(User.id == user_id).first()
+    newtoken = UserToken(user_id=user_id)
+    db.add(newtoken)
+    db.commit()
+    db.refresh(newtoken)
+    return newtoken
 
 
 def create_user(user_email: str, user_password: str, db: Session) -> User:

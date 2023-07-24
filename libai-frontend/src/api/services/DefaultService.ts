@@ -3,7 +3,9 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseChat } from '../models/BaseChat';
+import type { BaseTokenData } from '../models/BaseTokenData';
 import type { BaseUser } from '../models/BaseUser';
+import type { BaseUserToken } from '../models/BaseUserToken';
 import type { EmailPassData } from '../models/EmailPassData';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -27,15 +29,35 @@ export class DefaultService {
     /**
      * Login User
      * @param requestBody
-     * @returns BaseUser Successful Response
+     * @returns BaseUserToken Successful Response
      * @throws ApiError
      */
     public static loginUserApiUserLoginPost(
         requestBody: EmailPassData,
-    ): CancelablePromise<BaseUser> {
+    ): CancelablePromise<BaseUserToken> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/login',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * User From Token
+     * @param requestBody
+     * @returns BaseUser Successful Response
+     * @throws ApiError
+     */
+    public static userFromTokenApiUserUserFromTokenPost(
+        requestBody: BaseTokenData,
+    ): CancelablePromise<BaseUser> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/user/user_from_token',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -50,13 +72,13 @@ export class DefaultService {
      * @returns BaseChat Successful Response
      * @throws ApiError
      */
-    public static getChatsApiUserChatsPost(
+    public static getChatsApiUserUserIdChatsGet(
         userId: number,
     ): CancelablePromise<Array<BaseChat>> {
         return __request(OpenAPI, {
-            method: 'POST',
-            url: '/api/user/chats',
-            query: {
+            method: 'GET',
+            url: '/api/user/{user_id}/chats',
+            path: {
                 'user_id': userId,
             },
             errors: {
