@@ -10,7 +10,8 @@ const ChatListPage = () => {
 
     useEffect(() => {
         if(user){
-            apios.post('/user/chats', { user_id: user.id })
+            const uid = user.id;
+            apios.get(`/user/${uid}/chats`)
             .then(response => {
                 setChats(response.data);
             })

@@ -23,6 +23,12 @@ const NavBar = () => {
             <Link to="/login">Login/Register</Link>
           )}
         </li>
+        {user && (
+          <li>
+            <Link to="/chats">Chats</Link>
+          </li>
+        )
+        }
       </ul>
     </nav>
   );

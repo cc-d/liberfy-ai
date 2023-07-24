@@ -18,6 +18,7 @@ from models import User, Base, Chat, Message, Convo
 from schema import EmailPassData, BaseUser, BaseChat
 from security import hash_passwd, verify_passwd, create_user
 from myfuncs import runcmd
+from logfunc import logf
 
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.DEBUG)
@@ -72,7 +73,8 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     return BaseUser(email=user.email, id=user.id)  # returning the user email
 
 
-@arouter.post('/user/chats', response_model=List[BaseChat])
+@logf()
+@arouter.get('/user/{user_id}/chats', response_model=List[BaseChat])
 async def get_chats(user_id: int, db: Session = Depends(get_db)):
     chats = list(db.query(Chat).filter(Chat.user_id == user_id).all())
     return chats

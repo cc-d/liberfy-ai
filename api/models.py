@@ -15,6 +15,7 @@ class User(Base):
     email: Mapped[str] = Column(String, unique=True)
     hpassword: Mapped[str] = Column(String)
     chats: "Mapped[Chat]" = relationship("Chat", back_populates="user")
+    convos: "Mapped[Convo]" = relationship("Convo", back_populates="user")
 
 
 class Chat(Base):
