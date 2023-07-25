@@ -6,10 +6,10 @@ import { BaseUserToken, BaseUser } from './api';
 interface AuthContextProps {
   user: BaseUser | null;
   isLoading: boolean;
-  login: (data: {email: string, password: string}) => Promise<void>;
+  login: (data: {token: string}) => Promise<void>;
   logout: () => void;
-  setUser: (user: BaseUser | null) => void;
   autoTokenLogin: () => Promise<void>;
+  setUser: (user: BaseUser | null) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -27,10 +27,10 @@ export const AuthProvider: React.FC<any> = ({children}) => {
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const login = async (data: {email: string, password: string}) => {
+  const login = async (data: {token: string}) => {
     setIsLoading(true);
     try {
-      const response = await apios.post('/user/login', data);
+      const response = await apios.post('/user/user_from_token', data);
       const newUser: BaseUserToken | undefined = response.data;
       if (newUser) {
         const newToken: string | undefined | null = newUser.token;
@@ -38,6 +38,7 @@ export const AuthProvider: React.FC<any> = ({children}) => {
           localStorage.setItem('token', newToken);
         }
         setUser(newUser);
+        navigate('/')
       } else {
         localStorage.removeItem('email');
         setUser(null);
@@ -76,7 +77,7 @@ export const AuthProvider: React.FC<any> = ({children}) => {
   };
 
   return (
-    <AuthContext.Provider value={{ user, isLoading, login, logout, autoTokenLogin, setUser }}>
+    <AuthContext.Provider value={{ user, isLoading, logout, login, autoTokenLogin, setUser }}>
       {children}
     </AuthContext.Provider>
   );

@@ -3,13 +3,14 @@
 import React, { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuthContext } from '../AuthContext';
+import apios from '../apios';
 
 const NavBar = () => {
   const { user, logout, autoTokenLogin } = useAuthContext();
 
   useEffect(() => {
     autoTokenLogin();
-}, []);
+  }, []);
 
   return (
     <nav>
@@ -18,14 +19,15 @@ const NavBar = () => {
           <Link to="/">Home</Link>
         </li>
         <li>
-          {user ? (
+        {user ? (
             <>
               <span>Welcome, {user.email}!</span>
               <button onClick={logout}>Logout</button>
             </>
           ) : (
             <Link to="/login">Login/Register</Link>
-          )}
+          )
+        }
         </li>
         {user && (
           <li>
