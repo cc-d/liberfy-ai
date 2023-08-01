@@ -9,7 +9,6 @@ import type { BaseUser } from '../models/BaseUser';
 import type { BaseUserToken } from '../models/BaseUserToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
 import type { DataCreateCompletion } from '../models/DataCreateCompletion';
-import type { DBCompletion } from '../models/DBCompletion';
 import type { EmailPassData } from '../models/EmailPassData';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -167,12 +166,12 @@ export class DefaultService {
     /**
      * Get Completion
      * @param completionId
-     * @returns DBCompletion Successful Response
+     * @returns BaseCompletion Successful Response
      * @throws ApiError
      */
     public static getCompletionApiCompletionCompletionIdGet(
         completionId: number,
-    ): CancelablePromise<DBCompletion> {
+    ): CancelablePromise<BaseCompletion> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/completion/{completion_id}',
