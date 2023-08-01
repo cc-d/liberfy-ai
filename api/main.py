@@ -27,6 +27,7 @@ from schema import (
     TokensBaseUser,
     BaseUserToken,
     BaseTokenData,
+    DataCreateChat,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -107,7 +108,6 @@ async def user_from_token(formdata: BaseTokenData, db: Session = Depends(get_db)
     return BaseUser(email=user.email, id=user.id)
 
 
-@logf()
 @arouter.get('/user/{user_id}/chats', response_model=List[BaseChat])
 async def get_chats(user_id: int, db: Session = Depends(get_db)):
     chats = list(db.query(Chat).filter(Chat.user_id == user_id).all())
@@ -119,12 +119,25 @@ async def get_openapi_schema():
     return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
 
 
-@arouter.get("/chat/new", response_model=BaseChat)
-async def new_chat(name: str, user_id: int, db: Session = Depends(get_db)):
-    chat = Chat(name=name, user_id=user_id)
+@arouter.post("/chat/new", response_model=BaseChat)
+async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
+    chat = Chat(name=data.name, user_id=data.user_id)
     db.add(chat)
     db.commit()
-    return chat
+    db.refresh(chat)
+
+    return BaseChat(**chat)
+
+
+@arouter.get("/chat/{chat_id}", response_model=BaseChat)
+async def get_chat(chat_id: int, db: Session = Depends(get_db)):
+    chat = db.query(Chat).filter(Chat.id == chat_id).first()
+    user = db.query(User).filter(User.id == chat.user_id).first()
+    user = BaseUser(email=user.email, id=user.id)
+
+    return BaseChat(
+        id=chat.id, name=chat.name, user_id=chat.user_id, user=user, convos=[]
+    )
 
 
 app.include_router(arouter, prefix="/api")

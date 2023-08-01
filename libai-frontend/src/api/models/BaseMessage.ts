@@ -4,13 +4,14 @@
 /* eslint-disable */
 
 import type { BaseConvo } from './BaseConvo';
-import type { BaseUser } from './BaseUser';
 
-export type BaseChat = {
+export type BaseMessage = {
     id: (number | null);
+    role: string;
+    content: string;
     name: string;
-    user_id: number;
-    user: (BaseUser | null);
-    convos: (Array<BaseConvo> | null);
+    function_call: string;
+    convo_id: number;
+    convo: BaseConvo;
 };
 

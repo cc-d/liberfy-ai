@@ -12,14 +12,14 @@ export const RegisterForm = () => {
     const handleRegister = async (event: React.FormEvent) => {
       event.preventDefault();
       try {
-        const response = await apios.post('/user/register', {
+        const response = await apios.post('/user/login', {
             email,
             password,
         });
         const { token } = response.data;
         if (token) {
             localStorage.setItem('token', token);
-            nav('/')
+            window.location.href = '/'
         }
       } catch (error) {
         // Handle error...
@@ -45,4 +45,5 @@ export const RegisterForm = () => {
         <button type="submit">Register</button>
       </form>
     );
+
   };

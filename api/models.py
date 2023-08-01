@@ -23,7 +23,7 @@ class Chat(Base):
     __tablename__ = "chats"
     id: Mapped[int] = Column(Integer, primary_key=True)
     name: Mapped[str] = Column(String, default="New chat")
-    user: Mapped[User] = relationship("User", back_populates="chats")
+    user: Mapped[User] = relationship("User", back_populates="chats", uselist=False)
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
     convos: "Mapped[Convo]" = relationship("Convo", back_populates="chat")
 
@@ -35,16 +35,18 @@ class Message(Base):
     content: Mapped[str] = Column(String)
     name: Mapped[str] = Column(String)
     function_call: Mapped[str] = Column(String)
-    convo: "Mapped[Convo]" = relationship("Convo", back_populates="messages")
+    convo: "Mapped[Convo]" = relationship(
+        "Convo", back_populates="messages", uselist=False
+    )
     convo_id: Mapped[int] = Column(Integer, ForeignKey("convos.id"))
 
 
 class Convo(Base):
     __tablename__ = "convos"
     id: Mapped[int] = Column(Integer, primary_key=True)
-    chat: Mapped[Chat] = relationship("Chat", back_populates="convos")
+    chat: Mapped[Chat] = relationship("Chat", back_populates="convos", uselist=False)
     chat_id: Mapped[int] = Column(Integer, ForeignKey("chats.id"))
-    user: Mapped[User] = relationship("User", back_populates="convos")
+    user: Mapped[User] = relationship("User", back_populates="convos", uselist=False)
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
     messages: "Mapped[Message]" = relationship("Message", back_populates="convo")
 

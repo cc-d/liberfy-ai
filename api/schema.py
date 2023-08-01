@@ -1,3 +1,4 @@
+import json
 from pydantic import BaseModel
 from typing import Optional, List, Dict, Any, Union, TypeVar, Generic, Type, Callable
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
@@ -39,7 +40,8 @@ class BaseChat(BaseModel):
     id: Optional[int]
     name: str
     user_id: int
-    user: BaseUser
+    user: Optional[BaseUser]
+    convos: Optional[List["BaseConvo"]]
 
 
 class BaseMessage(BaseModel):
@@ -52,10 +54,15 @@ class BaseMessage(BaseModel):
     convo: "BaseConvo"
 
 
-class BaseConvo:
+class BaseConvo(BaseModel):
     id: Optional[int]
     chat_id: int
     chat: BaseChat
     user_id: int
     user: BaseUser
     messages: List[BaseMessage]
+
+
+class DataCreateChat(BaseModel):
+    name: str
+    user_id: int

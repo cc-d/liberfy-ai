@@ -6,6 +6,7 @@ import type { BaseChat } from '../models/BaseChat';
 import type { BaseTokenData } from '../models/BaseTokenData';
 import type { BaseUser } from '../models/BaseUser';
 import type { BaseUserToken } from '../models/BaseUserToken';
+import type { DataCreateChat } from '../models/DataCreateChat';
 import type { EmailPassData } from '../models/EmailPassData';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -101,21 +102,38 @@ export class DefaultService {
 
     /**
      * New Chat
-     * @param name
-     * @param userId
+     * @param requestBody
      * @returns BaseChat Successful Response
      * @throws ApiError
      */
-    public static newChatApiChatNewGet(
-        name: string,
-        userId: number,
+    public static newChatApiChatNewPost(
+        requestBody: DataCreateChat,
+    ): CancelablePromise<BaseChat> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/chat/new',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Chat
+     * @param chatId
+     * @returns BaseChat Successful Response
+     * @throws ApiError
+     */
+    public static getChatApiChatChatIdGet(
+        chatId: number,
     ): CancelablePromise<BaseChat> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/chat/new',
-            query: {
-                'name': name,
-                'user_id': userId,
+            url: '/api/chat/{chat_id}',
+            path: {
+                'chat_id': chatId,
             },
             errors: {
                 422: `Validation Error`,

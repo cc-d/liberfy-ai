@@ -2,13 +2,14 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import apios from '../../apios';
 import { useAuthContext } from '../../AuthContext';
-import { BaseChat } from '../../api';
+import { BaseTokenData, BaseChat, DataCreateChat} from '../../api';
+import CreateChat from './CreateChat';
 
 const ChatListPage = () => {
     const { user } = useAuthContext();
     const [chats, setChats] = useState<BaseChat[]>([]);
 
-    useEffect(() => {
+    const refreshChats = () => {
         if(user){
             const uid = user.id;
             apios.get(`/user/${uid}/chats`)
@@ -19,18 +20,32 @@ const ChatListPage = () => {
                 console.error(error);
             });
         }
+    }
+
+    const addChat = (chat: BaseChat) => {
+        setChats([...chats, chat]);
+    }
+
+    useEffect(() => {
+        refreshChats();
     }, [user]);
 
     return (
         <div>
+            <CreateChat refreshChats={refreshChats} addChat={addChat} />
             <h1>Your Chats</h1>
             {chats.map((chat) => (
-                <Link key={chat.id} to={`/chats/${chat.id}`}>
-                    {chat.name}
-                </Link>
+                <div className='chat-list-item' key={chat.id}>
+                    <h2>
+                    <Link key={chat.id} to={`/chat/${chat.id}`}>
+                        Chat {chat.name}
+                    </Link>
+                    </h2>
+                </div>
             ))}
         </div>
     );
 }
+
 
 export default ChatListPage;

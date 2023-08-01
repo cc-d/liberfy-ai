@@ -16,6 +16,7 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/chats" element={<ChatListPage />} />
+          <Route path="/chat/:chatId" element={<ChatPage />} />
         </Routes>
 
         </AuthProvider>

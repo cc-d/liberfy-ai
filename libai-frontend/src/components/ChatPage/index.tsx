@@ -8,7 +8,7 @@ const ChatPage = () => {
     const [chat, setChat] = useState<BaseChat | null>(null);
 
     useEffect(() => {
-        apios.get(`/chats/${chatId}`)
+        apios.get(`/chat/${chatId}`)
             .then(response => {
                 setChat(response.data);
             })
@@ -23,7 +23,7 @@ const ChatPage = () => {
 
     return (
         <div>
-            <h1>{chat.name}</h1>
+            <h1>Chat: {chat.name}</h1>
             {/* Display chat details here */}
         </div>
     );

@@ -3,14 +3,16 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseConvo } from './BaseConvo';
+import type { BaseChat } from './BaseChat';
+import type { BaseMessage } from './BaseMessage';
 import type { BaseUser } from './BaseUser';
 
-export type BaseChat = {
+export type BaseConvo = {
     id: (number | null);
-    name: string;
+    chat_id: number;
+    chat: BaseChat;
     user_id: number;
-    user: (BaseUser | null);
-    convos: (Array<BaseConvo> | null);
+    user: BaseUser;
+    messages: Array<BaseMessage>;
 };
 

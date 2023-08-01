@@ -1,7 +1,11 @@
 #!/bin/sh
 #alias dc="docker compose"
-LIBAI_DIR="$HOME/liberfy-ai"
-alias gentypes="npx openapi-typescript-codegen generate --input http://localhost:8888/openapi.json --output $HOME/libai-frontend/src/api"
+ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+FRONTDIR="$LIBAI_DIR/libai-frontend"
+APIDIR="$ROOTDIR/api"
+
+echo $ROOTDIR $APIDIR $FRONTDIR
+alias gentypes="npx openapi-typescript-codegen generate --exportSchemas true --input http://localhost:8888/openapi.json --output $FRONTDIR/src/api/"
 
 dc () {
 
@@ -17,5 +21,5 @@ dc () {
 
 npmapi() {
     gentypes
-    npm start
+    cd $FRONTDIR && npm start
 }

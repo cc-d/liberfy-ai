@@ -19,7 +19,7 @@ export const LoginForm = () => {
         const { token } = response.data;
         if (token) {
             localStorage.setItem('token', token);
-            nav('/')
+            window.location.href = '/'
         }
       } catch (error) {
         // Handle error...
