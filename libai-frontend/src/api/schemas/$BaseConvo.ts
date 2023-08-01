@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseConvo = {
+export const $BaseCompletion = {
     properties: {
         id: {
             type: 'any-of',

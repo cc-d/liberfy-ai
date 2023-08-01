@@ -41,7 +41,7 @@ class BaseChat(BaseModel):
     name: str
     user_id: int
     user: Optional[BaseUser]
-    convos: Optional[List["BaseConvo"]]
+    completions: Optional[List["BaseCompletion"]]
 
 
 class BaseMessage(BaseModel):
@@ -50,19 +50,27 @@ class BaseMessage(BaseModel):
     content: str
     name: str
     function_call: str
-    convo_id: int
-    convo: "BaseConvo"
+    completion_id: int
+    completion: "BaseCompletion"
 
 
-class BaseConvo(BaseModel):
+class BaseCompletion(BaseModel):
     id: Optional[int]
     chat_id: int
-    chat: BaseChat
+    chat: Optional[BaseChat]
     user_id: int
-    user: BaseUser
+    user: Optional[BaseUser]
     messages: List[BaseMessage]
 
 
 class DataCreateChat(BaseModel):
     name: str
     user_id: int
+
+
+class DataCreateCompletion(BaseModel):
+    chat_id: int
+    user_id: int
+    prompt: str
+    temperature: float
+    max_tokens: int

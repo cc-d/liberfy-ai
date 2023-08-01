@@ -30,12 +30,12 @@ export const $BaseChat = {
             }],
             isRequired: true,
         },
-        convos: {
+        completions: {
             type: 'any-of',
             contains: [{
                 type: 'array',
                 contains: {
-                    type: 'BaseConvo',
+                    type: 'BaseCompletion',
                 },
             }, {
                 type: 'null',

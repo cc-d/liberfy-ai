@@ -8,7 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { BaseChat } from './models/BaseChat';
-export type { BaseConvo } from './models/BaseConvo';
+export type { BaseCompletion } from './models/BaseCompletion';
 export type { BaseMessage } from './models/BaseMessage';
 export type { BaseTokenData } from './models/BaseTokenData';
 export type { BaseUser } from './models/BaseUser';
@@ -19,7 +19,7 @@ export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { ValidationError } from './models/ValidationError';
 
 export { $BaseChat } from './schemas/$BaseChat';
-export { $BaseConvo } from './schemas/$BaseConvo';
+export { $BaseCompletion } from './schemas/$BaseCompletion';
 export { $BaseMessage } from './schemas/$BaseMessage';
 export { $BaseTokenData } from './schemas/$BaseTokenData';
 export { $BaseUser } from './schemas/$BaseUser';

@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseConvo } from './BaseConvo';
+import type { BaseCompletion } from './BaseCompletion';
 
 export type BaseMessage = {
     id: (number | null);
@@ -11,7 +11,7 @@ export type BaseMessage = {
     content: string;
     name: string;
     function_call: string;
-    convo_id: number;
-    convo: BaseConvo;
+    completion_id: number;
+    Completion: BaseCompletion;
 };
 

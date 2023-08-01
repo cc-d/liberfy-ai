@@ -29,12 +29,12 @@ export const $BaseMessage = {
             type: 'string',
             isRequired: true,
         },
-        convo_id: {
+        completion_id: {
             type: 'number',
             isRequired: true,
         },
-        convo: {
-            type: 'BaseConvo',
+        Completion: {
+            type: 'BaseCompletion',
             isRequired: true,
         },
     },

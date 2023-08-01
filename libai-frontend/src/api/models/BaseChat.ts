@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseConvo } from './BaseConvo';
+import type { BaseCompletion } from './BaseCompletion';
 import type { BaseUser } from './BaseUser';
 
 export type BaseChat = {
@@ -11,6 +11,6 @@ export type BaseChat = {
     name: string;
     user_id: number;
     user: (BaseUser | null);
-    convos: (Array<BaseConvo> | null);
+    completions: (Array<BaseCompletion> | null);
 };
 

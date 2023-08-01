@@ -7,7 +7,7 @@ import type { BaseChat } from './BaseChat';
 import type { BaseMessage } from './BaseMessage';
 import type { BaseUser } from './BaseUser';
 
-export type BaseConvo = {
+export type BaseCompletion = {
     id: (number | null);
     chat_id: number;
     chat: BaseChat;

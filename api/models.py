@@ -16,7 +16,9 @@ class User(Base):
     email: Mapped[str] = Column(String, unique=True)
     hpassword: Mapped[str] = Column(String)
     chats: "Mapped[Chat]" = relationship("Chat", back_populates="user")
-    convos: "Mapped[Convo]" = relationship("Convo", back_populates="user")
+    completions: "Mapped[Completion]" = relationship(
+        "Completion", back_populates="user"
+    )
 
 
 class Chat(Base):
@@ -25,7 +27,9 @@ class Chat(Base):
     name: Mapped[str] = Column(String, default="New chat")
     user: Mapped[User] = relationship("User", back_populates="chats", uselist=False)
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
-    convos: "Mapped[Convo]" = relationship("Convo", back_populates="chat")
+    completions: "Mapped[Completion]" = relationship(
+        "Completion", back_populates="chat"
+    )
 
 
 class Message(Base):
@@ -35,20 +39,26 @@ class Message(Base):
     content: Mapped[str] = Column(String)
     name: Mapped[str] = Column(String)
     function_call: Mapped[str] = Column(String)
-    convo: "Mapped[Convo]" = relationship(
-        "Convo", back_populates="messages", uselist=False
+    Completion: "Mapped[Completion]" = relationship(
+        "Completion", back_populates="messages", uselist=False
     )
-    convo_id: Mapped[int] = Column(Integer, ForeignKey("convos.id"))
+    completion_id: Mapped[int] = Column(Integer, ForeignKey("completions.id"))
 
 
-class Convo(Base):
-    __tablename__ = "convos"
+class Completion(Base):
+    __tablename__ = "completions"
     id: Mapped[int] = Column(Integer, primary_key=True)
-    chat: Mapped[Chat] = relationship("Chat", back_populates="convos", uselist=False)
+    chat: Mapped[Chat] = relationship(
+        "Chat", back_populates="completions", uselist=False
+    )
     chat_id: Mapped[int] = Column(Integer, ForeignKey("chats.id"))
-    user: Mapped[User] = relationship("User", back_populates="convos", uselist=False)
+    user: Mapped[User] = relationship(
+        "User", back_populates="completions", uselist=False
+    )
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
-    messages: "Mapped[Message]" = relationship("Message", back_populates="convo")
+    messages: "Mapped[Message]" = relationship(
+        "Message", back_populates="completion", uselist=False
+    )
 
 
 class UserToken(Base):

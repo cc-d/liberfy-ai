@@ -15,19 +15,20 @@ import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from database import engine, SessionLocal, get_db
-from models import User, Base, Chat, Message, Convo, UserToken
+from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
     EmailPassData,
     BaseUser,
     BaseChat,
     BaseMessage,
-    BaseConvo,
+    BaseCompletion,
     BaseUserDB,
     BaseToken,
     TokensBaseUser,
     BaseUserToken,
     BaseTokenData,
     DataCreateChat,
+    DataCreatecompletion,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -136,8 +137,28 @@ async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     user = BaseUser(email=user.email, id=user.id)
 
     return BaseChat(
-        id=chat.id, name=chat.name, user_id=chat.user_id, user=user, convos=[]
+        id=chat.id, name=chat.name, user_id=chat.user_id, user=user, completions=[]
     )
+
+
+@arouter.post("/completion/create", response_model=BaseCompletion)
+async def create_completion(
+    create_completion: DataCreateCompletion, db: Session = Depends(get_db)
+):
+    completion = Completion(
+        chat_id=create_completion.chat_id, user_id=create_completion.user_id
+    )
+    db.add(completion)
+    db.commit()
+    db.refresh(completion)
+
+    message = Message(
+        role='user', content=create_completion.prompt, completion_id=completion.id
+    )
+    db.add(message)
+    db.commit()
+
+    return completion
 
 
 app.include_router(arouter, prefix="/api")

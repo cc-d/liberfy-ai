@@ -10,7 +10,7 @@ import random
 from logfunc import logf
 from typing import Union
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from models import User, UserToken, Chat, Convo
+from models import User, UserToken, Chat, Completion
 from schema import EmailPassData, BaseUser, TokensBaseUser, BaseToken
 import logging
 
