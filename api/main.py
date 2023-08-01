@@ -29,6 +29,7 @@ from schema import (
     BaseTokenData,
     DataCreateChat,
     DataCreateCompletion,
+    DataMsgAdd,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -200,11 +201,11 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
     return completion
 
 
-@arouter.post("/message/add/{completion_id}", response_model=BaseMessage)
-async def add_message(
-    completion_id: int, data: BaseMessage, db: Session = Depends(get_db)
-):
-    msg = Message(**data.dict(), completion_id=completion_id)
+@arouter.post("/message/add", response_model=BaseMessage)
+async def add_message(data: DataMsgAdd, db: Session = Depends(get_db)):
+    completion_id = data.completion_id
+    role, content = data.role, data.content
+    msg = Message(role=role, content=content, completion_id=completion_id)
     db.add(msg)
     db.commit()
     db.refresh(msg)
