@@ -14,7 +14,7 @@ from typing import List, Optional, Dict, Any, Union, TypeVar, Generic, Type, Cal
 import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from database import engine, SessionLocal, get_db, to_dict
+from database import engine, SessionLocal, get_db, to_dict, model_to_dict
 from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
     EmailPassData,
@@ -29,7 +29,6 @@ from schema import (
     BaseTokenData,
     DataCreateChat,
     DataCreateCompletion,
-    DBCompletion,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -135,18 +134,27 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(chat)
 
-    return BaseChat(**chat)
+    return chat
 
 
 @arouter.get("/chat/{chat_id}", response_model=BaseChat)
 async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     chat = db.query(Chat).filter(Chat.id == chat_id).first()
     user = db.query(User).filter(User.id == chat.user_id).first()
-    completions = list(db.query(Completion).filter(Completion.chat_id == chat.id).all())
+    completions = list(
+        db.query(Completion)
+        .filter(Completion.chat_id == chat.id)
+        .options(selectinload(Completion.messages))
+        .all()
+    )
+    comps = []
+    for c in completions:
+        msgs = [BaseMessage(**model_to_dict(m)) for m in c.messages]
+        comps.append(BaseCompletion(messages=msgs, **model_to_dict(c)))
 
-    print('!!@@!!', chat, vars(chat), user, vars(user), completions)
+    print('compscomps', comps)
 
-    return BaseChat(id=chat.id, user_id=user.id, completions=[], name=chat.name)
+    return BaseChat(id=chat.id, user_id=user.id, completions=comps, name=chat.name)
 
 
 @arouter.post("/completion/create", response_model=BaseCompletion)
@@ -162,15 +170,18 @@ async def create_completion(data: DataCreateCompletion, db: Session = Depends(ge
 
     logger.debug("completion created %s %s", completion, vars(completion))
 
-    msg = Message(role='system', content=data.sysprompt, completion_id=completion.id)
-    logger.debug("msg %s", msg)
+    msg = Message(role='system', content='System message', completion_id=completion.id)
+    print(msg)
     db.add(msg)
-    logger.debug("added msg %s", msg)
+    print('addmsg', msg)
     db.commit()
+    print('commsg', msg)
+    db.refresh(msg)
+    print('refmsg', msg)
 
-    logger.debug("msg created %s %s", msg, vars(msg))
-
-    bc = BaseCompletion(**to_dict(completion), messages=[BaseMessage(**to_dict(msg))])
+    msgs = [BaseMessage(**model_to_dict(msg))]
+    print('msgsmsgs', msgs)
+    bc = BaseCompletion(messages=msgs, **model_to_dict(completion))
     return bc
 
 
@@ -187,6 +198,17 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
     completion.messages = list(msg)
 
     return completion
+
+
+@arouter.post("/message/add/{completion_id}", response_model=BaseMessage)
+async def add_message(
+    completion_id: int, data: BaseMessage, db: Session = Depends(get_db)
+):
+    msg = Message(**data.dict(), completion_id=completion_id)
+    db.add(msg)
+    db.commit()
+    db.refresh(msg)
+    return msg
 
 
 app.include_router(arouter, prefix="/api")

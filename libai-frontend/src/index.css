@@ -20,3 +20,40 @@ div, nav {
 nav {
   background-color: rgb(175, 175, 175)
 }
+
+.chat-h-name, .chat-h-name > a {
+  color: greenyellow;
+}
+
+#create-chat-form {
+  background-color: rgb(59, 132, 108);
+}
+
+#top-nav {
+  background-color: rgba(172, 255, 47, 0.116);
+}
+
+.message-wrapper > *, .message-wrapper > * > * {
+  border: unset;
+}
+
+.inner-msg-left {
+  font-weight: bold;
+}
+
+.message-wrapper > div > div {
+  display: inline-block
+}
+
+#create-msg-form-wrap {
+  border: 0px;
+  padding: 16px;
+}
+
+#create-msg-form-wrap, #create-msg-form-wrap > *, #create-msg-form-wrap > * > * {
+  border: 0px;
+}
+
+.add-msg-content-wrap > * {
+  display: block;
+}

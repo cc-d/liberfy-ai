@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import { useAuthContext } from '../../AuthContext';
 import apios from '../../apios';
-import { BaseUser, EmailPassData } from '../../api';
+import { BaseUser, BaseUserToken, EmailPassData } from '../../api';
 import { useNavigate } from 'react-router-dom';
 
+let z: BaseUser
+
 export const LoginForm = () => {
+    const { user, setUser } = useAuthContext();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');;
     const nav = useNavigate();
@@ -16,10 +19,13 @@ export const LoginForm = () => {
             email,
             password,
         });
-        const { token } = response.data;
-        if (token) {
-            localStorage.setItem('token', token);
-            window.location.href = '/'
+        let tokenUser: BaseUserToken = response.data;
+        if (tokenUser && tokenUser.token) {
+            localStorage.setItem('token', tokenUser.token);
+            let u: BaseUser = tokenUser;
+            if (u) {
+                setUser(u);
+            }
         }
       } catch (error) {
         // Handle error...

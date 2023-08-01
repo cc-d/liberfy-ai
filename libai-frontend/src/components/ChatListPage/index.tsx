@@ -31,12 +31,12 @@ const ChatListPage = () => {
     }, [user]);
 
     return (
-        <div>
+        <div className='chat-list'>
             <CreateChat refreshChats={refreshChats} addChat={addChat} />
             <h1>Your Chats</h1>
             {chats.map((chat) => (
                 <div className='chat-list-item' key={chat.id}>
-                    <h2>
+                    <h2 className='chat-h-name'>
                     <Link key={chat.id} to={`/chat/${chat.id}`}>
                         Chat {chat.name}
                     </Link>

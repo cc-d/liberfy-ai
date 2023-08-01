@@ -1,14 +1,17 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, createContext } from 'react';
 import { useParams } from 'react-router-dom';
 import apios from '../../apios';
-import { BaseChat } from '../../api';
+import { BaseChat, BaseCompletion } from '../../api';
 import { useAuthContext } from '../../AuthContext';
 import { Link } from 'react-router-dom';
+import { useChatContext } from './ChatContext';
 
 const ChatPage = () => {
     const { user, setUser } = useAuthContext();
     const { chatId } = useParams<{ chatId: string }>();
-    const [chat, setChat] = useState<BaseChat | null>(null);
+
+    const {chat, setChat, completions, setCompletions, completion, setCompletion} = useChatContext();
+
     const [showForm, setShowForm] = useState(false);
     const [formValues, setFormValues] = useState({
         sysprompt: '',
@@ -18,19 +21,27 @@ const ChatPage = () => {
     });
 
     useEffect(() => {
+        setShowForm(true);
         apios.get(`/chat/${chatId}`)
             .then(response => {
                 setChat(response.data);
+                setCompletions(response.data.completions);
                 setFormValues({
                     ...formValues,
                     chat_id: chat?.id,
                     user_id: user?.id
-                })
+                });
             })
             .catch(error => {
                 console.error(error);
             });
     }, [user]);
+
+    useEffect(() => {
+        if (chat && chat.id && user && user.id) {
+            setShowForm(true);
+        }
+    }, [chat]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormValues({
@@ -44,17 +55,10 @@ const ChatPage = () => {
         apios.post(`/completion/create`, formValues)
             .then(response => {
                 // update chat state with new conversation
-                setChat((prevState: any) => {
-                    if (prevState) {
-                        return { ...prevState, completions: [...prevState.completions, response.data] };
-                    } else {
-                        // if prevState is null, return the response data as the new state
-                        return { completions: [response.data], id: response.data.chat_id };
-                    }
+                let newComps = Array(completion);
+                completions.forEach((c) => {
+                    newComps.push(c);
                 });
-                ;
-                // hide the form
-                setShowForm(false);
             })
             .catch(error => {
                 console.error(error);
@@ -66,9 +70,14 @@ const ChatPage = () => {
     }
     return (
         <div>
-            <h1>Chat: {chat.name}</h1>
-            <Link to={`/completion/${chat.id}`}>Completions</Link>
-            <button onClick={() => setShowForm(true)}>Create Completion</button>
+            <h1 className='chat-h-name'>Chat: {chat.name}</h1>
+            <div className='completions-list'>
+                {completions.map((completion) => (
+                    <div key={completion.id}>
+                        <Link to={`/completion/${completion.id}`}>{JSON.stringify(completion)}</Link>
+                    </div>
+                ))}
+            </div>
             {showForm && (
                 <form onSubmit={handleSubmit}>
                     <label>
@@ -79,7 +88,7 @@ const ChatPage = () => {
                         Temperature:
                         <input type="text" name="temperature" value={formValues.temperature} onChange={handleInputChange} />
                     </label>
-                    <button type="submit">Submit</button>
+                    <button type="submit">Create Completion</button>
                 </form>
             )}
         </div>

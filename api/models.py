@@ -39,6 +39,9 @@ class Message(Base):
     content: Mapped[str] = Column(String)
     completion_id: Mapped[int] = Column(Integer, ForeignKey("completions.id"))
 
+    # Define the relationship with the Completion model
+    completion: Mapped["Completion"] = relationship("Completion", backref="messages")
+
 
 class Completion(Base):
     __tablename__ = "completions"

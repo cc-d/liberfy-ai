@@ -69,6 +69,7 @@ class DataCreateCompletion(BaseModel):
     temperature: int
 
 
-class DBCompletion(BaseModel):
-    class Config:
-        orm_mode = True
+class DataMsgAdd(BaseModel):
+    completion_id: Optional[int]
+    role: str
+    content: str

@@ -13,7 +13,7 @@ const NavBar = () => {
   }, []);
 
   return (
-    <nav>
+    <nav id='top-nav'>
       <ul>
         <li>
           <Link to="/">Home</Link>

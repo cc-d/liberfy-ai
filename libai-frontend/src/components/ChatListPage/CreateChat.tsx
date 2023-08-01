@@ -37,7 +37,7 @@ const CreateChat = ({ refreshChats, addChat }) => {
     }
 
     return (
-        <div>
+        <div id='create-chat-form'>
             <h1>Create Chat</h1>
             <form onSubmit={handleSubmit}>
                 <input type="text" value={name} onChange={handleNameChange} placeholder="Chat Name"/>
