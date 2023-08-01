@@ -2,11 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-
-export type BaseMessage = {
-    id: (number | null);
-    role: string;
-    content: string;
-    completion_id: number;
-};
-
+export const $DBCompletion = {
+    properties: {
+    },
+} as const;

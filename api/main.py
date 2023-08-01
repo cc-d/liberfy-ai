@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 from fastapi import FastAPI, Depends, HTTPException, status, APIRouter
 from fastapi.security import OAuth2PasswordRequestForm
-from sqlalchemy.orm import Session
+from sqlalchemy.orm import Session, joinedload, selectinload
 from datetime import timedelta
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
@@ -14,7 +14,7 @@ from typing import List, Optional, Dict, Any, Union, TypeVar, Generic, Type, Cal
 import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from database import engine, SessionLocal, get_db
+from database import engine, SessionLocal, get_db, to_dict
 from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
     EmailPassData,
@@ -28,7 +28,8 @@ from schema import (
     BaseUserToken,
     BaseTokenData,
     DataCreateChat,
-    DataCreatecompletion,
+    DataCreateCompletion,
+    DBCompletion,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -111,8 +112,15 @@ async def user_from_token(formdata: BaseTokenData, db: Session = Depends(get_db)
 
 @arouter.get('/user/{user_id}/chats', response_model=List[BaseChat])
 async def get_chats(user_id: int, db: Session = Depends(get_db)):
-    chats = list(db.query(Chat).filter(Chat.user_id == user_id).all())
-    return chats
+    user = db.query(User).filter(User.id == user_id).first()
+
+    chats = db.query(Chat).filter(Chat.user_id == user_id).all()
+
+    bchats = []
+    for c in chats:
+        bchats.append(BaseChat(id=c.id, name=c.name, user_id=user.id, completions=[]))
+    print(bchats, 'bchats')
+    return bchats
 
 
 @arouter.get("/openapi.json")
@@ -134,29 +142,49 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
 async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     chat = db.query(Chat).filter(Chat.id == chat_id).first()
     user = db.query(User).filter(User.id == chat.user_id).first()
-    user = BaseUser(email=user.email, id=user.id)
+    completions = list(db.query(Completion).filter(Completion.chat_id == chat.id).all())
 
-    return BaseChat(
-        id=chat.id, name=chat.name, user_id=chat.user_id, user=user, completions=[]
-    )
+    print('!!@@!!', chat, vars(chat), user, vars(user), completions)
+
+    return BaseChat(id=chat.id, user_id=user.id, completions=[], name=chat.name)
 
 
 @arouter.post("/completion/create", response_model=BaseCompletion)
-async def create_completion(
-    create_completion: DataCreateCompletion, db: Session = Depends(get_db)
-):
-    completion = Completion(
-        chat_id=create_completion.chat_id, user_id=create_completion.user_id
-    )
+async def create_completion(data: DataCreateCompletion, db: Session = Depends(get_db)):
+    user = db.query(User).filter(User.id == data.user_id).first()
+    logger.debug("user %s", user)
+    completion = Completion(chat_id=data.chat_id, user_id=user.id)
+
+    logger.debug("completion %s", completion)
     db.add(completion)
     db.commit()
     db.refresh(completion)
 
-    message = Message(
-        role='user', content=create_completion.prompt, completion_id=completion.id
-    )
-    db.add(message)
+    logger.debug("completion created %s %s", completion, vars(completion))
+
+    msg = Message(role='system', content=data.sysprompt, completion_id=completion.id)
+    logger.debug("msg %s", msg)
+    db.add(msg)
+    logger.debug("added msg %s", msg)
     db.commit()
+
+    logger.debug("msg created %s %s", msg, vars(msg))
+
+    bc = BaseCompletion(**to_dict(completion), messages=[BaseMessage(**to_dict(msg))])
+    return bc
+
+
+@arouter.get("/completion/{completion_id}", response_model=BaseCompletion)
+async def get_completion(completion_id: int, db: Session = Depends(get_db)):
+    completion = db.query(Completion).filter(Completion.id == completion_id).first()
+
+    if not completion:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Completion not found"
+        )
+
+    msg = db.query(Message).filter(Message.completion_id == completion.id).all()
+    completion.messages = list(msg)
 
     return completion
 

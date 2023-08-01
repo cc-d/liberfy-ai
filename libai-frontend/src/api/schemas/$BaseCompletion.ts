@@ -17,23 +17,20 @@ export const $BaseCompletion = {
             type: 'number',
             isRequired: true,
         },
-        chat: {
-            type: 'BaseChat',
-            isRequired: true,
-        },
         user_id: {
             type: 'number',
             isRequired: true,
         },
-        user: {
-            type: 'BaseUser',
-            isRequired: true,
-        },
         messages: {
-            type: 'array',
-            contains: {
-                type: 'BaseMessage',
-            },
+            type: 'any-of',
+            contains: [{
+                type: 'array',
+                contains: {
+                    type: 'BaseMessage',
+                },
+            }, {
+                type: 'null',
+            }],
             isRequired: true,
         },
     },

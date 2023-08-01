@@ -3,10 +3,13 @@
 /* tslint:disable */
 /* eslint-disable */
 import type { BaseChat } from '../models/BaseChat';
+import type { BaseCompletion } from '../models/BaseCompletion';
 import type { BaseTokenData } from '../models/BaseTokenData';
 import type { BaseUser } from '../models/BaseUser';
 import type { BaseUserToken } from '../models/BaseUserToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
+import type { DataCreateCompletion } from '../models/DataCreateCompletion';
+import type { DBCompletion } from '../models/DBCompletion';
 import type { EmailPassData } from '../models/EmailPassData';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -134,6 +137,47 @@ export class DefaultService {
             url: '/api/chat/{chat_id}',
             path: {
                 'chat_id': chatId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Create Completion
+     * @param requestBody
+     * @returns BaseCompletion Successful Response
+     * @throws ApiError
+     */
+    public static createCompletionApiCompletionCreatePost(
+        requestBody: DataCreateCompletion,
+    ): CancelablePromise<BaseCompletion> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/completion/create',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Completion
+     * @param completionId
+     * @returns DBCompletion Successful Response
+     * @throws ApiError
+     */
+    public static getCompletionApiCompletionCompletionIdGet(
+        completionId: number,
+    ): CancelablePromise<DBCompletion> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/completion/{completion_id}',
+            path: {
+                'completion_id': completionId,
             },
             errors: {
                 422: `Validation Error`,

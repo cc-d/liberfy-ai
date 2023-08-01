@@ -6,6 +6,7 @@ import { AuthProvider } from './AuthContext';
 import NavBar  from './components/NavBar';
 import ChatPage from './components/ChatPage';
 import ChatListPage from './components/ChatListPage';
+import CompletionPage from './components/CompletionPage';
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
           <Route path="/login" element={<LoginPage />} />
           <Route path="/chats" element={<ChatListPage />} />
           <Route path="/chat/:chatId" element={<ChatPage />} />
+          <Route path="/completion/:completionId" element={<CompletionPage/>} />
         </Routes>
 
         </AuthProvider>

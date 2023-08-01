@@ -2,26 +2,21 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseMessage = {
+export const $DataCreateCompletion = {
     properties: {
-        id: {
-            type: 'any-of',
-            contains: [{
-                type: 'number',
-            }, {
-                type: 'null',
-            }],
+        chat_id: {
+            type: 'number',
             isRequired: true,
         },
-        role: {
+        user_id: {
+            type: 'number',
+            isRequired: true,
+        },
+        sysprompt: {
             type: 'string',
             isRequired: true,
         },
-        content: {
-            type: 'string',
-            isRequired: true,
-        },
-        completion_id: {
+        temperature: {
             type: 'number',
             isRequired: true,
         },

@@ -4,13 +4,11 @@
 /* eslint-disable */
 
 import type { BaseCompletion } from './BaseCompletion';
-import type { BaseUser } from './BaseUser';
 
 export type BaseChat = {
     id: (number | null);
     name: string;
     user_id: number;
-    user: (BaseUser | null);
-    completions: (Array<BaseCompletion> | null);
+    completions: Array<BaseCompletion>;
 };
 

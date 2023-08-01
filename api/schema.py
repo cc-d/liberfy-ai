@@ -36,31 +36,25 @@ class EmailPassData(BaseModel):
     password: str
 
 
-class BaseChat(BaseModel):
-    id: Optional[int]
-    name: str
-    user_id: int
-    user: Optional[BaseUser]
-    completions: Optional[List["BaseCompletion"]]
-
-
 class BaseMessage(BaseModel):
     id: Optional[int]
     role: str
     content: str
-    name: str
-    function_call: str
     completion_id: int
-    completion: "BaseCompletion"
 
 
 class BaseCompletion(BaseModel):
     id: Optional[int]
     chat_id: int
-    chat: Optional[BaseChat]
     user_id: int
-    user: Optional[BaseUser]
-    messages: List[BaseMessage]
+    messages: Optional[List[BaseMessage]]
+
+
+class BaseChat(BaseModel):
+    id: Optional[int]
+    name: str
+    user_id: int
+    completions: List[BaseCompletion]
 
 
 class DataCreateChat(BaseModel):
@@ -71,6 +65,10 @@ class DataCreateChat(BaseModel):
 class DataCreateCompletion(BaseModel):
     chat_id: int
     user_id: int
-    prompt: str
-    temperature: float
-    max_tokens: int
+    sysprompt: str
+    temperature: int
+
+
+class DBCompletion(BaseModel):
+    class Config:
+        orm_mode = True

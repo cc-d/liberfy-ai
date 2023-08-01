@@ -21,25 +21,11 @@ export const $BaseChat = {
             type: 'number',
             isRequired: true,
         },
-        user: {
-            type: 'any-of',
-            contains: [{
-                type: 'BaseUser',
-            }, {
-                type: 'null',
-            }],
-            isRequired: true,
-        },
         completions: {
-            type: 'any-of',
-            contains: [{
-                type: 'array',
-                contains: {
-                    type: 'BaseCompletion',
-                },
-            }, {
-                type: 'null',
-            }],
+            type: 'array',
+            contains: {
+                type: 'BaseCompletion',
+            },
             isRequired: true,
         },
     },

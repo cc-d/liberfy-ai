@@ -1,13 +1,13 @@
-from sqlalchemy import Column, Integer, String, create_engine, Boolean
+from sqlalchemy import Column, Integer, String, create_engine, Boolean, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Mapped
 from sqlalchemy.orm.session import Session
-from typing import Optional
+from typing import Optional, List, Union
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, relationship, backref
 from uuid import uuid4
 
-from database import Base
+from database import Base, to_dict
 
 
 class User(Base):
@@ -15,7 +15,7 @@ class User(Base):
     id: Mapped[int] = Column(Integer, primary_key=True)
     email: Mapped[str] = Column(String, unique=True)
     hpassword: Mapped[str] = Column(String)
-    chats: "Mapped[Chat]" = relationship("Chat", back_populates="user")
+    chats: "Mapped[List[Chat]]" = relationship("Chat", back_populates="user")
     completions: "Mapped[Completion]" = relationship(
         "Completion", back_populates="user"
     )
@@ -27,8 +27,8 @@ class Chat(Base):
     name: Mapped[str] = Column(String, default="New chat")
     user: Mapped[User] = relationship("User", back_populates="chats", uselist=False)
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
-    completions: "Mapped[Completion]" = relationship(
-        "Completion", back_populates="chat"
+    completions: "Mapped[List[Completion]]" = relationship(
+        "Completion", back_populates="chat", uselist=True
     )
 
 
@@ -37,11 +37,6 @@ class Message(Base):
     id: Mapped[int] = Column(Integer, primary_key=True)
     role: Mapped[str] = Column(String)
     content: Mapped[str] = Column(String)
-    name: Mapped[str] = Column(String)
-    function_call: Mapped[str] = Column(String)
-    Completion: "Mapped[Completion]" = relationship(
-        "Completion", back_populates="messages", uselist=False
-    )
     completion_id: Mapped[int] = Column(Integer, ForeignKey("completions.id"))
 
 
@@ -56,9 +51,6 @@ class Completion(Base):
         "User", back_populates="completions", uselist=False
     )
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
-    messages: "Mapped[Message]" = relationship(
-        "Message", back_populates="completion", uselist=False
-    )
 
 
 class UserToken(Base):

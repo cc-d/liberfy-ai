@@ -1,7 +1,7 @@
 #!/bin/sh
 #alias dc="docker compose"
 ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
-FRONTDIR="$LIBAI_DIR/libai-frontend"
+FRONTDIR="$ROOTDIR/libai-frontend"
 APIDIR="$ROOTDIR/api"
 
 echo $ROOTDIR $APIDIR $FRONTDIR
