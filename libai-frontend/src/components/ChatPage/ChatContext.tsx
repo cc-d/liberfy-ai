@@ -1,7 +1,7 @@
 import React, { useEffect, useState, createContext } from 'react';
 import { useParams } from 'react-router-dom';
 import apios from '../../apios';
-import { BaseChat, BaseCompletion } from '../../api';
+import { BaseChat, BaseCompletion, BaseMessage } from '../../api';
 import { useAuthContext } from '../../AuthContext';
 import { Link } from 'react-router-dom';
 
@@ -9,9 +9,11 @@ interface ChatContextProps {
     chat: BaseChat | null;
     completions: BaseCompletion[];
     completion: BaseCompletion | null;
+    messages: BaseMessage[];
     setChat: (chat: BaseChat | null) => void;
     setCompletions: (completions: BaseCompletion[]) => void;
     setCompletion: (completion: BaseCompletion | null) => void;
+    setMessages: (messages: BaseMessage[]) => void;
 }
 
 const ChatContext = createContext<ChatContextProps | undefined>(undefined);
@@ -28,8 +30,13 @@ export const ChatProvider: React.FC<any> = ({ children }) => {
     const [chat, setChat] = useState<BaseChat | null>(null);
     const [completions, setCompletions] = useState<BaseCompletion[]>([]);
     const [completion, setCompletion] = useState<BaseCompletion | null>(null);
+    const [messages, setMessages] = useState<BaseMessage[]>([]);
     return (
-        <ChatContext.Provider value={{chat, completions, setChat, setCompletions, completion, setCompletion}}>
+        <ChatContext.Provider value={{
+            chat, completions, setChat,
+            setCompletions, completion, setCompletion,
+            messages, setMessages
+        }}>
             {children}
         </ChatContext.Provider>
     )

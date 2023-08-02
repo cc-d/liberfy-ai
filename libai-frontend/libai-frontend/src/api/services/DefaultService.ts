@@ -10,6 +10,7 @@ import type { BaseUser } from '../models/BaseUser';
 import type { BaseUserToken } from '../models/BaseUserToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
 import type { DataCreateCompletion } from '../models/DataCreateCompletion';
+import type { DataMsgAdd } from '../models/DataMsgAdd';
 import type { EmailPassData } from '../models/EmailPassData';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -187,21 +188,16 @@ export class DefaultService {
 
     /**
      * Add Message
-     * @param completionId
      * @param requestBody
      * @returns BaseMessage Successful Response
      * @throws ApiError
      */
-    public static addMessageApiMessageAddCompletionIdPost(
-        completionId: number,
-        requestBody: BaseMessage,
+    public static addMessageApiMessageAddPost(
+        requestBody: DataMsgAdd,
     ): CancelablePromise<BaseMessage> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/message/add/{completion_id}',
-            path: {
-                'completion_id': completionId,
-            },
+            url: '/api/message/add',
             body: requestBody,
             mediaType: 'application/json',
             errors: {

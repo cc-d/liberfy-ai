@@ -6,17 +6,12 @@ import { useAuthContext } from '../../AuthContext';
 import { useChatContext } from '../ChatPage/ChatContext';
 
 
-interface MessageProps {
-    role: string;
-    content: string;
-}
-
 const ChatMessage = ({ message, index }: { message: BaseMessage, index: number }) => {
     const { user, setUser } = useAuthContext();
     const { chatId } = useParams<{ chatId: string }>();
     const {
         chat, setChat, completions, setCompletions,
-        completion, setCompletion
+        completion, setCompletion, messages, setMessages
     } = useChatContext();
 
     const [showForm, setShowForm] = useState(false);
