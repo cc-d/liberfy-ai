@@ -5,6 +5,8 @@ import { BaseChat, BaseCompletion } from '../../api';
 import { useAuthContext } from '../../AuthContext';
 import { Link } from 'react-router-dom';
 import { useChatContext } from './ChatContext';
+import { useNavigate } from 'react-router-dom';
+import BackButton from '../../nav/NavBack';
 
 const ChatPage = () => {
     const { user, setUser } = useAuthContext();
@@ -21,9 +23,11 @@ const ChatPage = () => {
     });
 
     useEffect(() => {
+        console.log('Getting chat information');
         setShowForm(true);
         apios.get(`/chat/${chatId}`)
             .then(response => {
+                console.log('Received chat information:', response.data);
                 setChat(response.data);
                 setCompletions(response.data.completions);
                 setFormValues({
@@ -33,7 +37,7 @@ const ChatPage = () => {
                 });
             })
             .catch(error => {
-                console.error(error);
+                console.error('Error getting chat information:', error);
             });
     }, [user]);
 
@@ -44,6 +48,7 @@ const ChatPage = () => {
     }, [chat]);
 
     const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        console.log('Changing form input:', e.target.name, e.target.value);
         setFormValues({
             ...formValues,
             [e.target.name]: e.target.value
@@ -51,25 +56,32 @@ const ChatPage = () => {
     }
 
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+        console.log('Submitting form with values:', formValues);
         e.preventDefault();
         apios.post(`/completion/create`, formValues)
             .then(response => {
+                console.log('Received response after creating completion:', response.data);
                 // update chat state with new conversation
-                let newComps = Array(completion);
-                completions.forEach((c) => {
-                    newComps.push(c);
-                });
+                if (response.data && 'id' in response.data) {
+                    let comps = [...completions, response.data];
+                    setCompletions(comps); // Update completions list here
+                } else {
+                    console.error('Received invalid completion data:', response.data);
+                }
             })
             .catch(error => {
-                console.error(error);
+                console.error('Error creating completion:', error);
             });
     }
+
+
 
     if (!chat) {
         return <div>Loading...</div>;
     }
     return (
-        <div>
+        <div id='chat-page-wrap'>
+            <BackButton />
             <h1 className='chat-h-name'>Chat: {chat.name}</h1>
             <div className='completions-list'>
                 {completions.map((completion) => (

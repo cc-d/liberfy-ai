@@ -74,7 +74,7 @@ const CreateMsgForm = () => {
     return (
         <div id='create-msg-form-wrap'>
             <form onSubmit={handleSubmit}>
-                <label className='add-msg-label' htmlFor="msguser">User:</label>
+                <label className='add-msg-label' htmlFor="role">Role:</label>
                 <input
                     type="text"
                     name="role"
@@ -87,7 +87,7 @@ const CreateMsgForm = () => {
                         name="content"
                         id="content"
                         value={formValues.content}
-                        cols={30}
+                        cols={75}
                         rows={10}
                         onChange={handleInputChange}
 

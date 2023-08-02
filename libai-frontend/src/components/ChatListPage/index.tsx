@@ -4,6 +4,7 @@ import apios from '../../apios';
 import { useAuthContext } from '../../AuthContext';
 import { BaseTokenData, BaseChat, DataCreateChat} from '../../api';
 import CreateChat from './CreateChat';
+import BackButton from '../../nav/NavBack';
 
 const ChatListPage = () => {
     const { user } = useAuthContext();
@@ -28,9 +29,11 @@ const ChatListPage = () => {
 
     useEffect(() => {
         refreshChats();
-    }, [user]);
+    }, [user, chats]);
 
     return (
+            <div id='chat-list-page'>
+                <BackButton />
         <div className='chat-list'>
             <CreateChat refreshChats={refreshChats} addChat={addChat} />
             <h1>Your Chats</h1>
@@ -43,7 +46,7 @@ const ChatListPage = () => {
                     </h2>
                 </div>
             ))}
-        </div>
+        </div></div>
     );
 }
 

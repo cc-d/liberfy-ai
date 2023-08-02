@@ -1,15 +1,24 @@
 import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import apios from '../../apios';
 import { BaseCompletion, BaseMessage, BaseChat } from '../../api';
 import { useAuthContext } from '../../AuthContext';
 import { useChatContext } from '../ChatPage/ChatContext';
 import ChatMessage from './ChatMessage';
 import CreateMsgForm from './CreateMessage';
+import BackButton from '../../nav/NavBack';
 
 interface MessageProps {
     role: string;
     content: string;
+}
+
+export const NavBackCompList = (chatid: string) => {
+    const navigate = useNavigate();
+
+    return (
+        <button onClick={() => navigate(`/chat/${chatid}`)}>Back to Completion List</button>
+    );
 }
 
 const CompletionPage = () => {
@@ -84,7 +93,8 @@ const CompletionPage = () => {
     }
 
     return (
-        <div>
+        <div id='completion-page-wrap'>
+            <BackButton />
             <CreateMsgForm />
             <h1>Completion: {completionId}</h1>
             <div className='completion-msgs'>
