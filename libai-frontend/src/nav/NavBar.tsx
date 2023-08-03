@@ -1,12 +1,59 @@
-import React, { useEffect } from 'react';
-import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Link, Switch, Container } from '@mui/material';
-import { useAuthContext } from '../AuthContext';
+import React, { useEffect } from "react";
+import { Link as RouterLink } from "react-router-dom";
+import {
+  AppBar,
+  Toolbar,
+  Typography,
+  Button,
+  Link,
+  Switch,
+  Container,
+  LinkProps,
+  Icon,
+  Avatar,
+} from "@mui/material";
+import { AccountCircle } from "@mui/icons-material";
+import { useAuthContext } from "../AuthContext";
+
+type NavLinkProps = LinkProps & {
+  to: string;
+  linkText: string;
+  linkedIcon?: React.ReactNode;
+};
 
 interface NavBarProps {
   darkMode: boolean;
   handleThemeChange: () => void;
 }
+
+export const NavLink: React.FC<NavLinkProps> = ({
+  to,
+  linkText,
+  linkedIcon,
+  ...props
+}) => {
+  const LM: string = linkedIcon ? '0rem' : '1rem';
+  return (
+    <Link
+      component={RouterLink}
+      to={to}
+      color="inherit"
+      underline="none"
+      variant="body1"
+      style={{ marginLeft: LM, marginRight: "1rem" }}
+      {...props}
+    >
+      {linkedIcon ? (
+        <>
+          {linkedIcon}
+          {linkText}
+        </>
+      ) : (
+        <>{linkText}</>
+      )}
+    </Link>
+  );
+};
 
 const NavBar = ({ darkMode, handleThemeChange }) => {
   const { user, logout, autoTokenLogin } = useAuthContext();
@@ -17,25 +64,25 @@ const NavBar = ({ darkMode, handleThemeChange }) => {
 
   return (
     <AppBar position="static">
-      <Toolbar variant="dense">
-        <Link component={RouterLink} to="/" color="inherit" underline="none" variant="h6">
-          Home
-        </Link>
-
+      <Toolbar>
+        <NavLink to="/" linkText="Home" />
         {user ? (
           <>
-          <Link component={RouterLink} to="/chats" color="inherit" underline="none" variant="h6" style={{marginLeft: '1rem'}}>
-            Chats
-          </Link>
-            <Typography variant="h6">
-              Welcome, {user.email}!
-            </Typography>
-            <Button color="inherit" onClick={logout}>Logout</Button>
+            <NavLink to="/chat" linkText="Chat" />
+            <NavLink
+              to="#"
+              linkText={user.email}
+              linkedIcon={<AccountCircle
+                sx={{ height: '1rem', width: '1rem' }}
+              />}
+            />
+            <NavLink to="#" linkText="Logout" onClick={logout} />
           </>
         ) : (
-          <Link component={RouterLink} to="/login" color="inherit" underline="none" variant="h6">
-            Login/Register
-          </Link>
+          <NavLink
+            to="/login"
+            linkText="Login/Register"
+          />
         )}
         <Switch checked={darkMode} onChange={handleThemeChange} />
       </Toolbar>
