@@ -11,9 +11,12 @@ import {
   LinkProps,
   Icon,
   Avatar,
+  Box,
+  IconButton,
 } from "@mui/material";
-import { AccountCircle } from "@mui/icons-material";
+import { AccountCircle, Chat, LightMode, DarkMode } from "@mui/icons-material";
 import { useAuthContext } from "../AuthContext";
+import LoginDropdown from "./LoginDropdown";
 
 type NavLinkProps = LinkProps & {
   to: string;
@@ -32,7 +35,7 @@ export const NavLink: React.FC<NavLinkProps> = ({
   linkedIcon,
   ...props
 }) => {
-  const LM: string = linkedIcon ? '0rem' : '1rem';
+  const LM: string = linkedIcon ? "0rem" : "1rem";
   return (
     <Link
       component={RouterLink}
@@ -44,19 +47,28 @@ export const NavLink: React.FC<NavLinkProps> = ({
       {...props}
     >
       {linkedIcon ? (
-        <>
+        <Box display="flex" alignItems="center">
           {linkedIcon}
           {linkText}
-        </>
+        </Box>
       ) : (
-        <>{linkText}</>
+        linkText
       )}
     </Link>
   );
 };
 
-const NavBar = ({ darkMode, handleThemeChange }) => {
-  const { user, logout, autoTokenLogin } = useAuthContext();
+const LogoutBtn = () => {
+  const { logout } = useAuthContext();
+  return (
+    <Button color="inherit" variant="outlined" onClick={logout}>
+      Logout
+    </Button>
+  );
+};
+
+const NavBar = ({ darkMode, handleThemeChange }: NavBarProps) => {
+  const { user, logout, autoTokenLogin, isLoading } = useAuthContext();
 
   useEffect(() => {
     autoTokenLogin();
@@ -66,25 +78,29 @@ const NavBar = ({ darkMode, handleThemeChange }) => {
     <AppBar position="static">
       <Toolbar>
         <NavLink to="/" linkText="Home" />
-        {user ? (
-          <>
-            <NavLink to="/chat" linkText="Chat" />
+        {user && !isLoading && (
+          <NavLink
+            to="/chats"
+            linkText="Chats"
+            linkedIcon={<Chat sx={{ height: "1rem", width: "1rem", marginRight: "0.2rem" }} />}
+          />
+        )}
+        <Box sx={{ flexGrow: 1 }} />
+        {user && !isLoading ? (
+          <Box display="flex" alignItems="center">
             <NavLink
               to="#"
               linkText={user.email}
-              linkedIcon={<AccountCircle
-                sx={{ height: '1rem', width: '1rem' }}
-              />}
+              linkedIcon={<AccountCircle sx={{ height: "1rem", width: "1rem", marginRight: "0.2rem" }} />}
             />
-            <NavLink to="#" linkText="Logout" onClick={logout} />
-          </>
+            <LogoutBtn />
+          </Box>
         ) : (
-          <NavLink
-            to="/login"
-            linkText="Login/Register"
-          />
+          <LoginDropdown />
         )}
-        <Switch checked={darkMode} onChange={handleThemeChange} />
+        <IconButton color="inherit" onClick={handleThemeChange}>
+          {darkMode ? <DarkMode /> : <LightMode />}
+        </IconButton>
       </Toolbar>
     </AppBar>
   );

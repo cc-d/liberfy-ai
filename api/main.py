@@ -162,7 +162,7 @@ async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     return BaseChat(id=chat.id, user_id=user.id, completions=comps, name=chat.name)
 
 
-@arouter.post("/completion/create", response_model=BaseCompletion)
+@arouter.post("/completion/new", response_model=BaseCompletion)
 async def create_completion(data: DataCreateCompletion, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == data.user_id).first()
     logger.debug("user %s", user)
@@ -175,7 +175,10 @@ async def create_completion(data: DataCreateCompletion, db: Session = Depends(ge
 
     logger.debug("completion created %s %s", completion, vars(completion))
 
-    msg = Message(role='system', content='System message', completion_id=completion.id)
+    comptitle = (
+        'System message' if not hasattr(data, 'sysprompt') else str(data.sysprompt)
+    )
+    msg = Message(role='system', content=comptitle, completion_id=completion.id)
     print(msg)
     db.add(msg)
     print('addmsg', msg)

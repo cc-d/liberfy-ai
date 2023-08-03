@@ -46,7 +46,10 @@ const CompListElem: React.FC<CompListElemProps> = ({ completion, theme }) => {
       <ListItemIcon>
         <QuestionAnswerRounded />
       </ListItemIcon>
-      <ListItemText>
+      <ListItemText
+        sx={{ color: theme.palette.text.primary
+
+      }}>
         {compTitle}
       </ListItemText>
     </ListItem>
@@ -85,7 +88,7 @@ const ChatPage = () => {
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     apios
-      .post(`/completion/create`, {
+      .post(`/completion/new`, {
         chat_id: chat?.id,
         sysprompt: sysprompt,
         user_id: user?.id,
