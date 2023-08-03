@@ -4,9 +4,9 @@ import apios from "../../apios";
 import { BaseCompletion, BaseMessage, BaseChat } from "../../api";
 import { useAuthContext } from "../../AuthContext";
 import { useChatContext } from "../ChatPage/ChatContext";
-import ChatMessage from "./ChatMessage";
+import ChatMessage from "./CompMsgElem";
 import CreateMsgForm from "./CreateMessage";
-import CompMsgListElem from "./ChatListElem";
+import CompMsgListElem from "./CompMsgListElem";
 
 const CompletionPage = () => {
   const { completionId } = useParams<{ completionId: string }>();

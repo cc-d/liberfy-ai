@@ -4,7 +4,8 @@ import apios from '../../apios';
 import { BaseMessage, BaseChat, BaseCompletion } from '../../api';
 import { useAuthContext } from '../../AuthContext';
 import { useChatContext } from '../ChatPage/ChatContext';
-import ChatMessage from './ChatMessage';
+import { TextField, Button, FormControl, FormLabel, FormGroup } from '@mui/material';
+import ChatMessage from './CompMsgElem';
 
 interface MessageProps {
     role: string;
@@ -14,20 +15,14 @@ interface MessageProps {
 const CreateMsgForm = () => {
     const { user, setUser } = useAuthContext();
     const { chatId } = useParams<{ chatId: string }>();
-    const {
-        chat, setChat, completions, setCompletions,
-        completion, setCompletion, messages, setMessages
-    } = useChatContext();
-
+    const { chat, setChat, completions, setCompletions, completion, setCompletion, messages, setMessages } = useChatContext();
     const [showForm, setShowForm] = useState(false);
-    const [formValues, setFormValues] = useState({
-        content: '',
-        role: 'user',
-    });
+    const [formValues, setFormValues] = useState({ content: '', role: 'user' });
 
-    const handleInputChange = (e) => {
-        setFormValues({...formValues, [e.target.name]: e.target.value});
+    const handleInputChange = (event) => {
+        setFormValues({ ...formValues, [event.target.name]: event.target.value });
     };
+
     const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
@@ -72,30 +67,37 @@ const CreateMsgForm = () => {
 
 
     return (
-        <div id='create-msg-form-wrap'>
-            <form onSubmit={handleSubmit}>
-                <label className='add-msg-label' htmlFor="role">Role:</label>
-                <input
-                    type="text"
+        <FormControl
+            component="form"
+            onSubmit={handleSubmit}
+            fullWidth={false}
+        >
+            <FormLabel component="legend">Create Message</FormLabel>
+            <FormGroup>
+                <TextField
+                    id="role-input"
+                    label="Role"
+                    variant="outlined"
                     name="role"
                     value={formValues.role}
                     onChange={handleInputChange}
                 />
-                <div className='add-msg-content-wrap'>
-                    <label className='add-msg-label' htmlFor="content">Content:</label>
-                    <textarea
-                        name="content"
-                        id="content"
-                        value={formValues.content}
-                        cols={75}
-                        rows={10}
-                        onChange={handleInputChange}
-
-                        ></textarea>
-                </div>
-                <button type="submit">Create Message</button>
-            </form>
-        </div>
+                <TextField
+                    id="content-input"
+                    label="Content"
+                    variant="outlined"
+                    name="content"
+                    multiline
+                    rows={4}
+                    sx={{ width: '25rem'}}
+                    value={formValues.content}
+                    onChange={handleInputChange}
+                />
+                <Button type="submit" variant="contained" color="primary">
+                    Create Message
+                </Button>
+            </FormGroup>
+        </FormControl>
     );
 }
 
