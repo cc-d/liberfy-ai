@@ -3,8 +3,25 @@ import { useAuthContext } from "../../AuthContext";
 import { BaseTokenData, BaseChat, DataCreateChat } from "../../api";
 import CreateChat from "./CreateChat";
 import apios from "../../apios";
-import { Container, List, ListItem, ListItemText, Typography } from '@mui/material';
-import { Link as RouterLink } from 'react-router-dom';
+import {
+  Container,
+  Divider,
+  List,
+  ListItem,
+  ListItemText,
+  Typography,
+  ListItemAvatar,
+  Avatar,
+  TypeText,
+  Box,
+} from "@mui/material";
+import {
+  Delete as DeleteIcon,
+  Edit as EditIcon,
+  Chat as ChatIcon,
+} from "@mui/icons-material";
+import { useThemeContext } from "../../App";
+import { Link as RouterLink } from "react-router-dom";
 
 const ChatListPage = () => {
   const { user } = useAuthContext();
@@ -33,20 +50,26 @@ const ChatListPage = () => {
   }, [user]);
 
   return (
-    <Container id="chat-list-page" maxWidth={false}>
-
+    <Container id="chat-list-page" maxWidth="xl" sx={{  }}>
       <CreateChat refreshChats={refreshChats} addChat={addChat} />
-      <Typography variant="h4" component="h1">Your Chats</Typography>
+      <Typography variant="h5" component="h5">
+        Your Chats:
+      </Typography>
       <List>
+        <Divider />
         {chats.map((chat) => (
-          <ListItem key={chat.id} divider>
-            <ListItemText primary={`Chat: ${chat.name}`}
-              secondary={
-                <RouterLink to={`/chat/${chat.id}`}>
-                  {chat.name}
-                </RouterLink>
-              }
-            />
+          <ListItem
+            key={chat.id}
+            component={RouterLink}
+            to={`/chat/${chat.id}`}
+            divider
+          >
+            <ListItemAvatar>
+              <Avatar>
+                <ChatIcon />
+              </Avatar>
+            </ListItemAvatar>
+            <Typography component="div">{chat.name}</Typography>
           </ListItem>
         ))}
       </List>

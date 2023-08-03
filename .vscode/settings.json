@@ -26,6 +26,9 @@
   "git.ignoreLimitWarning": true,
   "prettier.enable": true,
   "[typescriptreact]": {
-      "editor.defaultFormatter": "esbenp.prettier-vscode"
+      "editor.defaultFormatter": "esbenp.prettier-vscode",
+      "editor.tabSize": 2,
+      "editor.insertSpaces": true,
+      "editor.indentSize": 2,
   }
 }

@@ -1,87 +1,89 @@
-import React, { useEffect, useState, createContext } from "react";
+import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import apios from "../../apios";
 import { BaseChat, BaseCompletion } from "../../api";
 import { useAuthContext } from "../../AuthContext";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
 import { useChatContext } from "./ChatContext";
-import { useNavigate } from "react-router-dom";
 
+import {
+  Box,
+  Button,
+  Container,
+  TextField,
+  Typography,
+  List,
+  ListItem,
+  ListItemText,
+  Divider,
+  ListItemIcon,
+} from "@mui/material";
 
-export const CompListElem = ({completion}) => {
+import { QuestionAnswerRounded } from "@mui/icons-material";
+
+import { useTheme } from "@mui/material/styles";
+
+interface CompListElemProps {
+  completion: BaseCompletion;
+  theme: any;
+}
+
+const CompListElem: React.FC<CompListElemProps> = ({ completion, theme }) => {
   const comp: BaseCompletion = completion;
-
   const compMsgs = comp.messages ? comp.messages : [];
-
-  var compTitle: string = "System Message Not Found"
+  var compTitle: string = "System Message Not Found";
   if (compMsgs.length > 0) {
     compTitle = compMsgs[0].content;
   }
 
-
   return (
-    <div className='comp-list-elem-wrap'>
-      <div className="comp-list-elem-title">
-      <Link to={`/completion/${completion.id}`}>
-        {compTitle} ({compMsgs.length})
-      </Link>
-      </div>
-
-          </div>
-
-
-  )
-}
+    <ListItem
+      component={RouterLink}
+      to={`/completion/${completion.id}`}
+      sx={{ "&:hover": { backgroundColor: theme.palette.action.hover } }}
+      divider
+    >
+      <ListItemIcon>
+        <QuestionAnswerRounded />
+      </ListItemIcon>
+      <ListItemText>
+        {compTitle}
+      </ListItemText>
+    </ListItem>
+  );
+};
 
 const ChatPage = () => {
-  const { user, setUser } = useAuthContext();
+  const { user } = useAuthContext();
   const { chatId } = useParams<{ chatId: string }>();
-
-  const {
-    chat,
-    setChat,
-    completions,
-    setCompletions,
-    completion,
-    setCompletion,
-  } = useChatContext();
-
+  const { chat, setChat, completions, setCompletions } = useChatContext();
   const [showForm, setShowForm] = useState(false);
-
   const [sysprompt, setSysPrompt] = useState("");
+  const theme = useTheme();
 
   useEffect(() => {
-    console.log("Getting chat information");
     setShowForm(true);
-    apios
-      .get(`/chat/${chatId}`)
-      .then((response) => {
-        console.log("Received chat information:", response.data);
-        setChat(response.data);
-        setCompletions(response.data.completions);
-      })
-      .catch((error) => {
-        console.error("Error getting chat information:", error);
-      });
-  }, [user]);
+    apios.get(`/chat/${chatId}`).then((response) => {
+      setChat(response.data);
+      setCompletions(response.data.completions);
+    });
+  }, [user, chatId, setChat, setCompletions]);
 
   useEffect(() => {
-    if (chat && chat.id && user && user.id) {
+    if (chat?.id && user?.id) {
       setShowForm(true);
     }
-  }, [chat]);
+  }, [chat, user]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    console.log("Changing form input:", e.target.name, e.target.value);
-    if (e.target.name === "sysprompt") {
-      setSysPrompt(e.target.value);
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (name === "sysprompt") {
+      setSysPrompt(value);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    console.log("Submitting form with values:");
-    e.preventDefault();
-    console.log(completions);
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
     apios
       .post(`/completion/create`, {
         chat_id: chat?.id,
@@ -90,69 +92,76 @@ const ChatPage = () => {
         temperature: 1,
       })
       .then((response) => {
-        console.log(
-          "Received response after creating completion:",
-          response.data
-        );
-        // update chat state with new conversation
-        if (response.data && "id" in response.data) {
-          let comps = [...completions, response.data];
-          setCompletions(comps); // Update completions list here
-        } else {
-          console.error("Received invalid completion data:", response.data);
+        if ("id" in response.data) {
+          setCompletions([...completions, response.data]);
         }
-      })
-      .catch((error) => {
-        console.error("Error creating completion:", error);
       });
   };
 
   if (!chat) {
     return <div>Loading...</div>;
   }
-  return (
-    <div id="chat-page-wrap">
 
-      <div className="chat-list-wrap">
-        <div className="chat-list-text chat-list-left">Chat:</div>
-        <div className="chat-list-text chat-list-right chat-name-text">
-          {chat.name}
-        </div>
-      </div>
-      <div className="completions-list">
-        <div className='comp-list-title'>
-          Completions:
-        </div>
-        {completions.map((completion) => (
-          <CompListElem completion={completion} />
-        ))}
-      </div>
+  return (
+    <Container>
+      <Typography variant="h2">{chat.name}</Typography>
+
+      <List
+      /*
+        sx={{
+          "& .MuiListItem-root": { p: 1 },
+        }}
+      */
+        dense={true}
+        disablePadding={true}
+      >
+        <Typography variant="h5">Completions:</Typography>
+        <Divider />
+
+        {completions.length > 0 ? (
+
+          completions.map((completion) => (
+            <CompListElem
+              key={completion.id}
+              completion={completion}
+              theme={theme}
+            />
+          ))
+        ) : (
+          <Typography variant="body1">No completions yet.</Typography>
+        )}
+      </List>
+
       {showForm && (
-        <div id="create-comp-wrap">
-          <form onSubmit={handleSubmit}>
-            <div className="form-field-wrap">
-              <label htmlFor="sysprompt">System Prompt:</label>
-              <input
-                type="text"
-                name="sysprompt"
-                value={sysprompt}
-                onChange={handleInputChange}
-              />
-            </div>
-            <div className="form-field-wrap">
-              <label htmlFor="temperature">Temperature:</label>
-              <input
-                type="text"
-                name="temperature"
-                value={1}
-                onChange={handleInputChange}
-              />
-            </div>
-            <button type="submit">Create Completion</button>
-          </form>
-        </div>
+        <Box
+          component="form"
+          onSubmit={handleSubmit}
+          sx={{
+            "& .MuiTextField-root, .MuiButtonBase-root": { m: 1, color: 'unset' },
+          }}
+          mt={2}
+        >
+          <TextField
+            type="text"
+            name="sysprompt"
+            label="System Prompt"
+            value={sysprompt}
+            onChange={handleInputChange}
+          />
+          <TextField
+            type="text"
+            name="temperature"
+            label="Temperature"
+            value={1}
+            onChange={handleInputChange}
+            disabled
+          />
+          <Button type="submit" variant="contained">
+            Create Completion
+          </Button>
+        </Box>
       )}
-    </div>
+    </Container>
   );
 };
 

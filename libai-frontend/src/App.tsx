@@ -10,11 +10,11 @@ import CompletionPage from './components/CompletionPage';
 import ChatProvider from './components/ChatPage/ChatContext';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline } from '@mui/material';
+import { CssBaseline, Container, Box } from '@mui/material';
 
 // Create a context for the theme
 const ThemeContext = createContext({
-  darkMode: false,
+  darkMode: true,
   toggleThemeMode: () => {},
 });
 
@@ -23,7 +23,7 @@ export const useThemeContext = () => useContext(ThemeContext);
 
 
 function App() {
-  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('light');
+  const [themeMode, setThemeMode] = useState<'light' | 'dark'>('dark');
 
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
@@ -49,6 +49,7 @@ function App() {
         <CssBaseline /> {/* CssBaseline helps to normalize CSS styles across different browsers */}
         <AuthProvider>
           <ChatProvider>
+          <Container component={Box} id="nav-container" maxWidth={false} disableGutters={true}>
           <NavBar darkMode={true ? themeMode == 'dark' : false} handleThemeChange={toggleThemeMode} />
             <Routes>
               <Route path="/" element={<Home />} />
@@ -57,7 +58,9 @@ function App() {
               <Route path="/chat/:chatId" element={<ChatPage />} />
               <Route path="/completion/:completionId" element={<CompletionPage />} />
             </Routes>
+            </Container>
           </ChatProvider>
+
         </AuthProvider>
       </ThemeProvider>
     </Router>

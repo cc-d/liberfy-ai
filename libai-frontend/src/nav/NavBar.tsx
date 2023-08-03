@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Typography, Button, Link, Switch } from '@mui/material';
+import { AppBar, Toolbar, Typography, Button, Link, Switch, Container } from '@mui/material';
 import { useAuthContext } from '../AuthContext';
 
 interface NavBarProps {
@@ -17,7 +17,7 @@ const NavBar = ({ darkMode, handleThemeChange }) => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar variant="dense">
         <Link component={RouterLink} to="/" color="inherit" underline="none" variant="h6">
           Home
         </Link>
