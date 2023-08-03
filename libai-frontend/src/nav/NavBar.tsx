@@ -13,22 +13,21 @@ const NavBar = ({ darkMode, handleThemeChange }) => {
 
   useEffect(() => {
     autoTokenLogin();
-  }, []);
+  }, [user]);
 
   return (
     <AppBar position="static">
       <Toolbar>
-        <Link component={RouterLink} to="/" color="inherit" underline="none" variant="h6" style={{flexGrow: 1}}>
+        <Link component={RouterLink} to="/" color="inherit" underline="none" variant="h6">
           Home
         </Link>
-        {user && (
-          <Link component={RouterLink} to="/chats" color="inherit" underline="none" variant="h6">
-            Chats
-          </Link>
-        )}
+
         {user ? (
           <>
-            <Typography variant="h6" style={{marginLeft: 'auto'}}>
+          <Link component={RouterLink} to="/chats" color="inherit" underline="none" variant="h6" style={{marginLeft: '1rem'}}>
+            Chats
+          </Link>
+            <Typography variant="h6">
               Welcome, {user.email}!
             </Typography>
             <Button color="inherit" onClick={logout}>Logout</Button>
