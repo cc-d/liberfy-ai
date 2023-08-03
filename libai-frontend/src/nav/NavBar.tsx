@@ -1,12 +1,14 @@
-// components/NavBar.tsx
-
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
+import { AppBar, Toolbar, Typography, Button, Link, Switch } from '@mui/material';
 import { useAuthContext } from '../AuthContext';
-import apios from '../apios';
-import BackButton from './NavBack';
 
-const NavBar = () => {
+interface NavBarProps {
+  darkMode: boolean;
+  handleThemeChange: () => void;
+}
+
+const NavBar = ({ darkMode, handleThemeChange }) => {
   const { user, logout, autoTokenLogin } = useAuthContext();
 
   useEffect(() => {
@@ -14,29 +16,31 @@ const NavBar = () => {
   }, []);
 
   return (
-    <div id='top-nav-wrap'>
-      <nav id='top-nav'>
-
-        <Link to="/">Home</Link>
-
+    <AppBar position="static">
+      <Toolbar>
+        <Link component={RouterLink} to="/" color="inherit" underline="none" variant="h6" style={{flexGrow: 1}}>
+          Home
+        </Link>
         {user && (
-          <Link to="/chats">Chats</Link>
-        )
-        }
-
+          <Link component={RouterLink} to="/chats" color="inherit" underline="none" variant="h6">
+            Chats
+          </Link>
+        )}
         {user ? (
-          <div id='top-user-login-wrap'>
-
-            <span>Welcome, {user.email}!</span>
-            <button onClick={logout}>Logout</button>
-          </div>
+          <>
+            <Typography variant="h6" style={{marginLeft: 'auto'}}>
+              Welcome, {user.email}!
+            </Typography>
+            <Button color="inherit" onClick={logout}>Logout</Button>
+          </>
         ) : (
-          <Link to="/login">Login/Register</Link>
-        )
-        }
-      </nav>
-    </div>
-
+          <Link component={RouterLink} to="/login" color="inherit" underline="none" variant="h6">
+            Login/Register
+          </Link>
+        )}
+        <Switch checked={darkMode} onChange={handleThemeChange} />
+      </Toolbar>
+    </AppBar>
   );
 };
 

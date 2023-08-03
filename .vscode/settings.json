@@ -23,5 +23,9 @@
   "workbench.colorCustomizations": {
     "sideBarSectionHeader.background": "#18540d"
   },
-  "git.ignoreLimitWarning": true
+  "git.ignoreLimitWarning": true,
+  "prettier.enable": true,
+  "[typescriptreact]": {
+      "editor.defaultFormatter": "esbenp.prettier-vscode"
+  }
 }
