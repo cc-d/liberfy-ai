@@ -22,10 +22,12 @@ import {
 } from "@mui/icons-material";
 import { useThemeContext } from "../../App";
 import { Link as RouterLink } from "react-router-dom";
+import { useTheme } from "@mui/material/styles";
 
 const ChatListPage = () => {
   const { user } = useAuthContext();
   const [chats, setChats] = useState<BaseChat[]>([]);
+  const theme = useTheme();
 
   const refreshChats = () => {
     if (user) {
@@ -63,13 +65,14 @@ const ChatListPage = () => {
             component={RouterLink}
             to={`/chat/${chat.id}`}
             divider
-          >
+            style={{color: 'unset'}}
+            sx={{ "&:hover": { backgroundColor: theme.palette.action.hover } }}          >
             <ListItemAvatar>
               <Avatar>
                 <ChatIcon />
               </Avatar>
             </ListItemAvatar>
-            <Typography component="div">{chat.name}</Typography>
+            <ListItemText>{chat.name}</ListItemText>
           </ListItem>
         ))}
       </List>

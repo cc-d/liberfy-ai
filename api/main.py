@@ -89,7 +89,11 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    return BaseUserToken(email=user.email, id=user.id, token=None)
+    token = db.query(UserToken).filter(UserToken.user_id == user.id).first()
+    if token is None:
+        token = create_user_token(user.id, db)
+
+    return BaseUserToken(email=user.email, id=user.id, token=token.token)
 
 
 @arouter.post("/user/user_from_token", response_model=BaseUser)
@@ -102,7 +106,7 @@ async def user_from_token(formdata: BaseTokenData, db: Session = Depends(get_db)
         )
 
     user = db.query(User).filter(User.id == token.user_id).first()
-    print('user', user)
+    print('user', user, vars(user))
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"

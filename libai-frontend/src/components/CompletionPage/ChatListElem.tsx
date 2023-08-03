@@ -14,8 +14,9 @@ interface MessageProps {
 
 const CompMsgListElem = ({ messages }: { messages: BaseMessage[] }) => {
   return (
-    <div className="comp-msg-list-elem-wrap">
+    <div className="comp-msg-list-elem-wrap"
 
+    >
       {messages &&
         messages.map((message, index) => {
           return (
