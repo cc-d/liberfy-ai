@@ -151,12 +151,12 @@ export class DefaultService {
      * @returns BaseCompletion Successful Response
      * @throws ApiError
      */
-    public static createCompletionApiCompletionCreatePost(
+    public static createCompletionApiCompletionNewPost(
         requestBody: DataCreateCompletion,
     ): CancelablePromise<BaseCompletion> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/completion/create',
+            url: '/api/completion/new',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
