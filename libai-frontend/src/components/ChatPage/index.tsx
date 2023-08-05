@@ -13,7 +13,7 @@ import {
   Box,
   Grid,
 } from "@mui/material";
-import { AddCircleOutline } from "@mui/icons-material";
+import { AddCircleOutline, Chat } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "./CompListElem";
 import NewCompModal from "./NewCompModal";
@@ -61,15 +61,16 @@ const ChatPage = () => {
     <Container maxWidth="xl" disableGutters>
       <Grid container spacing={1}>
         {user && user.id && (
-          <Grid item xs={3}>
+          <Grid item xs={4}>
             <ChatSidebar
-              chat_id={Number(chatId)}
-              user_id={user.id}
+              chat={chat}
+              user={user}
               addCompletion={addCompletion}
+              completions={completions}
             />
           </Grid>
         )}
-        <Grid item xs={9}>
+        <Grid item xs={8}>
           <Typography variant="h2">{chat.name}</Typography>
           {activeComp && activeComp.id && (
             <pre>

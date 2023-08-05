@@ -43,7 +43,13 @@ Base.metadata.create_all(bind=engine)
 class CSPMiddleware(BaseHTTPMiddleware):
     async def dispatch(self, request, call_next):
         response = await call_next(request)
-        response.headers["Content-Security-Policy"] = "default-src 'self'"
+        csp_directives = (
+            "default-src 'self'; "
+            "img-src 'self' data: https://fastapi.tiangolo.com; "
+            "script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net; "
+            "style-src 'self' https://cdn.jsdelivr.net"
+        )
+        response.headers["Content-Security-Policy"] = csp_directives
         return response
 
 
@@ -56,6 +62,7 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
     allow_credentials=True,  # Allow credentials (cookies, authorization headers, etc.)
+    expose_headers=["*"],
 )
 
 # CSP middleware
@@ -207,9 +214,8 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
     return completion
 
 
-@arouter.post("/message/add", response_model=BaseMessage)
+@arouter.post("/completion/{completion_id}/message/add", response_model=BaseMessage)
 async def add_message(data: DataMsgAdd, db: Session = Depends(get_db)):
-    completion_id = data.completion_id
     role, content = data.role, data.content
     msg = Message(role=role, content=content, completion_id=completion_id)
     db.add(msg)

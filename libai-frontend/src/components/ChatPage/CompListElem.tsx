@@ -26,12 +26,11 @@ export const CompListElem: React.FC<CompListElemProps> = ({ completion, theme })
   return (
     <ListItem
       onClick={handleClick}
-      sx={{ "&:hover": { backgroundColor: theme.palette.action.hover } }}
-      divider
+      sx={{ "&:hover": { backgroundColor: theme.palette.action.hover, cursor: 'pointer' } }}
+      disableGutters={true}
+      disablePadding={true}
     >
-      <ListItemIcon>
-        <QuestionAnswerOutlined />
-      </ListItemIcon>
+      <QuestionAnswerOutlined sx={{mr: 0.5}} />
       <ListItemText
         sx={{ color: theme.palette.text.primary }}
       >

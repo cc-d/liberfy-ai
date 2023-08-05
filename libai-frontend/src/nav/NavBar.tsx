@@ -76,7 +76,7 @@ const NavBar = ({ darkMode, handleThemeChange }: NavBarProps) => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
+      <Toolbar disableGutters>
         <NavLink to="/" linkText="Home" />
         {user && !isLoading && (
           <NavLink

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BaseCompletion } from "../../api";
+import { BaseCompletion, BaseChat, BaseMessage, BaseUser } from "../../api";
 import { useChatContext } from "./ChatContext";
 import {
   Box,
@@ -11,20 +11,22 @@ import {
   AccordionDetails,
   Typography,
 } from "@mui/material";
-import { AddCircleOutline, ExpandMore } from "@mui/icons-material";
+import { AddCircleOutline, ExpandMore, QuestionAnswer, QuestionAnswerOutlined } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "./CompListElem";
 import NewCompModal from "./NewCompModal";
 
 interface ChatSidebarProps {
-  chat_id: number;
-  user_id: number;
+  chat: BaseChat;
+  user: BaseUser;
   addCompletion: (completion: BaseCompletion) => void;
+  completions: BaseCompletion[];
 }
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat_id, user_id, addCompletion }) => {
+const drawerWidth = 240;
+
+const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat, user, addCompletion, completions }) => {
   const theme = useTheme();
-  const { completions } = useChatContext();
   const [showModal, setShowModal] = useState(false);
 
   const handleModalOpen = () => {
@@ -37,16 +39,18 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat_id, user_id, addCompleti
 
   return (
     <Box>
-      <Accordion defaultExpanded>
+      <Accordion defaultExpanded disableGutters={true}>
         <AccordionSummary
           expandIcon={<ExpandMore />}
           aria-controls="completions-content"
           id="completions-header"
         >
-          <Typography>Completions:</Typography>
+
+          <QuestionAnswerOutlined sx={{mr: 0.5}}/>
+          <Typography variant="body1">Completions</Typography>
         </AccordionSummary>
         <AccordionDetails>
-          <Box display="flex" flexDirection="column" width="100%">
+          <Box display="flex" flexDirection="column">
             <Button
               variant="contained"
               startIcon={<AddCircleOutline />}
@@ -75,14 +79,16 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat_id, user_id, addCompleti
           </Box>
         </AccordionDetails>
       </Accordion>
+      { chat && chat.id && user && user.id &&
       <NewCompModal
         open={showModal}
         handleClose={handleModalClose}
         addCompletion={addCompletion}
-        chat_id={chat_id}
-        user_id={user_id}
+        chat_id={chat.id}
+        user_id={user.id}
         temperature={1}
       />
+}
     </Box>
   );
 };
