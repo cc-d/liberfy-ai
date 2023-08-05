@@ -59,8 +59,8 @@ const ChatPage = () => {
 
   return (
     <Container maxWidth="xl" disableGutters>
+      {user && user.id &&
       <Grid container spacing={1}>
-        {user && user.id && (
           <Grid item xs={4}>
             <ChatSidebar
               chat={chat}
@@ -69,9 +69,20 @@ const ChatPage = () => {
               completions={completions}
             />
           </Grid>
-        )}
         <Grid item xs={8}>
-          <Typography variant="h2">{chat.name}</Typography>
+          <Typography
+            fontSize={theme.typography.h5.fontSize}
+            display={'inline-block'}
+          >
+            <Chat
+              sx={{
+                fontSize: theme.typography.h5.fontSize,
+                verticalAlign: "middle",
+                mr: 0.5,
+              }}
+            />
+            {chat.name}
+          </Typography>
           {activeComp && activeComp.id && (
             <pre>
               {JSON.stringify(activeComp.messages, null, 2)}
@@ -79,6 +90,7 @@ const ChatPage = () => {
           )}
         </Grid>
       </Grid>
+}
     </Container>
   );
 };

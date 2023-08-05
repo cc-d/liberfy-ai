@@ -188,16 +188,21 @@ export class DefaultService {
 
     /**
      * Add Message
+     * @param completionId
      * @param requestBody
      * @returns BaseMessage Successful Response
      * @throws ApiError
      */
-    public static addMessageApiMessageAddPost(
+    public static addMessageApiCompletionCompletionIdMessageAddPost(
+        completionId: number,
         requestBody: DataMsgAdd,
     ): CancelablePromise<BaseMessage> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/message/add',
+            url: '/api/completion/{completion_id}/message/add',
+            path: {
+                'completion_id': completionId,
+            },
             body: requestBody,
             mediaType: 'application/json',
             errors: {

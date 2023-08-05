@@ -52,7 +52,7 @@ const ChatListPage = () => {
   }, [user]);
 
   return (
-    <Container id="chat-list-page" maxWidth="xl" sx={{  }}>
+    <Container id="chat-list-page" maxWidth="xl" sx={{}}>
       <CreateChat refreshChats={refreshChats} addChat={addChat} />
       <Typography variant="h5" component="h5">
         Your Chats:
@@ -65,10 +65,13 @@ const ChatListPage = () => {
             component={RouterLink}
             to={`/chat/${chat.id}`}
             divider
-            style={{color: 'unset'}}
+            style={{ color: theme.palette.text.primary }}
             sx={{ "&:hover": { backgroundColor: theme.palette.action.hover } }}          >
-            <ListItemAvatar>
-              <Avatar>
+            <ListItemAvatar
+            >
+              <Avatar
+                style={{ backgroundColor: theme.palette.text.primary }}
+              >
                 <ChatIcon />
               </Avatar>
             </ListItemAvatar>
