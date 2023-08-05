@@ -1,22 +1,52 @@
-import React, { FC, FormEvent, ChangeEvent } from 'react';
+import React, { FC, FormEvent, ChangeEvent, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { Box, Button, TextField, Paper } from "@mui/material";
+import apios from "../../apios";
+import { BaseCompletion } from '../../api';
 
 interface NewCompModalProps {
   open: boolean;
   handleClose: () => void;
-  handleSubmit: (event: FormEvent<HTMLFormElement>) => void;
-  handleInputChange: (event: ChangeEvent<HTMLInputElement>) => void;
-  sysprompt: string;
+  addCompletion: (completion: BaseCompletion) => void;
+  chat_id: number;
+  user_id: number;
+  temperature: number;
 }
 
 const NewCompModal: FC<NewCompModalProps> = ({
   open,
   handleClose,
-  handleSubmit,
-  handleInputChange,
-  sysprompt
+  addCompletion,
+  chat_id,
+  user_id,
+  temperature,
 }) => {
+  const [sysprompt, setSysPrompt] = useState("");
+
+  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    if (name === "sysprompt") {
+      setSysPrompt(value);
+    }
+  };
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    apios
+      .post(`/completion/new`, {
+        chat_id: chat_id,
+        sysprompt: sysprompt,
+        user_id: user_id,
+        temperature: 1,
+      })
+      .then((response) => {
+        if (response && response.data) {
+          addCompletion(response.data);
+        }
+      });
+      handleClose();
+  };
+
   return (
     <Modal
       open={open}

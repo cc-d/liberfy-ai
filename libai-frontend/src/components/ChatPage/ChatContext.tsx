@@ -8,11 +8,11 @@ import { Link } from 'react-router-dom';
 interface ChatContextProps {
     chat: BaseChat | null;
     completions: BaseCompletion[];
-    completion: BaseCompletion | null;
+    activeComp: BaseCompletion | null;
     messages: BaseMessage[];
     setChat: (chat: BaseChat | null) => void;
     setCompletions: (completions: BaseCompletion[]) => void;
-    setCompletion: (completion: BaseCompletion | null) => void;
+    setActiveComp: (activeComp: BaseCompletion | null) => void;
     setMessages: (messages: BaseMessage[]) => void;
 }
 
@@ -29,12 +29,12 @@ export const useChatContext = () => {
 export const ChatProvider: React.FC<any> = ({ children }) => {
     const [chat, setChat] = useState<BaseChat | null>(null);
     const [completions, setCompletions] = useState<BaseCompletion[]>([]);
-    const [completion, setCompletion] = useState<BaseCompletion | null>(null);
+    const [activeComp, setActiveComp] = useState<BaseCompletion | null>(null);
     const [messages, setMessages] = useState<BaseMessage[]>([]);
     return (
         <ChatContext.Provider value={{
             chat, completions, setChat,
-            setCompletions, completion, setCompletion,
+            setCompletions, activeComp, setActiveComp,
             messages, setMessages
         }}>
             {children}

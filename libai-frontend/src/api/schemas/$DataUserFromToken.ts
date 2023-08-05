@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseTokenData = {
+export const $DataUserFromToken = {
     properties: {
         token: {
             type: 'string',

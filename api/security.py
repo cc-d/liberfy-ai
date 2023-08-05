@@ -11,7 +11,7 @@ from logfunc import logf
 from typing import Union
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User, UserToken, Chat, Completion
-from schema import EmailPassData, BaseUser, TokensBaseUser, BaseToken
+from schema import EmailPassData, BaseUser, BaseToken
 import logging
 
 logger = logging.getLogger()

@@ -42,7 +42,7 @@ export const NavLink: React.FC<NavLinkProps> = ({
       to={to}
       color="inherit"
       underline="none"
-      variant="body1"
+      variant="button"
       style={{ marginLeft: LM, marginRight: "1rem" }}
       {...props}
     >

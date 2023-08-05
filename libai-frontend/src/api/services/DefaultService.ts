@@ -5,12 +5,12 @@
 import type { BaseChat } from '../models/BaseChat';
 import type { BaseCompletion } from '../models/BaseCompletion';
 import type { BaseMessage } from '../models/BaseMessage';
-import type { BaseTokenData } from '../models/BaseTokenData';
 import type { BaseUser } from '../models/BaseUser';
 import type { BaseUserToken } from '../models/BaseUserToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
 import type { DataCreateCompletion } from '../models/DataCreateCompletion';
 import type { DataMsgAdd } from '../models/DataMsgAdd';
+import type { DataUserFromToken } from '../models/DataUserFromToken';
 import type { EmailPassData } from '../models/EmailPassData';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
@@ -58,7 +58,7 @@ export class DefaultService {
      * @throws ApiError
      */
     public static userFromTokenApiUserUserFromTokenPost(
-        requestBody: BaseTokenData,
+        requestBody: DataUserFromToken,
     ): CancelablePromise<BaseUser> {
         return __request(OpenAPI, {
             method: 'POST',

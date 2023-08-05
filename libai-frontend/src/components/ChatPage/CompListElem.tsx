@@ -1,8 +1,9 @@
 import React from 'react';
 import { BaseCompletion } from "../../api";
 import { Link as RouterLink } from "react-router-dom";
-import { ListItem, ListItemIcon, ListItemText } from "@mui/material";
-import { Chat } from "@mui/icons-material";
+import { ListItem, ListItemIcon, ListItemText, Theme } from "@mui/material";
+import { Chat, QuestionAnswerOutlined } from "@mui/icons-material";
+import { useChatContext } from "./ChatContext";
 
 interface CompListElemProps {
   completion: BaseCompletion;
@@ -16,16 +17,20 @@ export const CompListElem: React.FC<CompListElemProps> = ({ completion, theme })
   if (compMsgs.length > 0) {
     compTitle = compMsgs[0].content;
   }
+  const { activeComp, setActiveComp } = useChatContext();
+
+  const handleClick = () => {
+    setActiveComp(comp);
+  };
 
   return (
     <ListItem
-      component={RouterLink}
-      to={`/completion/${completion.id}`}
+      onClick={handleClick}
       sx={{ "&:hover": { backgroundColor: theme.palette.action.hover } }}
       divider
     >
       <ListItemIcon>
-        <Chat />
+        <QuestionAnswerOutlined />
       </ListItemIcon>
       <ListItemText
         sx={{ color: theme.palette.text.primary }}

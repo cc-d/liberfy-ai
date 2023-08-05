@@ -24,12 +24,11 @@ from schema import (
     BaseCompletion,
     BaseUserDB,
     BaseToken,
-    TokensBaseUser,
     BaseUserToken,
-    BaseTokenData,
     DataCreateChat,
     DataCreateCompletion,
     DataMsgAdd,
+    DataUserFromToken,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -97,7 +96,7 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
 
 
 @arouter.post("/user/user_from_token", response_model=BaseUser)
-async def user_from_token(formdata: BaseTokenData, db: Session = Depends(get_db)):
+async def user_from_token(formdata: DataUserFromToken, db: Session = Depends(get_db)):
     token = db.query(UserToken).filter(UserToken.token == formdata.token).first()
 
     if not token:

@@ -15,16 +15,8 @@ class BaseUser(BaseModel):
     email: str
 
 
-class TokensBaseUser(BaseUser):
-    tokens: List[BaseToken]
-
-
 class BaseUserToken(BaseUser):
     token: Optional[str]
-
-
-class BaseTokenData(BaseModel):
-    token: str
 
 
 class BaseUserDB(BaseUser):
@@ -55,6 +47,10 @@ class BaseChat(BaseModel):
     name: str
     user_id: int
     completions: List[BaseCompletion]
+
+
+class DataUserFromToken(BaseModel):
+    token: str
 
 
 class DataCreateChat(BaseModel):

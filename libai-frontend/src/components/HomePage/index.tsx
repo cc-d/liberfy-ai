@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
-import { useAuthContext } from '../AuthContext';
+import { useAuthContext } from '../../AuthContext';
+import { Typography } from '@mui/material';
 
 const Home = () => {
   const { user, setUser } = useAuthContext();
@@ -8,9 +9,9 @@ const Home = () => {
   return (
     <div>
       {user ? (
-        <p>Welcome back, {user.email}!</p>
+        <Typography variant="h1">{user.email}!</Typography>
       ) : (
-        <p>You are not logged in.</p>
+        <Typography variant="body1">Login to continue</Typography>
       )}
     </div>
   );

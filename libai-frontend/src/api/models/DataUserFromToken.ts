@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BaseTokenData = {
+export type DataUserFromToken = {
     token: string;
 };
 
