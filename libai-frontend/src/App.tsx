@@ -46,7 +46,7 @@ function App() {
       <ThemeProvider theme={theme}>
         <CssBaseline /> {/* CssBaseline helps to normalize CSS styles across different browsers */}
         <AuthProvider>
-          <ChatProvider>
+
           <Container component={Box} id="nav-container" maxWidth={false} disableGutters={true}>
           <NavBar darkMode={true ? themeMode == 'dark' : false} handleThemeChange={toggleThemeMode} />
             <Routes>
@@ -55,7 +55,7 @@ function App() {
               <Route path="/chat/:chatId" element={<ChatPage />} />
             </Routes>
             </Container>
-          </ChatProvider>
+
 
         </AuthProvider>
       </ThemeProvider>

@@ -14,7 +14,14 @@ from typing import List, Optional, Dict, Any, Union, TypeVar, Generic, Type, Cal
 import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from database import engine, SessionLocal, get_db, to_dict, model_to_dict
+from database import (
+    engine,
+    SessionLocal,
+    get_db,
+    to_dict,
+    model_to_dict,
+    add_commit_refresh,
+)
 from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
     EmailPassData,
@@ -141,9 +148,7 @@ async def get_openapi_schema():
 @arouter.post("/chat/new", response_model=BaseChat)
 async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     chat = Chat(name=data.name, user_id=data.user_id)
-    db.add(chat)
-    db.commit()
-    db.refresh(chat)
+    chat = add_commit_refresh(chat, db)
 
     return chat
 
@@ -175,9 +180,7 @@ async def create_completion(data: DataCreateCompletion, db: Session = Depends(ge
     completion = Completion(chat_id=data.chat_id, user_id=user.id)
 
     logger.debug("completion %s", completion)
-    db.add(completion)
-    db.commit()
-    db.refresh(completion)
+    completion = add_commit_refresh(completion, db)
 
     logger.debug("completion created %s %s", completion, vars(completion))
 
@@ -185,13 +188,7 @@ async def create_completion(data: DataCreateCompletion, db: Session = Depends(ge
         'System message' if not hasattr(data, 'sysprompt') else str(data.sysprompt)
     )
     msg = Message(role='system', content=comptitle, completion_id=completion.id)
-    print(msg)
-    db.add(msg)
-    print('addmsg', msg)
-    db.commit()
-    print('commsg', msg)
-    db.refresh(msg)
-    print('refmsg', msg)
+    msg = add_commit_refresh(msg, db)
 
     msgs = [BaseMessage(**model_to_dict(msg))]
     print('msgsmsgs', msgs)
@@ -215,7 +212,9 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
 
 
 @arouter.post("/completion/{completion_id}/message/add", response_model=BaseMessage)
-async def add_message(data: DataMsgAdd, db: Session = Depends(get_db)):
+async def add_message(
+    completion_id: int, data: DataMsgAdd, db: Session = Depends(get_db)
+):
     role, content = data.role, data.content
     msg = Message(role=role, content=content, completion_id=completion_id)
     db.add(msg)

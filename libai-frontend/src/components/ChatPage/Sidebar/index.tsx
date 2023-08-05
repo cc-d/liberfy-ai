@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { BaseCompletion, BaseChat, BaseMessage, BaseUser } from "../../api";
-import { useChatContext } from "./ChatContext";
+import { BaseCompletion, BaseChat, BaseMessage, BaseUser } from "../../../api";
+import { useChatContext } from "../ChatContext";
 import {
   Box,
   List,
@@ -11,21 +11,31 @@ import {
   AccordionDetails,
   Typography,
 } from "@mui/material";
-import { AddCircleOutline, ExpandMore, QuestionAnswer, QuestionAnswerOutlined } from "@mui/icons-material";
+import {
+  AddCircleOutline, ExpandMore,
+  QuestionAnswer, QuestionAnswerOutlined,
+  ModeComment, AddComment, Comment, CommentOutlined,
+  AddCommentOutlined, AddBox, Chat
+} from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import CompListElem from "./CompListElem";
-import NewCompModal from "./NewCompModal";
+import CompListElem from "../CompListElem";
+import NewCompModal from "../NewCompModal";
 
 interface ChatSidebarProps {
   chat: BaseChat;
   user: BaseUser;
   addCompletion: (completion: BaseCompletion) => void;
   completions: BaseCompletion[];
+  activeComp: BaseCompletion | null;
+  setActiveComp: (completion: BaseCompletion | null) => void;
 }
 
 const drawerWidth = 240;
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat, user, addCompletion, completions }) => {
+const ChatSidebar: React.FC<ChatSidebarProps> = ({
+  chat, user, addCompletion, completions, activeComp,
+  setActiveComp,
+}) => {
   const theme = useTheme();
   const [showModal, setShowModal] = useState(false);
 
@@ -37,8 +47,10 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat, user, addCompletion, co
     setShowModal(false);
   };
 
+
   return (
     <Box>
+
       <Accordion defaultExpanded disableGutters={true}>
         <AccordionSummary
           expandIcon={<ExpandMore />}
@@ -46,16 +58,16 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat, user, addCompletion, co
           id="completions-header"
         >
 
-          <QuestionAnswerOutlined sx={{mr: 0.5}}/>
-          <Typography variant="body1">Completions</Typography>
+          <QuestionAnswerOutlined sx={{ mr: 0.5 }} />
+          <Typography sx={{}} variant="body1">Completions</Typography>
         </AccordionSummary>
         <AccordionDetails>
           <Box display="flex" flexDirection="column">
             <Button
               variant="contained"
-              startIcon={<AddCircleOutline />}
+              startIcon={<AddBox />}
               onClick={handleModalOpen}
-              sx={{ mb: 2 }}
+              sx={{ mt: -1, mb: 1 }}
               size="small"
             >
               New
@@ -64,31 +76,33 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({ chat, user, addCompletion, co
             <Divider />
 
             <List dense={true}>
-              {completions.length > 0 ? (
+              {completions.length > 0 &&
                 completions.map((completion) => (
                   <CompListElem
                     key={completion.id}
                     completion={completion}
                     theme={theme}
+                    setActiveComp={setActiveComp}
                   />
                 ))
-              ) : (
-                <Typography variant="body1">No completions yet.</Typography>
-              )}
+                }
             </List>
           </Box>
         </AccordionDetails>
       </Accordion>
-      { chat && chat.id && user && user.id &&
-      <NewCompModal
-        open={showModal}
-        handleClose={handleModalClose}
-        addCompletion={addCompletion}
-        chat_id={chat.id}
-        user_id={user.id}
-        temperature={1}
-      />
-}
+
+
+
+      {chat && chat.id && user && user.id &&
+        <NewCompModal
+          open={showModal}
+          handleClose={handleModalClose}
+          addCompletion={addCompletion}
+          chat_id={chat.id}
+          user_id={user.id}
+          temperature={1}
+        />
+      }
     </Box>
   );
 };

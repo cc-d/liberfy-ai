@@ -1,7 +1,7 @@
 import os
 from sqlalchemy import Column, Integer, String, create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, class_mapper, DeclarativeMeta
+from sqlalchemy.orm import sessionmaker, class_mapper, DeclarativeMeta, Session
 
 from typing import Optional
 
@@ -54,6 +54,7 @@ def to_dict(obj):
     return data
 
 
+@logf()
 def model_to_dict(
     model_instance: DeclarativeMeta, exclude_internal: bool = True
 ) -> dict:
@@ -95,3 +96,12 @@ def model_to_dict(
         data.pop(attr, None)
 
     return data
+
+
+@logf()
+def add_commit_refresh(obj, db: Session):
+    """Add object to database, commit and refresh"""
+    db.add(obj)
+    db.commit()
+    db.refresh(obj)
+    return obj

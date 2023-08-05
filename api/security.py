@@ -12,6 +12,7 @@ from typing import Union
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User, UserToken, Chat, Completion
 from schema import EmailPassData, BaseUser, BaseToken
+from database import add_commit_refresh
 import logging
 
 logger = logging.getLogger()
@@ -75,16 +76,10 @@ def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> b
 def create_user_token(user_id: Union[str, int], db: Session) -> UserToken:
     user = db.query(User).filter(User.id == user_id).first()
     newtoken = UserToken(user_id=user_id)
-    db.add(newtoken)
-    db.commit()
-    db.refresh(newtoken)
-    return newtoken
+    return add_commit_refresh(newtoken, db)
 
 
 def create_user(user_email: str, user_password: str, db: Session) -> User:
     hpassword = hash_passwd(user_password)
     db_user = User(email=user_email, hpassword=hpassword)
-    db.add(db_user)
-    db.commit()
-    db.refresh(db_user)
-    return db_user
+    return add_commit_refresh(db_user, db)

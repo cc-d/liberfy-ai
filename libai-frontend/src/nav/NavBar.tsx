@@ -14,7 +14,9 @@ import {
   Box,
   IconButton,
 } from "@mui/material";
-import { AccountCircle, Chat, LightMode, DarkMode } from "@mui/icons-material";
+import {
+  AccountCircle, Chat, LightMode, DarkMode, ThreeP, ThreePOutlined
+} from "@mui/icons-material";
 import { useAuthContext } from "../AuthContext";
 import LoginDropdown from "./LoginDropdown";
 
@@ -46,14 +48,10 @@ export const NavLink: React.FC<NavLinkProps> = ({
       style={{ marginLeft: LM, marginRight: "1rem" }}
       {...props}
     >
-      {linkedIcon ? (
-        <Box display="flex" alignItems="center">
-          {linkedIcon}
-          {linkText}
-        </Box>
-      ) : (
-        linkText
-      )}
+      <Box display="flex" alignItems="center">
+        {linkedIcon}
+        {linkText}
+      </Box>
     </Link>
   );
 };
@@ -82,7 +80,12 @@ const NavBar = ({ darkMode, handleThemeChange }: NavBarProps) => {
           <NavLink
             to="/chats"
             linkText="Chats"
-            linkedIcon={<Chat sx={{ height: "1rem", width: "1rem", marginRight: "0.2rem" }} />}
+            linkedIcon={
+              <ThreeP sx={{
+                height: "1rem", width: "1rem", marginRight: "0.2rem"
+              }}
+              />
+            }
           />
         )}
         <Box sx={{ flexGrow: 1 }} />
@@ -91,7 +94,9 @@ const NavBar = ({ darkMode, handleThemeChange }: NavBarProps) => {
             <NavLink
               to="#"
               linkText={user.email}
-              linkedIcon={<AccountCircle sx={{ height: "1rem", width: "1rem", marginRight: "0.2rem" }} />}
+              linkedIcon={
+                <AccountCircle sx={{ height: "1rem", width: "1rem", marginRight: "0.2rem" }} />
+              }
             />
             <LogoutBtn />
           </Box>
