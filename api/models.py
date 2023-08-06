@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Mapped
 from sqlalchemy.orm.session import Session
 from typing import Optional, List, Union
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean, Text
 from sqlalchemy.orm import Mapped, relationship, backref
 from uuid import uuid4
 
@@ -13,6 +13,8 @@ from uuid import uuid4
 from utils import get_gptmodels
 
 from database import Base, to_dict
+
+DEFAULT_GPTMODEL = 'gpt-3.5-turbo'
 
 
 class User(Base):
@@ -59,6 +61,9 @@ class Completion(Base):
     user: Mapped[User] = relationship(
         "User", back_populates="completions", uselist=False
     )
+
+    temperature: Mapped[float] = Column(Float, default=1.0)
+    model: Mapped[str] = Column(String, default=DEFAULT_GPTMODEL)
 
 
 class UserToken(Base):

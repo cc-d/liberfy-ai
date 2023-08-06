@@ -25,9 +25,10 @@ from database import (
 from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
     BaseToken,
-    BaseTokenUID,
+    TokenUID,
     BaseUser,
     DBUser,
+    DBUserWithToken,
     BaseTokenUser,
     BaseTokenUIDUser,
     DBUserPass,
@@ -92,7 +93,7 @@ async def hello():
     return {"status": "ok"}
 
 
-@arouter.post("/user/login", response_model=DBBaseUserPass)
+@arouter.post("/user/login", response_model=DBUserWithToken)
 async def login_user(formdata: DataEmailPass, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == formdata.email).first()
     if not user:
@@ -100,7 +101,7 @@ async def login_user(formdata: DataEmailPass, db: Session = Depends(get_db)):
             user_email=formdata.email, user_password=formdata.password, db=db
         )
         token = create_user_token(user.id, db)
-        return OldBaseUserToken(email=user.email, id=user.id, token=token.token)
+        return DBUserWithToken(email=user.email, id=user.id, token=token.token)
 
     if not verify_passwd(formdata.password, user.hpassword):
         raise HTTPException(
@@ -113,11 +114,11 @@ async def login_user(formdata: DataEmailPass, db: Session = Depends(get_db)):
     if token is None:
         token = create_user_token(user.id, db)
 
-    return OldBaseUserToken(email=user.email, id=user.id, token=token.token)
+    return DBUserWithToken(email=user.email, id=user.id, token=token.token)
 
 
-@arouter.post("/user/user_from_token", response_model=OldBaseUser)
-async def user_from_token(formdata: DataUserFromToken, db: Session = Depends(get_db)):
+@arouter.post("/user/user_from_token", response_model=DBUser)
+async def user_from_token(formdata: BaseToken, db: Session = Depends(get_db)):
     token = db.query(UserToken).filter(UserToken.token == formdata.token).first()
 
     if not token:
@@ -131,7 +132,7 @@ async def user_from_token(formdata: DataUserFromToken, db: Session = Depends(get
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    return OldBaseUser(email=user.email, id=user.id)
+    return DBUser(email=user.email, id=user.id)
 
 
 @arouter.get('/user/{user_id}/chats', response_model=List[BaseChat])
@@ -172,15 +173,15 @@ async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     )
     comps = []
     for c in completions:
-        msgs = [BaseMessage(**model_to_dict(m)) for m in c.messages]
-        comps.append(BaseCompletion(messages=msgs, **model_to_dict(c)))
+        msgs = [DBMsg(**model_to_dict(m)) for m in c.messages]
+        comps.append(DBComp(messages=msgs, **model_to_dict(c)))
 
     print('compscomps', comps)
 
     return BaseChat(id=chat.id, user_id=user.id, completions=comps, name=chat.name)
 
 
-@arouter.post("/completion/new", response_model=BaseCompletion)
+@arouter.post("/completion/new", response_model=DBComp)
 async def create_completion(data: DataCreateComp, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == data.user_id).first()
     logger.debug("user %s", user)
@@ -197,13 +198,13 @@ async def create_completion(data: DataCreateComp, db: Session = Depends(get_db))
     msg = Message(role='system', content=comptitle, completion_id=completion.id)
     msg = add_commit_refresh(msg, db)
 
-    msgs = [BaseMessage(**model_to_dict(msg))]
+    msgs = [DBMsg(**model_to_dict(msg))]
     print('msgsmsgs', msgs)
-    bc = BaseCompletion(messages=msgs, **model_to_dict(completion))
+    bc = DBComp(messages=msgs, **model_to_dict(completion))
     return bc
 
 
-@arouter.get("/completion/{completion_id}", response_model=BaseCompletion)
+@arouter.get("/completion/{completion_id}", response_model=DBComp)
 async def get_completion(completion_id: int, db: Session = Depends(get_db)):
     completion = db.query(Completion).filter(Completion.id == completion_id).first()
 
@@ -218,7 +219,7 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
     return completion
 
 
-@arouter.post("/completion/{completion_id}/message/add", response_model=BaseMessage)
+@arouter.post("/completion/{completion_id}/message/add", response_model=DBMsg)
 async def add_message(
     completion_id: int, data: DataMsgAdd, db: Session = Depends(get_db)
 ):

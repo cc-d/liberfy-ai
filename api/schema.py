@@ -11,8 +11,8 @@ class BaseToken(BaseModel):
     token: str
 
 
-class BaseTokenUID(BaseToken):
-    uid: int
+class TokenUID(BaseToken):
+    user_id: int
 
 
 class BaseUser(BaseModel):
@@ -21,6 +21,10 @@ class BaseUser(BaseModel):
 
 class DBUser(BaseUser):
     id: int
+
+
+class DBUserWithToken(DBUser):
+    token: str
 
 
 class BaseTokenUser(BaseToken):

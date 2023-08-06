@@ -11,7 +11,28 @@ from logfunc import logf
 from typing import Union
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
 from models import User, UserToken, Chat, Completion
-from schema import DataEmailPass, OldBaseUser, BaseToken
+from schema import (
+    BaseToken,
+    TokenUID,
+    BaseUser,
+    DBUser,
+    DBUserWithToken,
+    BaseTokenUser,
+    BaseTokenUIDUser,
+    DBUserPass,
+    BaseMsg,
+    DBMsg,
+    BaseComp,
+    GPTComp,
+    DBComp,
+    BaseChat,
+    NoDBChat,
+    DBChat,
+    DataEmailPass,
+    DataCreateChat,
+    DataCreateComp,
+    DataMsgAdd,
+)
 from database import add_commit_refresh
 import logging
 
