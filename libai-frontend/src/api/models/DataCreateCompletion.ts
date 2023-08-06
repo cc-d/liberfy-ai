@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type DataCreateCompletion = {
+export type DataCreateComp = {
     chat_id: number;
     user_id: number;
     sysprompt: string;

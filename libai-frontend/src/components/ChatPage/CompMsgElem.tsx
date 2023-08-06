@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  BaseMessage, BaseChat, BaseUser,
+  BaseMessage, BaseChat, OldBaseUser,
   BaseCompletion
 } from '../../api';
 import {

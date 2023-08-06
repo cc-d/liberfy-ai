@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $DataCreateCompletion = {
+export const $DataCreateComp = {
     properties: {
         chat_id: {
             type: 'number',

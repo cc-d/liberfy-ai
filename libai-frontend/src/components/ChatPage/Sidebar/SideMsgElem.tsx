@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BaseCompletion, BaseChat, BaseMessage, BaseUser } from "../../../api";
+import { BaseCompletion, BaseChat, BaseMessage, OldBaseUser } from "../../../api";
 import { useChatContext } from "../ChatContext";
 import {
   Box,

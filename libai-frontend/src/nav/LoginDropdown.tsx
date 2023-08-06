@@ -9,7 +9,7 @@ import {
 } from "@mui/material";
 import { useAuthContext } from '../AuthContext';
 import apios from '../apios';
-import { BaseUser, BaseUserToken } from "../api";
+import { OldBaseUser, OldBaseUserToken } from "../api";
 
 const LoginDropdown = () => {
   const { user, setUser, autoTokenLogin } = useAuthContext();
@@ -27,7 +27,7 @@ const LoginDropdown = () => {
       if (response?.data && response?.data?.token) {
         const token: string = response.data.token;
         localStorage.setItem("token", token);
-        const newUser: BaseUser = response.data;
+        const newUser: OldBaseUser = response.data;
         setUser(newUser);
       }
     } catch (error) {

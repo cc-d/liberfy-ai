@@ -3,54 +3,84 @@ from pydantic import BaseModel
 from typing import Optional, List, Dict, Any, Union, TypeVar, Generic, Type, Callable
 from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from sqlalchemy.orm import Mapped
+from enum import Enum
 
 
+##### User / Token #####
 class BaseToken(BaseModel):
-    user_id: int
     token: str
+
+
+class BaseTokenUID(BaseToken):
+    uid: int
 
 
 class BaseUser(BaseModel):
-    id: Optional[int]
     email: str
 
 
-class BaseUserToken(BaseUser):
-    token: Optional[str]
+class DBUser(BaseUser):
+    id: int
 
 
-class BaseUserDB(BaseUser):
+class BaseTokenUser(BaseToken):
+    user: DBUser
+
+
+class BaseTokenUIDUser(BaseToken):
+    user_id: int
+    user: DBUser
+
+
+class DBUserPass(DBUser):
     hpassword: str
 
 
-class EmailPassData(BaseModel):
-    email: str
-    password: str
+##### Comp/Msg/GPT #####
 
 
-class BaseMessage(BaseModel):
-    id: Optional[int]
+class BaseMsg(BaseModel):
     role: str
     content: str
+
+
+class DBMsg(BaseMsg):
+    id: int
     completion_id: int
 
 
-class BaseCompletion(BaseModel):
-    id: Optional[int]
-    chat_id: int
+class BaseComp(BaseModel):
+    messages: List[BaseMsg]
+
+
+class GPTComp(BaseComp):
+    model: str
+    temperature: float
+
+
+class DBComp(GPTComp):
+    id: int
     user_id: int
-    messages: Optional[List[BaseMessage]]
 
 
 class BaseChat(BaseModel):
-    id: Optional[int]
     name: str
     user_id: int
-    completions: List[BaseCompletion]
 
 
-class DataUserFromToken(BaseModel):
-    token: str
+class NoDBChat(BaseChat):
+    completions: List[BaseComp]
+
+
+class DBChat(BaseChat):
+    id: int
+    completions: List[DBComp]
+
+
+##### Data #####
+class DataEmailPass(BaseModel):
+    email: str
+    password: str
 
 
 class DataCreateChat(BaseModel):
@@ -58,7 +88,7 @@ class DataCreateChat(BaseModel):
     user_id: int
 
 
-class DataCreateCompletion(BaseModel):
+class DataCreateComp(BaseModel):
     chat_id: int
     user_id: int
     sysprompt: str

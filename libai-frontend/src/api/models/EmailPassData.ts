@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type EmailPassData = {
+export type DataEmailPass = {
     email: string;
     password: string;
 };

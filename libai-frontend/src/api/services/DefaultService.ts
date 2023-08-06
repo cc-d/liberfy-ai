@@ -5,13 +5,13 @@
 import type { BaseChat } from '../models/BaseChat';
 import type { BaseCompletion } from '../models/BaseCompletion';
 import type { BaseMessage } from '../models/BaseMessage';
-import type { BaseUser } from '../models/BaseUser';
-import type { BaseUserToken } from '../models/BaseUserToken';
+import type { OldBaseUser } from '../models/OldBaseUser';
+import type { OldBaseUserToken } from '../models/OldBaseUserToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
-import type { DataCreateCompletion } from '../models/DataCreateCompletion';
+import type { DataCreateComp } from '../models/DataCreateComp';
 import type { DataMsgAdd } from '../models/DataMsgAdd';
 import type { DataUserFromToken } from '../models/DataUserFromToken';
-import type { EmailPassData } from '../models/EmailPassData';
+import type { DataEmailPass } from '../models/DataEmailPass';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -34,12 +34,12 @@ export class DefaultService {
     /**
      * Login User
      * @param requestBody
-     * @returns BaseUserToken Successful Response
+     * @returns OldBaseUserToken Successful Response
      * @throws ApiError
      */
     public static loginUserApiUserLoginPost(
-        requestBody: EmailPassData,
-    ): CancelablePromise<BaseUserToken> {
+        requestBody: DataEmailPass,
+    ): CancelablePromise<OldBaseUserToken> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/login',
@@ -54,12 +54,12 @@ export class DefaultService {
     /**
      * User From Token
      * @param requestBody
-     * @returns BaseUser Successful Response
+     * @returns OldBaseUser Successful Response
      * @throws ApiError
      */
     public static userFromTokenApiUserUserFromTokenPost(
         requestBody: DataUserFromToken,
-    ): CancelablePromise<BaseUser> {
+    ): CancelablePromise<OldBaseUser> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/user_from_token',
@@ -152,7 +152,7 @@ export class DefaultService {
      * @throws ApiError
      */
     public static createCompletionApiCompletionNewPost(
-        requestBody: DataCreateCompletion,
+        requestBody: DataCreateComp,
     ): CancelablePromise<BaseCompletion> {
         return __request(OpenAPI, {
             method: 'POST',

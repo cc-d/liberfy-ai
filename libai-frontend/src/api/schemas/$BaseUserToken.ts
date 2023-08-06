@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseUserToken = {
+export const $OldBaseUserToken = {
     properties: {
         id: {
             type: 'any-of',

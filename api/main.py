@@ -24,18 +24,25 @@ from database import (
 )
 from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
-    EmailPassData,
-    BaseUser,
-    BaseChat,
-    BaseMessage,
-    BaseCompletion,
-    BaseUserDB,
     BaseToken,
-    BaseUserToken,
+    BaseTokenUID,
+    BaseUser,
+    DBUser,
+    BaseTokenUser,
+    BaseTokenUIDUser,
+    DBUserPass,
+    BaseMsg,
+    DBMsg,
+    BaseComp,
+    GPTComp,
+    DBComp,
+    BaseChat,
+    NoDBChat,
+    DBChat,
+    DataEmailPass,
     DataCreateChat,
-    DataCreateCompletion,
+    DataCreateComp,
     DataMsgAdd,
-    DataUserFromToken,
 )
 from security import hash_passwd, verify_passwd, create_user, create_user_token
 from myfuncs import runcmd
@@ -85,15 +92,15 @@ async def hello():
     return {"status": "ok"}
 
 
-@arouter.post("/user/login", response_model=BaseUserToken)
-async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
+@arouter.post("/user/login", response_model=DBBaseUserPass)
+async def login_user(formdata: DataEmailPass, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == formdata.email).first()
     if not user:
         user = create_user(
             user_email=formdata.email, user_password=formdata.password, db=db
         )
         token = create_user_token(user.id, db)
-        return BaseUserToken(email=user.email, id=user.id, token=token.token)
+        return OldBaseUserToken(email=user.email, id=user.id, token=token.token)
 
     if not verify_passwd(formdata.password, user.hpassword):
         raise HTTPException(
@@ -106,10 +113,10 @@ async def login_user(formdata: EmailPassData, db: Session = Depends(get_db)):
     if token is None:
         token = create_user_token(user.id, db)
 
-    return BaseUserToken(email=user.email, id=user.id, token=token.token)
+    return OldBaseUserToken(email=user.email, id=user.id, token=token.token)
 
 
-@arouter.post("/user/user_from_token", response_model=BaseUser)
+@arouter.post("/user/user_from_token", response_model=OldBaseUser)
 async def user_from_token(formdata: DataUserFromToken, db: Session = Depends(get_db)):
     token = db.query(UserToken).filter(UserToken.token == formdata.token).first()
 
@@ -124,7 +131,7 @@ async def user_from_token(formdata: DataUserFromToken, db: Session = Depends(get
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
         )
-    return BaseUser(email=user.email, id=user.id)
+    return OldBaseUser(email=user.email, id=user.id)
 
 
 @arouter.get('/user/{user_id}/chats', response_model=List[BaseChat])
@@ -174,7 +181,7 @@ async def get_chat(chat_id: int, db: Session = Depends(get_db)):
 
 
 @arouter.post("/completion/new", response_model=BaseCompletion)
-async def create_completion(data: DataCreateCompletion, db: Session = Depends(get_db)):
+async def create_completion(data: DataCreateComp, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == data.user_id).first()
     logger.debug("user %s", user)
     completion = Completion(chat_id=data.chat_id, user_id=user.id)

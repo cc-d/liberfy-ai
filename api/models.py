@@ -1,3 +1,5 @@
+import os
+from os.path import dirname, abspath, join as opjoin
 from sqlalchemy import Column, Integer, String, create_engine, Boolean, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Mapped
@@ -6,6 +8,9 @@ from typing import Optional, List, Union
 from sqlalchemy import Column, Integer, String, ForeignKey
 from sqlalchemy.orm import Mapped, relationship, backref
 from uuid import uuid4
+
+
+from utils import get_gptmodels
 
 from database import Base, to_dict
 
@@ -46,14 +51,14 @@ class Message(Base):
 class Completion(Base):
     __tablename__ = "completions"
     id: Mapped[int] = Column(Integer, primary_key=True)
+    chat_id: Mapped[int] = Column(Integer, ForeignKey("chats.id"))
+    user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
     chat: Mapped[Chat] = relationship(
         "Chat", back_populates="completions", uselist=False
     )
-    chat_id: Mapped[int] = Column(Integer, ForeignKey("chats.id"))
     user: Mapped[User] = relationship(
         "User", back_populates="completions", uselist=False
     )
-    user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
 
 
 class UserToken(Base):

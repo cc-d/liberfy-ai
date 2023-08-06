@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BaseUserToken = {
+export type OldBaseUserToken = {
     id: (number | null);
     email: string;
     token: (string | null);

@@ -3,7 +3,7 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BaseUser = {
+export type OldBaseUser = {
     id: (number | null);
     email: string;
 };

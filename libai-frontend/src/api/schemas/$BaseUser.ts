@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseUser = {
+export const $OldBaseUser = {
     properties: {
         id: {
             type: 'any-of',

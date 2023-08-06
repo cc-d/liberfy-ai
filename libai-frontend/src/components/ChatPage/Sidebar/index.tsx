@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BaseCompletion, BaseChat, BaseMessage, BaseUser } from "../../../api";
+import { BaseCompletion, BaseChat, BaseMessage, OldBaseUser } from "../../../api";
 import { useChatContext } from "../ChatContext";
 import {
   Box,
@@ -23,7 +23,7 @@ import NewCompModal from "../NewCompModal";
 
 interface ChatSidebarProps {
   chat: BaseChat;
-  user: BaseUser;
+  user: OldBaseUser;
   addCompletion: (completion: BaseCompletion) => void;
   completions: BaseCompletion[];
   activeComp: BaseCompletion | null;

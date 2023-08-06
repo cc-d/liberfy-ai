@@ -1,15 +1,15 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import apios from "./apios";
 import { useNavigate } from "react-router-dom";
-import { BaseUserToken, BaseUser } from "./api";
+import { OldBaseUserToken, OldBaseUser } from "./api";
 
 interface AuthContextProps {
-  user: BaseUser | null;
+  user: OldBaseUser | null;
   isLoading: boolean;
   login: (data: { token: string }) => Promise<void>;
   logout: () => void;
   autoTokenLogin: () => Promise<void>;
-  setUser: (user: BaseUser | null) => void;
+  setUser: (user: OldBaseUser | null) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -23,7 +23,7 @@ export const useAuthContext = () => {
 };
 
 export const AuthProvider: React.FC<any> = ({ children }) => {
-  const [user, setUser] = useState<BaseUser | null>(null);
+  const [user, setUser] = useState<OldBaseUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -44,7 +44,7 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
             token: locToken,
           });
           if (resp) {
-            const newUser: BaseUser = resp.data;
+            const newUser: OldBaseUser = resp.data;
             setUser(newUser);
           }
         } catch (error) {

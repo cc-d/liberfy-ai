@@ -2,7 +2,7 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $EmailPassData = {
+export const $DataEmailPass = {
     properties: {
         email: {
             type: 'string',
