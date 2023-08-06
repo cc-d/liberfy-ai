@@ -12,8 +12,10 @@ import {
   CssBaseline, Container, Box, useMediaQuery, useTheme, IconButton, Divider,
 } from '@mui/material';
 import {
-  AccountCircle, Chat, LightMode, DarkMode, ThreeP, ThreePOutlined, Logout, LogoutOutlined
+  AccountCircle, Chat,
+  LightMode, DarkMode, ThreeP, ThreePOutlined, Logout, LogoutOutlined
 } from "@mui/icons-material";
+import MenuIcon from "@mui/icons-material/Menu";
 import { drawerWidth } from '../components/Sidebar';
 
 // Create a context for the theme
@@ -21,34 +23,74 @@ const ThemeContext = createContext({
   darkMode: true,
   toggleThemeMode: () => { },
 });
-export const TopNav = ({ marginLeft, themeMode, toggleThemeMode }) => {
+
+// Make a custom hook for using the theme context
+export const useThemeContext = () => useContext(ThemeContext);
+
+export interface SidebarContextProps {
+  isSidebarOpen: boolean;
+  toggleSidebar: () => void;
+  isSmallDevice: boolean;
+}
+
+const SidebarContext = createContext<SidebarContextProps | undefined>(undefined);
+export const useSidebarContext = () => {
+  const context = useContext(SidebarContext);
+  if (context === undefined) {
+    throw new Error("useSidebarContext must be used within an SidebarProvider");
+  }
+  return context;
+}
+
+
+
+export const TopNav = ({themeMode, toggleThemeMode}) => {
+  const {
+    isSidebarOpen, toggleSidebar, isSmallDevice
+  } = useSidebarContext();
   return (
     <>
-    <Box
-    sx={{
-      display: 'flex',
-      flexDirection: 'row',
-      justifyContent: 'flex-end',
-      width: '100%',
-    }}
-    >
       <Box
         sx={{
-          alignSelf: 'flex-end',
-          width: '200px', // Set to the desired width
-          mr: 2,
+          backgroundColor: 'pink',
+          display: 'flex',
+          flexDirection: 'row',
+          justifyContent: 'space-between', // This will push items to the edges
+          width: '100%',
         }}
       >
-        <IconButton
-          color="inherit"
-          onClick={toggleThemeMode}
-          sx={{}}
+        <Box
+          sx={{
+            backgroundColor: 'blue',
+            flex: '1', // This will take up all the available space
+          }}
         >
-          {themeMode === 'dark' ? <DarkMode /> : <LightMode />}
-        </IconButton>
+          {isSmallDevice && (
+            <IconButton onClick={toggleSidebar} sx={{ color: 'inherit' }}>
+              <MenuIcon />
+            </IconButton>
+          )}
+        </Box>
+        <Box
+          sx={{
+            backgroundColor: 'green',
+            width: '100px', // Set to the desired width
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'right',
+            // This will push items to the right
+          }}
+        >
+          <IconButton
+            color="inherit"
+            onClick={toggleThemeMode}
+            sx={{}}
+          >
+            {themeMode === 'dark' ? <DarkMode /> : <LightMode />}
+          </IconButton>
+        </Box>
       </Box>
-    </Box>
-    <Divider />
+      <Divider />
     </>
   );
 }
@@ -56,30 +98,43 @@ export const TopNav = ({ marginLeft, themeMode, toggleThemeMode }) => {
 
 
 
-// Make a custom hook for using the theme context
-export const useThemeContext = () => useContext(ThemeContext);
-const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
+const AppContent = ({themeMode, toggleThemeMode, theme }) => {
   const location = useLocation();
-  const showSidebar = location.pathname.startsWith('/chat/');
-  const marginLeft = showSidebar ? '240px' : '0px';
+  const themeObj = useTheme();
+
+  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  // Modify the showSidebar logic to also consider isSidebarOpen
+  const showSidebar = !isSmallDevice || (location.pathname.startsWith('/chat/') && isSidebarOpen);
+  const marginLeft = (showSidebar && !isSmallDevice) ? '240px' : '0px';
+  const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   return (
+    <SidebarContext.Provider
+      value={{
+        isSidebarOpen,
+        toggleSidebar,
+        isSmallDevice,
+      }}
+    >
     <Box
       sx={{
-        marginLeft: marginLeft,
+        marginLeft: marginLeft, // This will apply the margin only if the conditions are met
       }}
     >
       <TopNav
         themeMode={themeMode}
         toggleThemeMode={toggleThemeMode}
-        marginLeft={marginLeft}
       />
       <Routes>
         <Route path="/" element={<LogRegPage />} />
         <Route path="/chats" element={<ChatListPage />} />
-        <Route path="/chat/:chatId" element={<ChatPage />} />
+        <Route path="/chat/:chatId" element={
+          <ChatPage />
+        } />
       </Routes>
     </Box>
+    </SidebarContext.Provider>
   );
 };
 
@@ -90,7 +145,7 @@ function App() {
   };
   const [navTopUser, setNavTopUser] = useState('')
 
-  const topUserEmail = (uemail: string) => {
+  const setTopUserEmail = (uemail: string) => {
     setNavTopUser(uemail)
   }
 
@@ -106,12 +161,15 @@ function App() {
     },
   });
 
+
+
+
   return (
     <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline />
         <AuthProvider
-          topUserEmail={topUserEmail}
+          setTopUserEmail={setTopUserEmail}
         >
           <AppContent
             themeMode={themeMode}

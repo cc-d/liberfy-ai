@@ -14,6 +14,7 @@ import { useTheme } from "@mui/material/styles";
 import CompListElem from "../ChatPage/CompListElem";
 import NewCompModal from "../ChatPage/NewCompModal";
 import { DBComp, DBChat, DBUser } from "../../api";
+import { useSidebarContext } from '../../App';
 
 interface ChatSidebarProps {
   chat: DBChat;
@@ -31,19 +32,13 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   setActiveComp,
 }) => {
   const theme = useTheme();
-  const matches = useMediaQuery(theme.breakpoints.down('sm'));
-  const [drawerOpen, setDrawerOpen] = useState(true); // Declare drawerOpen state
-
-  const toggleDrawer = () => {
-    setDrawerOpen(!drawerOpen); // Toggle the drawer's open state
-  };
-
+  const { isSidebarOpen, toggleSidebar, isSmallDevice } = useSidebarContext();
 
   return (
     <Drawer
-      variant={matches ? "temporary" : "permanent"}
-      open={drawerOpen}
-      onClose={toggleDrawer}
+      variant={isSmallDevice ? "temporary" : "permanent"}
+      open={isSidebarOpen}
+      onClose={toggleSidebar}
       sx={{
         width: drawerWidth,
         flexShrink: 0,

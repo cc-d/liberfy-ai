@@ -34,7 +34,7 @@ export const useAuthContext = () => {
   return context;
 };
 
-export const AuthProvider = ({topUserEmail, children }) => {
+export const AuthProvider = ({setTopUserEmail, children }) => {
   const [user, setUser] = useState<DBUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -47,7 +47,7 @@ export const AuthProvider = ({topUserEmail, children }) => {
 
   const setActiveUser = (user: DBUser) => {
     console.log('setactive', user)
-    topUserEmail(user.email);
+    setTopUserEmail(user.email);
     console.log('setnavtop', user.email)
     setUser(user);
   };
