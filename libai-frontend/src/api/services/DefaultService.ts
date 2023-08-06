@@ -2,16 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { BaseChat } from '../models/BaseChat';
-import type { BaseCompletion } from '../models/BaseCompletion';
-import type { BaseMessage } from '../models/BaseMessage';
-import type { OldBaseUser } from '../models/OldBaseUser';
-import type { OldBaseUserToken } from '../models/OldBaseUserToken';
+import type { BaseToken } from '../models/BaseToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
 import type { DataCreateComp } from '../models/DataCreateComp';
-import type { DataMsgAdd } from '../models/DataMsgAdd';
-import type { DataUserFromToken } from '../models/DataUserFromToken';
 import type { DataEmailPass } from '../models/DataEmailPass';
+import type { DataMsgAdd } from '../models/DataMsgAdd';
+import type { DBChat } from '../models/DBChat';
+import type { DBComp } from '../models/DBComp';
+import type { DBMsg } from '../models/DBMsg';
+import type { DBUser } from '../models/DBUser';
+import type { DBUserWithToken } from '../models/DBUserWithToken';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -34,12 +34,12 @@ export class DefaultService {
     /**
      * Login User
      * @param requestBody
-     * @returns OldBaseUserToken Successful Response
+     * @returns DBUserWithToken Successful Response
      * @throws ApiError
      */
     public static loginUserApiUserLoginPost(
         requestBody: DataEmailPass,
-    ): CancelablePromise<OldBaseUserToken> {
+    ): CancelablePromise<DBUserWithToken> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/login',
@@ -54,12 +54,12 @@ export class DefaultService {
     /**
      * User From Token
      * @param requestBody
-     * @returns OldBaseUser Successful Response
+     * @returns DBUser Successful Response
      * @throws ApiError
      */
     public static userFromTokenApiUserUserFromTokenPost(
-        requestBody: DataUserFromToken,
-    ): CancelablePromise<OldBaseUser> {
+        requestBody: BaseToken,
+    ): CancelablePromise<DBUser> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/user_from_token',
@@ -74,12 +74,12 @@ export class DefaultService {
     /**
      * Get Chats
      * @param userId
-     * @returns BaseChat Successful Response
+     * @returns DBChat Successful Response
      * @throws ApiError
      */
     public static getChatsApiUserUserIdChatsGet(
         userId: number,
-    ): CancelablePromise<Array<BaseChat>> {
+    ): CancelablePromise<Array<DBChat>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/user/{user_id}/chats',
@@ -107,12 +107,12 @@ export class DefaultService {
     /**
      * New Chat
      * @param requestBody
-     * @returns BaseChat Successful Response
+     * @returns DBChat Successful Response
      * @throws ApiError
      */
     public static newChatApiChatNewPost(
         requestBody: DataCreateChat,
-    ): CancelablePromise<BaseChat> {
+    ): CancelablePromise<DBChat> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/chat/new',
@@ -127,12 +127,12 @@ export class DefaultService {
     /**
      * Get Chat
      * @param chatId
-     * @returns BaseChat Successful Response
+     * @returns DBChat Successful Response
      * @throws ApiError
      */
     public static getChatApiChatChatIdGet(
         chatId: number,
-    ): CancelablePromise<BaseChat> {
+    ): CancelablePromise<DBChat> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/chat/{chat_id}',
@@ -148,12 +148,12 @@ export class DefaultService {
     /**
      * Create Completion
      * @param requestBody
-     * @returns BaseCompletion Successful Response
+     * @returns DBComp Successful Response
      * @throws ApiError
      */
     public static createCompletionApiCompletionNewPost(
         requestBody: DataCreateComp,
-    ): CancelablePromise<BaseCompletion> {
+    ): CancelablePromise<DBComp> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/completion/new',
@@ -168,12 +168,12 @@ export class DefaultService {
     /**
      * Get Completion
      * @param completionId
-     * @returns BaseCompletion Successful Response
+     * @returns DBComp Successful Response
      * @throws ApiError
      */
     public static getCompletionApiCompletionCompletionIdGet(
         completionId: number,
-    ): CancelablePromise<BaseCompletion> {
+    ): CancelablePromise<DBComp> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/completion/{completion_id}',
@@ -190,13 +190,13 @@ export class DefaultService {
      * Add Message
      * @param completionId
      * @param requestBody
-     * @returns BaseMessage Successful Response
+     * @returns DBMsg Successful Response
      * @throws ApiError
      */
     public static addMessageApiCompletionCompletionIdMessageAddPost(
         completionId: number,
         requestBody: DataMsgAdd,
-    ): CancelablePromise<BaseMessage> {
+    ): CancelablePromise<DBMsg> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/completion/{completion_id}/message/add',

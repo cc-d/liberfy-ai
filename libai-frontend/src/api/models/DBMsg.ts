@@ -3,8 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type OldBaseUser = {
-    id: (number | null);
-    email: string;
+export type DBMsg = {
+    role: string;
+    content: string;
+    id: number;
+    completion_id: number;
 };
 

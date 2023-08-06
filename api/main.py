@@ -14,14 +14,7 @@ from typing import List, Optional, Dict, Any, Union, TypeVar, Generic, Type, Cal
 import logging
 
 from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from database import (
-    engine,
-    SessionLocal,
-    get_db,
-    to_dict,
-    model_to_dict,
-    add_commit_refresh,
-)
+from database import engine, SessionLocal, get_db, model_to_dict, add_commit_refresh
 from models import User, Base, Chat, Message, Completion, UserToken
 from schema import (
     BaseToken,
@@ -135,7 +128,7 @@ async def user_from_token(formdata: BaseToken, db: Session = Depends(get_db)):
     return DBUser(email=user.email, id=user.id)
 
 
-@arouter.get('/user/{user_id}/chats', response_model=List[BaseChat])
+@arouter.get('/user/{user_id}/chats', response_model=List[DBChat])
 async def get_chats(user_id: int, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == user_id).first()
 
@@ -143,7 +136,7 @@ async def get_chats(user_id: int, db: Session = Depends(get_db)):
 
     bchats = []
     for c in chats:
-        bchats.append(BaseChat(id=c.id, name=c.name, user_id=user.id, completions=[]))
+        bchats.append(DBChat(id=c.id, name=c.name, user_id=user.id, completions=[]))
     print(bchats, 'bchats')
     return bchats
 
@@ -153,7 +146,7 @@ async def get_openapi_schema():
     return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
 
 
-@arouter.post("/chat/new", response_model=BaseChat)
+@arouter.post("/chat/new", response_model=DBChat)
 async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     chat = Chat(name=data.name, user_id=data.user_id)
     chat = add_commit_refresh(chat, db)
@@ -161,7 +154,7 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     return chat
 
 
-@arouter.get("/chat/{chat_id}", response_model=BaseChat)
+@arouter.get("/chat/{chat_id}", response_model=DBChat)
 async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     chat = db.query(Chat).filter(Chat.id == chat_id).first()
     user = db.query(User).filter(User.id == chat.user_id).first()
@@ -178,7 +171,7 @@ async def get_chat(chat_id: int, db: Session = Depends(get_db)):
 
     print('compscomps', comps)
 
-    return BaseChat(id=chat.id, user_id=user.id, completions=comps, name=chat.name)
+    return DBChat(id=chat.id, user_id=user.id, completions=comps, name=chat.name)
 
 
 @arouter.post("/completion/new", response_model=DBComp)

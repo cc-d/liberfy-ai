@@ -1,8 +1,9 @@
 import React from 'react';
 import {
-  BaseMessage, BaseChat, OldBaseUser,
-  BaseCompletion
-} from '../../api';
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "../../api";
 import {
   Box, Typography, Divider, List,
   Accordion, AccordionSummary, AccordionDetails, Button
@@ -44,7 +45,7 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
 }
 
 
-export const CompMsgElem: React.FC<{ message: BaseMessage }> = ({ message }) => {
+export const CompMsgElem: React.FC<{ message: BaseMsg }> = ({ message }) => {
   const theme = useTheme();
   return (
     <>

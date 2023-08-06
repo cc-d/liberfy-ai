@@ -9,12 +9,17 @@ import React, {
 } from "react";
 import apios from "../../apios";
 import { useAuthContext } from "../../AuthContext";
-import { BaseChat } from "../../api";
+import {
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "../../api";
+
 import { Box, TextField, Button, Typography, Container, Divider } from "@mui/material";
 
 export interface CreateChatProps {
   refreshChats: () => void;
-  addChat: (chat: BaseChat) => void;
+  addChat: (chat: DBChat) => void;
 }
 
 const CreateChat = ({ refreshChats, addChat }: CreateChatProps) => {
@@ -30,8 +35,7 @@ const CreateChat = ({ refreshChats, addChat }: CreateChatProps) => {
 
     if (user) {
       const uid = user.id;
-      apios
-        .post(`/chat/new`, {
+      apios.post(`/chat/new`, {
           name: name,
           user_id: uid,
         })

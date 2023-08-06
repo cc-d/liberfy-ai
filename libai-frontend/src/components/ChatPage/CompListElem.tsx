@@ -1,21 +1,24 @@
 import React from 'react';
-import { BaseCompletion } from "../../api";
+import {
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "../../api";
 import { Link as RouterLink } from "react-router-dom";
 import {
   ListItem, ListItemIcon, ListItemText,
   Theme, Divider, Box, ListItemButton,
 } from "@mui/material";
 import { Chat, QuestionAnswerOutlined } from "@mui/icons-material";
-import { useChatContext } from "./ChatContext";
 
 interface CompListElemProps {
-  completion: BaseCompletion;
+  completion: DBComp;
   theme: any;
-  setActiveComp: (completion: BaseCompletion | null) => void;
+  setActiveComp: (completion: DBComp | null) => void;
 }
 
 export const CompListElem: React.FC<CompListElemProps> = ({ completion, theme, setActiveComp }) => {
-  const comp: BaseCompletion = completion;
+  const comp: DBComp = completion;
   const compMsgs = comp.messages ? comp.messages : [];
   var compTitle: string = "System Message Not Found";
   if (compMsgs.length > 0) {

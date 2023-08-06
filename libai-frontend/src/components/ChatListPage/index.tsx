@@ -1,6 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../AuthContext";
-import { BaseChat, DataCreateChat } from "../../api";
+import {
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "../../api";
 import CreateChat from "./CreateChat";
 import apios from "../../apios";
 import {
@@ -26,7 +30,7 @@ import { useTheme } from "@mui/material/styles";
 
 const ChatListPage = () => {
   const { user } = useAuthContext();
-  const [chats, setChats] = useState<BaseChat[]>([]);
+  const [chats, setChats] = useState<DBChat[]>([]);
   const theme = useTheme();
 
   const refreshChats = () => {
@@ -43,7 +47,7 @@ const ChatListPage = () => {
     }
   };
 
-  const addChat = (chat: BaseChat) => {
+  const addChat = (chat: DBChat) => {
     setChats([...chats, chat]);
   };
 
@@ -59,7 +63,7 @@ const ChatListPage = () => {
       </Typography>
       <List>
         <Divider />
-        {chats.map((chat) => (
+        {chats && chats.map((chat) => (
           <ListItem
             key={chat.id}
             component={RouterLink}

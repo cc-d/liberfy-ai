@@ -2,8 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $DataUserFromToken = {
+export const $DBUserWithToken = {
     properties: {
+        email: {
+            type: 'string',
+            isRequired: true,
+        },
+        id: {
+            type: 'number',
+            isRequired: true,
+        },
         token: {
             type: 'string',
             isRequired: true,

@@ -2,12 +2,17 @@ import React, { FC, FormEvent, ChangeEvent, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { Box, Button, TextField, Paper } from "@mui/material";
 import apios from "../../apios";
-import { BaseCompletion } from '../../api';
+import {
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "../../api";
+
 
 interface NewCompModalProps {
   open: boolean;
   handleClose: () => void;
-  addCompletion: (completion: BaseCompletion) => void;
+  addCompletion: (completion: DBComp) => void;
   chat_id: number;
   user_id: number;
   temperature: number;

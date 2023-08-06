@@ -2,18 +2,18 @@ import React, { useState, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Home from './components/HomePage';
 import { AuthProvider } from './AuthContext';
-import NavBar from './nav/NavBar';
+import NavBar from './nav';
 import ChatPage from './components/ChatPage';
 import ChatListPage from './components/ChatListPage';
-import ChatProvider from './components/ChatPage/ChatContext';
 
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { CssBaseline, Container, Box } from '@mui/material';
+import { CssBaseline, Container, Box, useMediaQuery, useTheme } from '@mui/material';
+import { drawerWidth } from './components/ChatPage/Sidebar';
 
 // Create a context for the theme
 const ThemeContext = createContext({
   darkMode: true,
-  toggleThemeMode: () => {},
+  toggleThemeMode: () => { },
 });
 
 // Make a custom hook for using the theme context
@@ -22,7 +22,6 @@ export const useThemeContext = () => useContext(ThemeContext);
 
 function App() {
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>('dark');
-
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
@@ -41,22 +40,28 @@ function App() {
     },
   });
 
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
+
+  const margLeft: string = matches ? '0px' : '240px';
+
   return (
     <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline /> {/* CssBaseline helps to normalize CSS styles across different browsers */}
         <AuthProvider>
+          <Box
+            sx={{
+              marginLeft: margLeft
+            }}
 
-          <Container component={Box} id="nav-container" maxWidth={false} disableGutters={true}>
-          <NavBar darkMode={true ? themeMode == 'dark' : false} handleThemeChange={toggleThemeMode} />
+          >
+            <NavBar darkMode={true ? themeMode == 'dark' : false} handleThemeChange={toggleThemeMode} />
             <Routes>
               <Route path="/" element={<Home />} />
               <Route path="/chats" element={<ChatListPage />} />
               <Route path="/chat/:chatId" element={<ChatPage />} />
             </Routes>
-            </Container>
-
-
+          </Box>
         </AuthProvider>
       </ThemeProvider>
     </Router>

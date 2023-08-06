@@ -1,9 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import apios from "../../apios";
-import { BaseChat, BaseCompletion } from "../../api";
+import {
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "../../api";
 import { useAuthContext } from "../../AuthContext";
-import { useChatContext } from "./ChatContext";
 import {
   Button,
   Container,
@@ -20,15 +23,15 @@ import {
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "./CompListElem";
 import NewCompModal from "./NewCompModal";
-import ChatSidebar from "./Sidebar";
+import ChatSidebar, {drawerWidth} from "./Sidebar";
 import CompMsgElem from "./CompMsgElem";
 
 const ChatPage = () => {
   const { user } = useAuthContext();
   const { chatId } = useParams<{ chatId: string }>();
-  const [chat, setChat] = useState<BaseChat | null>(null);
-  const [completions, setCompletions] = useState<BaseCompletion[]>([]);
-  const [activeComp, setActiveComp] = useState<BaseCompletion | null>(null);
+  const [chat, setChat] = useState<DBChat | null>(null);
+  const [completions, setCompletions] = useState<DBComp[]>([]);
+  const [activeComp, setActiveComp] = useState<DBComp | null>(null);
   const [showModal, setShowModal] = useState(false);
   const theme = useTheme();
   const handleModalOpen = () => {
@@ -38,7 +41,7 @@ const ChatPage = () => {
     setShowModal(false);
   };
 
-  const addCompletion = (completion: BaseCompletion) => {
+  const addCompletion = (completion: DBComp) => {
     setCompletions([...completions, completion]);
   }
 
@@ -56,8 +59,7 @@ const ChatPage = () => {
   return (
     <Container maxWidth="xl" disableGutters>
       {user && user.id &&
-        <Grid container spacing={1}>
-          <Grid item xs={4}>
+        <Box>
             <ChatSidebar
               chat={chat}
               user={user}
@@ -66,8 +68,7 @@ const ChatPage = () => {
               activeComp={activeComp}
               setActiveComp={setActiveComp}
             />
-          </Grid>
-          <Grid item xs={8}>
+
             <Box display='flex' alignItems='center'>
               <Typography
                 fontSize={theme.typography.h5.fontSize}
@@ -98,14 +99,18 @@ const ChatPage = () => {
               </Button>
             </Box>
             <Divider />
-            {activeComp && activeComp.messages && activeComp.messages.length > 0 &&
+            {
+            activeComp && activeComp.messages &&
             activeComp.messages.map((msg) => (
-              <CompMsgElem key={msg.id} message={msg} />
+
+
+                <CompMsgElem message={msg} />
+
             ))
           }
-          </Grid>
-        </Grid>
+        </Box>
       }
+
     </Container>
   );
 };

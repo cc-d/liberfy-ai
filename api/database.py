@@ -29,31 +29,6 @@ def get_db():
         db.close()
 
 
-@logf(level='info')
-def to_dict(obj):
-    """Returns a dictionary representation of an SQLAlchemy-backed object."""
-    if obj is None:
-        return None
-
-    data = {c.key: getattr(obj, c.key) for c in inspect(obj).mapper.column_attrs}
-
-    # Include relationships
-    for relation in class_mapper(obj.__class__).relationships:
-        # only proceed if the relationship is loaded
-        if relation.key in obj.__dict__:
-            related_obj = getattr(obj, relation.key)
-
-            # If it's a list, loop through all items
-            if isinstance(related_obj, list):
-                data[relation.key] = [to_dict(child) for child in related_obj]
-
-            # If it's a single item, just convert it to a dict
-            else:
-                data[relation.key] = to_dict(related_obj)
-
-    return data
-
-
 @logf()
 def model_to_dict(
     model_instance: DeclarativeMeta, exclude_internal: bool = True

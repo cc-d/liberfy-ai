@@ -2,19 +2,22 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $OldBaseUser = {
+export const $DBMsg = {
     properties: {
-        id: {
-            type: 'any-of',
-            contains: [{
-                type: 'number',
-            }, {
-                type: 'null',
-            }],
+        role: {
+            type: 'string',
             isRequired: true,
         },
-        email: {
+        content: {
             type: 'string',
+            isRequired: true,
+        },
+        id: {
+            type: 'number',
+            isRequired: true,
+        },
+        completion_id: {
+            type: 'number',
             isRequired: true,
         },
     },

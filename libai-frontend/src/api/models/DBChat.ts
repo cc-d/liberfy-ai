@@ -3,12 +3,12 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseCompletion } from './BaseCompletion';
+import type { DBComp } from './DBComp';
 
-export type BaseChat = {
-    id: (number | null);
+export type DBChat = {
     name: string;
     user_id: number;
-    completions: Array<BaseCompletion>;
+    id: number;
+    completions: Array<DBComp>;
 };
 

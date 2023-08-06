@@ -12,7 +12,7 @@ from uuid import uuid4
 
 from utils import get_gptmodels
 
-from database import Base, to_dict
+from database import Base
 
 DEFAULT_GPTMODEL = 'gpt-3.5-turbo'
 

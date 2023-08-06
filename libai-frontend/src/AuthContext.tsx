@@ -1,15 +1,19 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import apios from "./apios";
 import { useNavigate } from "react-router-dom";
-import { OldBaseUserToken, OldBaseUser } from "./api";
+import {
+  BaseMsg, BaseToken,
+  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+} from "./api";
 
 interface AuthContextProps {
-  user: OldBaseUser | null;
+  user: DBUser | null;
   isLoading: boolean;
   login: (data: { token: string }) => Promise<void>;
   logout: () => void;
   autoTokenLogin: () => Promise<void>;
-  setUser: (user: OldBaseUser | null) => void;
+  setUser: (user: DBUser | null) => void;
 }
 
 const AuthContext = createContext<AuthContextProps | undefined>(undefined);
@@ -23,7 +27,7 @@ export const useAuthContext = () => {
 };
 
 export const AuthProvider: React.FC<any> = ({ children }) => {
-  const [user, setUser] = useState<OldBaseUser | null>(null);
+  const [user, setUser] = useState<DBUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -44,7 +48,7 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
             token: locToken,
           });
           if (resp) {
-            const newUser: OldBaseUser = resp.data;
+            const newUser: DBUser = resp.data;
             setUser(newUser);
           }
         } catch (error) {

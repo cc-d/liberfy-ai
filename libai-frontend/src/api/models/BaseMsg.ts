@@ -3,9 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type OldBaseUserToken = {
-    id: (number | null);
-    email: string;
-    token: (string | null);
+export type BaseMsg = {
+    role: string;
+    content: string;
 };
 

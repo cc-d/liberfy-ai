@@ -1,109 +1,89 @@
-import React, { useState } from 'react';
-import { BaseCompletion, BaseChat, BaseMessage, OldBaseUser } from "../../../api";
-import { useChatContext } from "../ChatContext";
+import React, {useState} from 'react';
 import {
   Box,
-  List,
+  Drawer,
   Button,
   Divider,
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
+  List,
+  useMediaQuery,
 } from "@mui/material";
 import {
-  AddCircleOutline, ExpandMore,
-  QuestionAnswer, QuestionAnswerOutlined,
-  ModeComment, AddComment, Comment, CommentOutlined,
-  AddCommentOutlined, AddBox, Chat
+  AddBox, Chat
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "../CompListElem";
 import NewCompModal from "../NewCompModal";
+import { DBComp, DBChat, DBUser } from "../../../api";
 
 interface ChatSidebarProps {
-  chat: BaseChat;
-  user: OldBaseUser;
-  addCompletion: (completion: BaseCompletion) => void;
-  completions: BaseCompletion[];
-  activeComp: BaseCompletion | null;
-  setActiveComp: (completion: BaseCompletion | null) => void;
+  chat: DBChat;
+  user: DBUser;
+  addCompletion: (completion: DBComp) => void;
+  completions: DBComp[];
+  activeComp: DBComp | null;
+  setActiveComp: (completion: DBComp | null) => void;
 }
 
-const drawerWidth = 240;
+export const drawerWidth = 240;
 
-const ChatSidebar: React.FC<ChatSidebarProps> = ({
+export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chat, user, addCompletion, completions, activeComp,
   setActiveComp,
 }) => {
   const theme = useTheme();
-  const [showModal, setShowModal] = useState(false);
+  const matches = useMediaQuery(theme.breakpoints.down('sm'));
+  const [drawerOpen, setDrawerOpen] = useState(true); // Declare drawerOpen state
 
-  const handleModalOpen = () => {
-    setShowModal(true);
-  };
-
-  const handleModalClose = () => {
-    setShowModal(false);
+  const toggleDrawer = () => {
+    setDrawerOpen(!drawerOpen); // Toggle the drawer's open state
   };
 
 
   return (
-    <Box>
-
-      <Accordion defaultExpanded disableGutters={true}>
-        <AccordionSummary
-          expandIcon={<ExpandMore />}
-          aria-controls="completions-content"
-          id="completions-header"
+    <Drawer
+      variant={matches ? "temporary" : "permanent"}
+      open={drawerOpen}
+      onClose={toggleDrawer}
+      sx={{
+        width: drawerWidth,
+        flexShrink: 0,
+        '& .MuiDrawer-paper': {
+          width: drawerWidth,
+          boxSizing: 'border-box',
+        },
+      }}
+    >
+      <Box
+        display="flex"
+        flexDirection="column"
+        sx={{ p: 2 }}
+      >
+        <Button
+          variant="contained"
+          startIcon={<AddBox />}
+          onClick={() => setActiveComp(null)}
+          sx={{ mt: -1, mb: 1 }}
+          size="small"
         >
+          New
+        </Button>
 
-          <QuestionAnswerOutlined sx={{ mr: 0.5 }} />
-          <Typography sx={{}} variant="body1">Completions</Typography>
-        </AccordionSummary>
-        <AccordionDetails>
-          <Box display="flex" flexDirection="column">
-            <Button
-              variant="contained"
-              startIcon={<AddBox />}
-              onClick={handleModalOpen}
-              sx={{ mt: -1, mb: 1 }}
-              size="small"
-            >
-              New
-            </Button>
+        <Divider />
 
-            <Divider />
-
-            <List dense={true}>
-              {completions.length > 0 &&
-                completions.map((completion) => (
-                  <CompListElem
-                    key={completion.id}
-                    completion={completion}
-                    theme={theme}
-                    setActiveComp={setActiveComp}
-                  />
-                ))
-                }
-            </List>
-          </Box>
-        </AccordionDetails>
-      </Accordion>
-
-
-
-      {chat && chat.id && user && user.id &&
-        <NewCompModal
-          open={showModal}
-          handleClose={handleModalClose}
-          addCompletion={addCompletion}
-          chat_id={chat.id}
-          user_id={user.id}
-          temperature={1}
-        />
-      }
-    </Box>
+        <List dense={true}>
+          {completions.length > 0 &&
+            completions.map((completion) => (
+              <CompListElem
+                key={completion.id}
+                completion={completion}
+                theme={theme}
+                setActiveComp={setActiveComp}
+              />
+            ))
+          }
+        </List>
+      </Box>
+    </Drawer>
   );
 };
 
