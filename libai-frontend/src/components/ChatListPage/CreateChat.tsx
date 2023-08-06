@@ -67,7 +67,6 @@ const CreateChat = ({ refreshChats, addChat }: CreateChatProps) => {
           label="New Chat Name"
           variant="standard"
           helperText="creates a system message"
-          defaultValue=""
           style={{ margin: "4px" }}
           size="small"
         />

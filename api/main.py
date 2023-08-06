@@ -145,7 +145,6 @@ async def login_jwt_token(data: DataOAuth, db: Session = Depends(get_db)) -> Tok
     return DBUserWithToken(token=create_access_token(user.email), **model_to_dict(user))
 
 
-@logf()
 @arouter.post('/user_from_token', response_model=DBUser)
 def jwt_autologin(data: DataJustToken, db: Session = Depends(get_db)) -> DBUser:
     user = user_from_jwt(db, data.token)

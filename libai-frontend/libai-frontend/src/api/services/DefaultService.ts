@@ -2,16 +2,16 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { BaseChat } from '../models/BaseChat';
-import type { BaseCompletion } from '../models/BaseCompletion';
-import type { BaseMessage } from '../models/BaseMessage';
-import type { BaseUser } from '../models/BaseUser';
-import type { BaseUserToken } from '../models/BaseUserToken';
 import type { DataCreateChat } from '../models/DataCreateChat';
-import type { DataCreateCompletion } from '../models/DataCreateCompletion';
+import type { DataCreateComp } from '../models/DataCreateComp';
+import type { DataJustToken } from '../models/DataJustToken';
 import type { DataMsgAdd } from '../models/DataMsgAdd';
-import type { DataUserFromToken } from '../models/DataUserFromToken';
-import type { EmailPassData } from '../models/EmailPassData';
+import type { DataOAuth } from '../models/DataOAuth';
+import type { DBChat } from '../models/DBChat';
+import type { DBComp } from '../models/DBComp';
+import type { DBMsg } from '../models/DBMsg';
+import type { DBUser } from '../models/DBUser';
+import type { DBUserWithToken } from '../models/DBUserWithToken';
 
 import type { CancelablePromise } from '../core/CancelablePromise';
 import { OpenAPI } from '../core/OpenAPI';
@@ -32,14 +32,34 @@ export class DefaultService {
     }
 
     /**
-     * Login User
+     * Register User
      * @param requestBody
-     * @returns BaseUserToken Successful Response
+     * @returns DBUserWithToken Successful Response
      * @throws ApiError
      */
-    public static loginUserApiUserLoginPost(
-        requestBody: EmailPassData,
-    ): CancelablePromise<BaseUserToken> {
+    public static registerUserApiUserRegisterPost(
+        requestBody: DataOAuth,
+    ): CancelablePromise<DBUserWithToken> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/user/register',
+            body: requestBody,
+            mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Login Jwt Token
+     * @param requestBody
+     * @returns DBUserWithToken Successful Response
+     * @throws ApiError
+     */
+    public static loginJwtTokenApiUserLoginPost(
+        requestBody: DataOAuth,
+    ): CancelablePromise<DBUserWithToken> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/login',
@@ -52,17 +72,17 @@ export class DefaultService {
     }
 
     /**
-     * User From Token
+     * Jwt Autologin
      * @param requestBody
-     * @returns BaseUser Successful Response
+     * @returns DBUser Successful Response
      * @throws ApiError
      */
-    public static userFromTokenApiUserUserFromTokenPost(
-        requestBody: DataUserFromToken,
-    ): CancelablePromise<BaseUser> {
+    public static jwtAutologinApiUserFromTokenPost(
+        requestBody: DataJustToken,
+    ): CancelablePromise<DBUser> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/user/user_from_token',
+            url: '/api/user_from_token',
             body: requestBody,
             mediaType: 'application/json',
             errors: {
@@ -74,12 +94,12 @@ export class DefaultService {
     /**
      * Get Chats
      * @param userId
-     * @returns BaseChat Successful Response
+     * @returns DBChat Successful Response
      * @throws ApiError
      */
     public static getChatsApiUserUserIdChatsGet(
         userId: number,
-    ): CancelablePromise<Array<BaseChat>> {
+    ): CancelablePromise<Array<DBChat>> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/user/{user_id}/chats',
@@ -107,12 +127,12 @@ export class DefaultService {
     /**
      * New Chat
      * @param requestBody
-     * @returns BaseChat Successful Response
+     * @returns DBChat Successful Response
      * @throws ApiError
      */
     public static newChatApiChatNewPost(
         requestBody: DataCreateChat,
-    ): CancelablePromise<BaseChat> {
+    ): CancelablePromise<DBChat> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/chat/new',
@@ -127,12 +147,12 @@ export class DefaultService {
     /**
      * Get Chat
      * @param chatId
-     * @returns BaseChat Successful Response
+     * @returns DBChat Successful Response
      * @throws ApiError
      */
     public static getChatApiChatChatIdGet(
         chatId: number,
-    ): CancelablePromise<BaseChat> {
+    ): CancelablePromise<DBChat> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/chat/{chat_id}',
@@ -148,12 +168,12 @@ export class DefaultService {
     /**
      * Create Completion
      * @param requestBody
-     * @returns BaseCompletion Successful Response
+     * @returns DBComp Successful Response
      * @throws ApiError
      */
     public static createCompletionApiCompletionNewPost(
-        requestBody: DataCreateCompletion,
-    ): CancelablePromise<BaseCompletion> {
+        requestBody: DataCreateComp,
+    ): CancelablePromise<DBComp> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/completion/new',
@@ -168,12 +188,12 @@ export class DefaultService {
     /**
      * Get Completion
      * @param completionId
-     * @returns BaseCompletion Successful Response
+     * @returns DBComp Successful Response
      * @throws ApiError
      */
     public static getCompletionApiCompletionCompletionIdGet(
         completionId: number,
-    ): CancelablePromise<BaseCompletion> {
+    ): CancelablePromise<DBComp> {
         return __request(OpenAPI, {
             method: 'GET',
             url: '/api/completion/{completion_id}',
@@ -190,13 +210,13 @@ export class DefaultService {
      * Add Message
      * @param completionId
      * @param requestBody
-     * @returns BaseMessage Successful Response
+     * @returns DBMsg Successful Response
      * @throws ApiError
      */
     public static addMessageApiCompletionCompletionIdMessageAddPost(
         completionId: number,
         requestBody: DataMsgAdd,
-    ): CancelablePromise<BaseMessage> {
+    ): CancelablePromise<DBMsg> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/completion/{completion_id}/message/add',

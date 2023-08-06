@@ -2,14 +2,22 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $EmailPassData = {
+export const $DBMsg = {
     properties: {
-        email: {
+        role: {
             type: 'string',
             isRequired: true,
         },
-        password: {
+        content: {
             type: 'string',
+            isRequired: true,
+        },
+        id: {
+            type: 'number',
+            isRequired: true,
+        },
+        completion_id: {
+            type: 'number',
             isRequired: true,
         },
     },

@@ -23,7 +23,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "./CompListElem";
 import NewCompModal from "./NewCompModal";
-import ChatSidebar, {drawerWidth} from "./Sidebar";
+import ChatSidebar, {drawerWidth} from "../Sidebar";
 import CompMsgElem from "./CompMsgElem";
 
 const ChatPage = () => {

@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type DataUserFromToken = {
-    token: string;
+export type DataOAuth = {
+    username: string;
+    password: string;
 };
 

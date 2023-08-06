@@ -3,8 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type EmailPassData = {
-    email: string;
-    password: string;
+export type BaseMsg = {
+    role: string;
+    content: string;
 };
 

@@ -3,10 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type DataCreateCompletion = {
-    chat_id: number;
-    user_id: number;
-    sysprompt: string;
-    temperature: number;
+export type DBMsg = {
+    role: string;
+    content: string;
+    id: number;
+    completion_id: number;
 };
 

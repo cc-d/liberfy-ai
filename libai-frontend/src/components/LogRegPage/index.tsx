@@ -46,7 +46,7 @@ const LogRegPage = () => {
   };
 
   return (
-    <>
+    <Container maxWidth='md'>
       <Typography variant='h4' ml={1}>
         Login or Register
       </Typography>
@@ -54,7 +54,7 @@ const LogRegPage = () => {
         <LogRegForm formType='log' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'log')} />
         <LogRegForm formType='reg' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'reg')} />
       </Box>
-    </>
+    </Container>
   );
 };
 

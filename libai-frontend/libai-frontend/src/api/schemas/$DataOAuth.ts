@@ -2,18 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseUser = {
+export const $DataOAuth = {
     properties: {
-        id: {
-            type: 'any-of',
-            contains: [{
-                type: 'number',
-            }, {
-                type: 'null',
-            }],
+        username: {
+            type: 'string',
             isRequired: true,
         },
-        email: {
+        password: {
             type: 'string',
             isRequired: true,
         },

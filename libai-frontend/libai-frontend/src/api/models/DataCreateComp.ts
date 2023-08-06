@@ -3,8 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BaseUser = {
-    id: (number | null);
-    email: string;
+export type DataCreateComp = {
+    chat_id: number;
+    user_id: number;
+    sysprompt: string;
+    temperature: number;
 };
 

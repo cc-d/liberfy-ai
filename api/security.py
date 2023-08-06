@@ -101,6 +101,20 @@ def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> b
 
 
 @logf()
+def encode_jwt(enc: dict) -> str:
+    """
+    Encode a dictionary into a jwt token.
+
+    Args:
+        enc (dict): The dictionary to encode.
+
+    Returns:
+        str: The encoded jwt token.
+    """
+    return jwt.encode(enc, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+
+
+@logf()
 def create_access_token(
     email: str, expires_delta: timedelta = ACCESS_TOKEN_EXPIRE_MINUTES
 ) -> Token:
@@ -116,7 +130,7 @@ def create_access_token(
     """
     exp = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
     payload = {'exp': datetime.utcnow() + exp, 'iat': datetime.utcnow(), 'sub': email}
-    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    token = encode_jwt(payload)
     return Token(access_token=token, token_type='bearer')
 
 

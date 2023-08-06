@@ -11,9 +11,9 @@ import {
   AddBox, Chat
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import CompListElem from "../CompListElem";
-import NewCompModal from "../NewCompModal";
-import { DBComp, DBChat, DBUser } from "../../../api";
+import CompListElem from "../ChatPage/CompListElem";
+import NewCompModal from "../ChatPage/NewCompModal";
+import { DBComp, DBChat, DBUser } from "../../api";
 
 interface ChatSidebarProps {
   chat: DBChat;

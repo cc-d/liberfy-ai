@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import apios from "./apios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   BaseMsg, Token,
   DataCreateChat, DataCreateComp, DataMsgAdd,
@@ -11,6 +11,8 @@ interface AuthContextProps {
   user: DBUser | null;
   setUser: React.Dispatch<React.SetStateAction<DBUser | null>>;
   isLoading: boolean;
+  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+
   login: (data: jwtLoginData) => Promise<void>;
   register: (data: jwtLoginData) => Promise<void>;
   logout: () => void;
@@ -32,72 +34,73 @@ export const useAuthContext = () => {
   return context;
 };
 
-export const AuthProvider: React.FC<any> = ({ children }) => {
+export const AuthProvider = ({topUserEmail, children }) => {
   const [user, setUser] = useState<DBUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
+  const wut = '';
 
   const toDBUser = (userWithToken: DBUserWithToken): DBUser => {
     const { token, ...userWithoutToken } = userWithToken;
     return userWithoutToken;
   };
 
-
-
+  const setActiveUser = (user: DBUser) => {
+    console.log('setactive', user)
+    topUserEmail(user.email);
+    console.log('setnavtop', user.email)
+    setUser(user);
+  };
 
   const login = async (data: jwtLoginData) => {
-    setIsLoading(true);
     try {
-      const resp = await apios.post("/user/login", {username: data.username, password: data.password});
+      const resp = await apios.post("/user/login", { username: data.username, password: data.password });
       if (resp) {
         const tokUser: DBUserWithToken = resp.data;
         console.log(tokUser, 'tokUser')
         localStorage.setItem("token", tokUser.token.access_token);
         console.log(toDBUser(tokUser));
-        setUser(tokUser);
+        setActiveUser(tokUser);
+        navigate('/chats')
       }
     } catch (error) {
       console.error("Login error:", error);
-    } finally {
-      setIsLoading(false);
     }
   };
 
   const register = async (data: jwtLoginData) => {
-    setIsLoading(true);
     try {
-      const resp = await apios.post("/user/register", {username: data.username, password: data.password});
+      const resp = await apios.post("/user/register", { username: data.username, password: data.password });
       if (resp) {
         const tokUser: DBUserWithToken = resp.data;
         localStorage.setItem("token", tokUser.token.access_token);
-        setUser(toDBUser(tokUser));
+        setActiveUser(toDBUser(tokUser));
+        navigate('/chats')
       }
     } catch (error) {
       console.error("Registration error:", error);
-    } finally {
-      setIsLoading(false);
     }
+
   };
 
   const autoTokenLogin = async () => {
     const locToken: string | null = localStorage.getItem("token");
     if (locToken && !user && !isLoading) {
-      setIsLoading(true);
       try {
-        const resp = await apios.post("/user_from_token", {token: locToken});
+        const resp = await apios.post("/user_from_token", { token: locToken });
         if (resp) {
           const tokUser: DBUserWithToken = resp.data;
-          setUser(toDBUser(tokUser));
+          setActiveUser(toDBUser(tokUser));
         }
       } catch (error) {
         console.error("Auto login error:", error);
       } finally {
-        setIsLoading(false);
       }
     }
   };
 
   const logout = () => {
+
     localStorage.removeItem("token");
     setUser(null);
     navigate('/');
@@ -109,7 +112,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ setUser, user, isLoading, login, register, logout, autoTokenLogin }}
+      value={{
+        setUser, user, isLoading, setIsLoading, login,
+        register, logout, autoTokenLogin
+      }}
     >
       {children}
     </AuthContext.Provider>
