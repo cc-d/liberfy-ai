@@ -8,11 +8,11 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { BaseMsg } from './models/BaseMsg';
-export type { Body_login_jwt_token_api_user_login_post } from './models/Body_login_jwt_token_api_user_login_post';
 export type { DataCreateChat } from './models/DataCreateChat';
 export type { DataCreateComp } from './models/DataCreateComp';
-export type { DataEmailPass } from './models/DataEmailPass';
+export type { DataJustToken } from './models/DataJustToken';
 export type { DataMsgAdd } from './models/DataMsgAdd';
+export type { DataOAuth } from './models/DataOAuth';
 export type { DBChat } from './models/DBChat';
 export type { DBComp } from './models/DBComp';
 export type { DBMsg } from './models/DBMsg';
@@ -23,11 +23,11 @@ export type { Token } from './models/Token';
 export type { ValidationError } from './models/ValidationError';
 
 export { $BaseMsg } from './schemas/$BaseMsg';
-export { $Body_login_jwt_token_api_user_login_post } from './schemas/$Body_login_jwt_token_api_user_login_post';
 export { $DataCreateChat } from './schemas/$DataCreateChat';
 export { $DataCreateComp } from './schemas/$DataCreateComp';
-export { $DataEmailPass } from './schemas/$DataEmailPass';
+export { $DataJustToken } from './schemas/$DataJustToken';
 export { $DataMsgAdd } from './schemas/$DataMsgAdd';
+export { $DataOAuth } from './schemas/$DataOAuth';
 export { $DBChat } from './schemas/$DBChat';
 export { $DBComp } from './schemas/$DBComp';
 export { $DBMsg } from './schemas/$DBMsg';

@@ -3,7 +3,7 @@ import apios from "./apios";
 import { useNavigate } from "react-router-dom";
 import {
   BaseMsg, Token,
-  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBChat, DBUserWithToken, DBUser
 } from "./api";
 
@@ -11,13 +11,13 @@ interface AuthContextProps {
   user: DBUser | null;
   setUser: React.Dispatch<React.SetStateAction<DBUser | null>>;
   isLoading: boolean;
-  login: (data: DataEmailPass) => Promise<void>;
-  register: (data: DataEmailPass) => Promise<void>;
+  login: (data: jwtLoginData) => Promise<void>;
+  register: (data: jwtLoginData) => Promise<void>;
   logout: () => void;
   autoTokenLogin: () => Promise<void>;
 }
 
-interface jwtLoginData {
+export interface jwtLoginData {
   username: string;
   password: string;
 }
@@ -42,23 +42,19 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     return userWithoutToken;
   };
 
-  const toJwtData = (data: DataEmailPass): jwtLoginData => {
-    const jdata: jwtLoginData = {
-      username: data.email,
-      password: data.password,
-    };
-    return jdata;
-  }
 
 
-  const login = async (data: DataEmailPass) => {
+
+  const login = async (data: jwtLoginData) => {
     setIsLoading(true);
     try {
-      const resp = await apios.post("/user/login", toJwtData(data));
+      const resp = await apios.post("/user/login", {username: data.username, password: data.password});
       if (resp) {
         const tokUser: DBUserWithToken = resp.data;
+        console.log(tokUser, 'tokUser')
         localStorage.setItem("token", tokUser.token.access_token);
-        setUser(toDBUser(tokUser));
+        console.log(toDBUser(tokUser));
+        setUser(tokUser);
       }
     } catch (error) {
       console.error("Login error:", error);
@@ -67,10 +63,10 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     }
   };
 
-  const register = async (data: DataEmailPass) => {
+  const register = async (data: jwtLoginData) => {
     setIsLoading(true);
     try {
-      const resp = await apios.post("/user/register", toJwtData(data));
+      const resp = await apios.post("/user/register", {username: data.username, password: data.password});
       if (resp) {
         const tokUser: DBUserWithToken = resp.data;
         localStorage.setItem("token", tokUser.token.access_token);
@@ -88,7 +84,7 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
     if (locToken && !user && !isLoading) {
       setIsLoading(true);
       try {
-        const resp = await apios.post("/user/user_from_token", { token: locToken });
+        const resp = await apios.post("/user_from_token", {token: locToken});
         if (resp) {
           const tokUser: DBUserWithToken = resp.data;
           setUser(toDBUser(tokUser));
@@ -108,7 +104,7 @@ export const AuthProvider: React.FC<any> = ({ children }) => {
   };
 
   useEffect(() => {
-
+    autoTokenLogin();
   }, []); // Add auto login on mount
 
   return (

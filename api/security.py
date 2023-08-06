@@ -142,10 +142,8 @@ def decode_jwt(
         raise credentials_exception
 
 
-@logf()
-def user_from_jwt(
-    tokenstr: str = Security(decode_jwt), db: Session = Depends(get_db)
-) -> DBUser:
+@logf(level='warning')
+def user_from_jwt(db: Session, tokenstr: str = Security(decode_jwt)) -> DBUser:
     """Extracts the user email from a jwt token.
 
     Args:
@@ -156,6 +154,7 @@ def user_from_jwt(
     """
 
     payload = decode_jwt(tokenstr)
+    print(1)
     email = payload.get('sub')
     if email is None:
         raise HTTPException(

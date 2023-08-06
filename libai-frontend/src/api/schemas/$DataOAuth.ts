@@ -2,9 +2,9 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $DataEmailPass = {
+export const $DataOAuth = {
     properties: {
-        email: {
+        username: {
             type: 'string',
             isRequired: true,
         },

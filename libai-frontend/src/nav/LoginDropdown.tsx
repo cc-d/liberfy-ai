@@ -11,7 +11,7 @@ import { useAuthContext } from '../AuthContext';
 import apios from '../apios';
 import {
   BaseMsg,
-  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat, DBUser
 } from "../api";
 

@@ -12,42 +12,46 @@ import {
   InputLabel,
 } from "@mui/material";
 import { useAuthContext } from "../../AuthContext";
-import { DataEmailPass } from "../../api";
 
 
-const LogRegForm = ({ formType }): JSX.Element => {
-  console.log(formType, 'formType')
+const LogRegForm = ({ formType, onSubmit, onChange }): JSX.Element => {
+  const ftype = formType === 'log' ? 'log' : 'reg';
 
-  const ftype: string = formType === 'log' ? 'log' : 'reg'
-  console.log(ftype, 'ftype')
   return (
     <Box
       id={`${ftype}-form`}
       component='form'
+      onSubmit={(e) => onSubmit(e, ftype)}
       sx={{
         '& .MuiTextField-root': { m: 1 },
       }}
       autoComplete='off'
       display='flex'
       flexDirection='column'
-      >
+    >
 
       <Typography variant='h5' sx={{ml: 1}}>
-        {ftype == 'reg' ? 'Register' : 'Login'}
+        {ftype === 'reg' ? 'Register' : 'Login'}
       </Typography>
 
       <TextField
         id={`${ftype}-email`}
         label='Email'
         variant='outlined'
+        name='username'
+        onChange={onChange}
       />
 
       <TextField
         id={`${ftype}-password`}
         label='Password'
+        type='password'
+        name='password'
+        onChange={onChange}
       />
 
       <Button
+        type="submit"
         variant='contained'
         sx={{
           alignSelf: 'flex-end',
@@ -57,8 +61,7 @@ const LogRegForm = ({ formType }): JSX.Element => {
         {ftype === 'log' ? 'Login' : 'Register'}
       </Button>
     </Box>
-
-  )
+  );
 }
 
 export default LogRegForm;

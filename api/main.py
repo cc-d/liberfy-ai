@@ -48,6 +48,8 @@ from schema import (
     DataCreateComp,
     DataMsgAdd,
     Token,
+    DataOAuth,
+    DataJustToken,
 )
 from security import (
     hash_passwd,
@@ -107,12 +109,10 @@ oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/token")
 
 
 @arouter.post('/user/register', response_model=DBUserWithToken)
-async def register_user(
-    formdata: DataEmailPass, db: Session = Depends(get_db)
-) -> BaseUser:
-    remail, rpass = formdata.email, formdata.password
+async def register_user(data: DataOAuth, db: Session = Depends(get_db)) -> BaseUser:
+    remail, rpass = data.username, data.password
     user = db.query(User).filter(User.email == remail).first()
-    if user is None:
+    if user is not None:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
             detail="User Already Exists",
@@ -125,17 +125,17 @@ async def register_user(
 
 
 @arouter.post("/user/login", response_model=DBUserWithToken)
-async def login_jwt_token(
-    oauthdata: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
-) -> Token:
-    user = db.query(User).filter(User.email == oauthdata.username).first()
+async def login_jwt_token(data: DataOAuth, db: Session = Depends(get_db)) -> Token:
+    email = data.username
+    password = data.password
+    user = db.query(User).filter(User.email == email).first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail=f"No user found with email {oauthdata.email}",
+            detail=f"No user found with email {email}",
             headers={"WWW-Authenticate": "Bearer"},
         )
-    elif not verify_passwd(oauthdata.password, user.hpassword):
+    elif not verify_passwd(password, user.hpassword):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password for email.",
@@ -145,9 +145,10 @@ async def login_jwt_token(
     return DBUserWithToken(token=create_access_token(user.email), **model_to_dict(user))
 
 
-@arouter.post('/user/token_login', response_model=DBUser)
-def jwt_autologin(tokstr: str, db: Session = Depends(get_db)) -> DBUser:
-    user = user_from_jwt(tokstr)
+@logf()
+@arouter.post('/user_from_token', response_model=DBUser)
+def jwt_autologin(data: DataJustToken, db: Session = Depends(get_db)) -> DBUser:
+    user = user_from_jwt(db, data.token)
     return DBUser(**model_to_dict(user))
 
 

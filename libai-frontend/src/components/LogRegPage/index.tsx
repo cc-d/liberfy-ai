@@ -9,38 +9,53 @@ import {
   Paper,
   Divider,
 } from "@mui/material";
-import { useAuthContext } from "../../AuthContext";
-import { DataEmailPass } from "../../api";
+import { useAuthContext, jwtLoginData } from "../../AuthContext";
 import LogRegForm from "./LogRegForm";
 
 const LogRegPage = () => {
   const {
-    user, setUser, autoTokenLogin, login, register
+    login, register, user, logout, autoTokenLogin, isLoading,
   } = useAuthContext();
 
   const [logForm, setLogForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
   const [regForm, setRegForm] = useState({
-    email: "",
+    username: "",
     password: "",
   });
 
+  const handleChange = (event, formType) => {
+    const { name, value } = event.target;
+    if (formType === 'log') {
+      setLogForm({ ...logForm, [name]: value });
+    } else {
+      setRegForm({ ...regForm, [name]: value });
+    }
+  };
+
+  const handleSubmit = (event, formType) => {
+    event.preventDefault();
+    if (formType === 'log') {
+      login(logForm);
+    } else {
+      register(regForm);
+    }
+  };
+
   return (
-      <>
+    <>
       <Typography variant='h4' ml={1}>
         Login or Register
       </Typography>
       <Box display='flex'>
-        <LogRegForm formType='log' />
-        <LogRegForm formType='reg' />
+        <LogRegForm formType='log' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'log')} />
+        <LogRegForm formType='reg' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'reg')} />
       </Box>
-      </>
-
-  )
-
-}
+    </>
+  );
+};
 
 export default LogRegPage;

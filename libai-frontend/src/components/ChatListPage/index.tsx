@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useAuthContext } from "../../AuthContext";
 import {
   BaseMsg,
-  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
 import CreateChat from "./CreateChat";

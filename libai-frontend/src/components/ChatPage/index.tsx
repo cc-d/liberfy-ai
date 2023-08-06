@@ -3,7 +3,7 @@ import { useParams } from "react-router-dom";
 import apios from "../../apios";
 import {
   BaseMsg,
-  DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
+  DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
 import { useAuthContext } from "../../AuthContext";

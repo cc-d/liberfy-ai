@@ -91,3 +91,12 @@ class DataMsgAdd(BaseModel):
     completion_id: Optional[int]
     role: str
     content: str
+
+
+class DataOAuth(BaseModel):
+    username: str
+    password: str
+
+
+class DataJustToken(BaseModel):
+    token: str

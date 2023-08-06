@@ -2,11 +2,11 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-import type { Body_login_jwt_token_api_user_login_post } from '../models/Body_login_jwt_token_api_user_login_post';
 import type { DataCreateChat } from '../models/DataCreateChat';
 import type { DataCreateComp } from '../models/DataCreateComp';
-import type { DataEmailPass } from '../models/DataEmailPass';
+import type { DataJustToken } from '../models/DataJustToken';
 import type { DataMsgAdd } from '../models/DataMsgAdd';
+import type { DataOAuth } from '../models/DataOAuth';
 import type { DBChat } from '../models/DBChat';
 import type { DBComp } from '../models/DBComp';
 import type { DBMsg } from '../models/DBMsg';
@@ -38,7 +38,7 @@ export class DefaultService {
      * @throws ApiError
      */
     public static registerUserApiUserRegisterPost(
-        requestBody: DataEmailPass,
+        requestBody: DataOAuth,
     ): CancelablePromise<DBUserWithToken> {
         return __request(OpenAPI, {
             method: 'POST',
@@ -53,18 +53,18 @@ export class DefaultService {
 
     /**
      * Login Jwt Token
-     * @param formData
+     * @param requestBody
      * @returns DBUserWithToken Successful Response
      * @throws ApiError
      */
     public static loginJwtTokenApiUserLoginPost(
-        formData: Body_login_jwt_token_api_user_login_post,
+        requestBody: DataOAuth,
     ): CancelablePromise<DBUserWithToken> {
         return __request(OpenAPI, {
             method: 'POST',
             url: '/api/user/login',
-            formData: formData,
-            mediaType: 'application/x-www-form-urlencoded',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },
@@ -73,19 +73,18 @@ export class DefaultService {
 
     /**
      * Jwt Autologin
-     * @param tokstr
+     * @param requestBody
      * @returns DBUser Successful Response
      * @throws ApiError
      */
-    public static jwtAutologinApiUserTokenLoginPost(
-        tokstr: string,
+    public static jwtAutologinApiUserFromTokenPost(
+        requestBody: DataJustToken,
     ): CancelablePromise<DBUser> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/user/token_login',
-            query: {
-                'tokstr': tokstr,
-            },
+            url: '/api/user_from_token',
+            body: requestBody,
+            mediaType: 'application/json',
             errors: {
                 422: `Validation Error`,
             },
