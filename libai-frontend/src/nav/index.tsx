@@ -44,35 +44,11 @@ const NavBar = ({ darkMode, handleThemeChange }: NavBarProps) => {
   }, [user]);
 
   return (
-    <AppBar
-      position="static">
-      <Toolbar  variant="dense">
-        <Link
-          component={RouterLink}
-          to="/"
-        >
-          Home
-        </Link>
-        {user && !isLoading && (
-          <Link
-            component={RouterLink}
-            to="/chats">
-            Chats
-          </Link>
-        )}
 
-        {user && !isLoading ? (
+    <IconButton color="inherit" onClick={handleThemeChange}>
+      {darkMode ? <DarkMode /> : <LightMode />}
+    </IconButton>
 
-          <AccountCircle />
-        ) : (
-          <LoginDropdown />
-        )}
-
-        <IconButton color="inherit" onClick={handleThemeChange}>
-          {darkMode ? <DarkMode /> : <LightMode />}
-        </IconButton>
-      </Toolbar>
-    </AppBar>
   );
 };
 

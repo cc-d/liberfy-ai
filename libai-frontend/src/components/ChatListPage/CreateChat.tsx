@@ -10,9 +10,9 @@ import React, {
 import apios from "../../apios";
 import { useAuthContext } from "../../AuthContext";
 import {
-  BaseMsg, BaseToken,
+  BaseMsg,
   DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
-  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+  DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
 
 import { Box, TextField, Button, Typography, Container, Divider } from "@mui/material";

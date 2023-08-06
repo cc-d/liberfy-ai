@@ -13,7 +13,7 @@ export const $DBUserWithToken = {
             isRequired: true,
         },
         token: {
-            type: 'string',
+            type: 'Token',
             isRequired: true,
         },
     },

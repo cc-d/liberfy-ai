@@ -2,9 +2,13 @@
 /* istanbul ignore file */
 /* tslint:disable */
 /* eslint-disable */
-export const $BaseToken = {
+export const $Token = {
     properties: {
-        token: {
+        access_token: {
+            type: 'string',
+            isRequired: true,
+        },
+        token_type: {
             type: 'string',
             isRequired: true,
         },

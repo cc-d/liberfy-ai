@@ -4,21 +4,23 @@ from passlib.context import CryptContext
 from datetime import datetime, timedelta
 from sqlalchemy.orm import Session
 from database import get_db
-from fastapi import Depends, HTTPException, status
+from fastapi import Depends, HTTPException, status, Security
 from fastapi.security import OAuth2PasswordBearer
 import random
 from logfunc import logf
 from typing import Union
-from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
-from models import User, UserToken, Chat, Completion
+from config import (
+    PORT,
+    HOST,
+    JWT_SECRET_KEY,
+    JWT_ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+)
+from models import User, Chat, Completion
 from schema import (
-    BaseToken,
-    TokenUID,
     BaseUser,
     DBUser,
     DBUserWithToken,
-    BaseTokenUser,
-    BaseTokenUIDUser,
     DBUserPass,
     BaseMsg,
     DBMsg,
@@ -32,6 +34,7 @@ from schema import (
     DataCreateChat,
     DataCreateComp,
     DataMsgAdd,
+    Token,
 )
 from database import add_commit_refresh
 import logging
@@ -48,6 +51,7 @@ credentials_exception = HTTPException(
 )
 
 
+@logf()
 def verify_passwd(cleartext: str, hashed: str) -> bool:
     """
     Verify if the cleartext password matches the hashed password.
@@ -62,6 +66,7 @@ def verify_passwd(cleartext: str, hashed: str) -> bool:
     return pwd_context.verify(cleartext, hashed)
 
 
+@logf()
 def hash_passwd(cleartext: str) -> str:
     """
     Hashes a cleartext password.
@@ -75,6 +80,7 @@ def hash_passwd(cleartext: str) -> str:
     return pwd_context.hash(cleartext)
 
 
+@logf()
 def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> bool:
     """
     Validate if a user with the given email and password exists in the database.
@@ -94,12 +100,74 @@ def valid_user_pass(email: str, passwd: str, db: Session = Depends(get_db)) -> b
     return False
 
 
-def create_user_token(user_id: Union[str, int], db: Session) -> UserToken:
-    user = db.query(User).filter(User.id == user_id).first()
-    newtoken = UserToken(user_id=user_id)
-    return add_commit_refresh(newtoken, db)
+@logf()
+def create_access_token(
+    email: str, expires_delta: timedelta = ACCESS_TOKEN_EXPIRE_MINUTES
+) -> Token:
+    """Creates jwt access token for a given user.
+
+    Args:
+        email (str): The email of the user.
+        expires_delta (timedelta, optional): The expiration time of the token.
+            Defaults to ACCESS_TOKEN_EXPIRE_MINUTES.
+
+    Returns:
+        Token: The access token.
+    """
+    exp = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    payload = {'exp': datetime.utcnow() + exp, 'iat': datetime.utcnow(), 'sub': email}
+    token = jwt.encode(payload, JWT_SECRET_KEY, algorithm=JWT_ALGORITHM)
+    return Token(access_token=token, token_type='bearer')
 
 
+@logf()
+def decode_jwt(
+    token: str, secret_key: str = JWT_SECRET_KEY, algorithm: str = JWT_ALGORITHM
+) -> dict:
+    """Decodes a jwt token.
+
+    Args:
+        token (str): The token to decode.
+        secret_key (str): The secret key used to encode the token.
+        algorithm (str): The algorithm used to encode the token.
+
+    Returns:
+        dict: The decoded token.
+    """
+    try:
+        payload = jwt.decode(token, secret_key, algorithms=[algorithm])
+        return payload
+    except PyJWTError as e:
+        logger.error(e)
+        raise credentials_exception
+
+
+@logf()
+def user_from_jwt(
+    tokenstr: str = Security(decode_jwt), db: Session = Depends(get_db)
+) -> DBUser:
+    """Extracts the user email from a jwt token.
+
+    Args:
+        tokenstr (str): The token to decode.
+
+    Returns:
+        str: The email of the user.
+    """
+
+    payload = decode_jwt(tokenstr)
+    email = payload.get('sub')
+    if email is None:
+        raise HTTPException(
+            status_code=400, detail='Could not determine email from JWT'
+        )
+    user = db.query(User).filter(User.email == email).first()
+    if user is None:
+        raise HTTPException(status_code=404, detail='No email matching JWT email in DB')
+    return user
+
+
+@logf()
 def create_user(user_email: str, user_password: str, db: Session) -> User:
     hpassword = hash_passwd(user_password)
     db_user = User(email=user_email, hpassword=hpassword)

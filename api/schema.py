@@ -7,12 +7,9 @@ from enum import Enum
 
 
 ##### User / Token #####
-class BaseToken(BaseModel):
-    token: str
-
-
-class TokenUID(BaseToken):
-    user_id: int
+class Token(BaseModel):
+    access_token: str
+    token_type: str
 
 
 class BaseUser(BaseModel):
@@ -24,16 +21,7 @@ class DBUser(BaseUser):
 
 
 class DBUserWithToken(DBUser):
-    token: str
-
-
-class BaseTokenUser(BaseToken):
-    user: DBUser
-
-
-class BaseTokenUIDUser(BaseToken):
-    user_id: int
-    user: DBUser
+    token: Token
 
 
 class DBUserPass(DBUser):

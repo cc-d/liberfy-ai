@@ -5,6 +5,14 @@ from sqlalchemy.orm import Session, joinedload, selectinload
 from datetime import timedelta
 from fastapi.openapi.utils import get_openapi
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.security import (
+    OAuth2AuthorizationCodeBearer,
+    OAuth2PasswordRequestForm,
+    OAuth2PasswordBearer,
+)
+from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
+from fastapi.openapi.models import OAuthFlowAuthorizationCode
+
 from starlette.middleware import Middleware
 from starlette.middleware.cors import CORSMiddleware
 from starlette.middleware.base import BaseHTTPMiddleware
@@ -13,17 +21,19 @@ from typing import List, Optional, Dict, Any, Union, TypeVar, Generic, Type, Cal
 
 import logging
 
-from config import PORT, HOST, SECRET_KEY, ALGORITHM, ACCESS_TOKEN_EXPIRE_MINUTES
+from config import (
+    PORT,
+    HOST,
+    JWT_SECRET_KEY,
+    JWT_ALGORITHM,
+    ACCESS_TOKEN_EXPIRE_MINUTES,
+)
 from database import engine, SessionLocal, get_db, model_to_dict, add_commit_refresh
-from models import User, Base, Chat, Message, Completion, UserToken
+from models import User, Base, Chat, Message, Completion
 from schema import (
-    BaseToken,
-    TokenUID,
     BaseUser,
     DBUser,
     DBUserWithToken,
-    BaseTokenUser,
-    BaseTokenUIDUser,
     DBUserPass,
     BaseMsg,
     DBMsg,
@@ -37,8 +47,15 @@ from schema import (
     DataCreateChat,
     DataCreateComp,
     DataMsgAdd,
+    Token,
 )
-from security import hash_passwd, verify_passwd, create_user, create_user_token
+from security import (
+    hash_passwd,
+    verify_passwd,
+    create_user,
+    create_access_token,
+    user_from_jwt,
+)
 from myfuncs import runcmd
 from logfunc import logf
 
@@ -86,46 +103,52 @@ async def hello():
     return {"status": "ok"}
 
 
-@arouter.post("/user/login", response_model=DBUserWithToken)
-async def login_user(formdata: DataEmailPass, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.email == formdata.email).first()
-    if not user:
-        user = create_user(
-            user_email=formdata.email, user_password=formdata.password, db=db
-        )
-        token = create_user_token(user.id, db)
-        return DBUserWithToken(email=user.email, id=user.id, token=token.token)
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="api/token")
 
-    if not verify_passwd(formdata.password, user.hpassword):
+
+@arouter.post('/user/register', response_model=DBUserWithToken)
+async def register_user(
+    formdata: DataEmailPass, db: Session = Depends(get_db)
+) -> BaseUser:
+    remail, rpass = formdata.email, formdata.password
+    user = db.query(User).filter(User.email == remail).first()
+    if user is None:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="User Already Exists",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    newuser = create_user(user_email=remail, user_password=rpass, db=db)
+    return DBUserWithToken(
+        token=create_access_token(newuser.email), **model_to_dict(newuser)
+    )
+
+
+@arouter.post("/user/login", response_model=DBUserWithToken)
+async def login_jwt_token(
+    oauthdata: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)
+) -> Token:
+    user = db.query(User).filter(User.email == oauthdata.username).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"No user found with email {oauthdata.email}",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+    elif not verify_passwd(oauthdata.password, user.hpassword):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password for email.",
             headers={"WWW-Authenticate": "Bearer"},
         )
 
-    token = db.query(UserToken).filter(UserToken.user_id == user.id).first()
-    if token is None:
-        token = create_user_token(user.id, db)
-
-    return DBUserWithToken(email=user.email, id=user.id, token=token.token)
+    return DBUserWithToken(token=create_access_token(user.email), **model_to_dict(user))
 
 
-@arouter.post("/user/user_from_token", response_model=DBUser)
-async def user_from_token(formdata: BaseToken, db: Session = Depends(get_db)):
-    token = db.query(UserToken).filter(UserToken.token == formdata.token).first()
-
-    if not token:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="Token not found"
-        )
-
-    user = db.query(User).filter(User.id == token.user_id).first()
-    print('user', user, vars(user))
-    if not user:
-        raise HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="User not found"
-        )
-    return DBUser(email=user.email, id=user.id)
+@arouter.post('/user/token_login', response_model=DBUser)
+def jwt_autologin(tokstr: str, db: Session = Depends(get_db)) -> DBUser:
+    user = user_from_jwt(tokstr)
+    return DBUser(**model_to_dict(user))
 
 
 @arouter.get('/user/{user_id}/chats', response_model=List[DBChat])

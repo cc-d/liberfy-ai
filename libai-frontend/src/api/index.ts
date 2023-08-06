@@ -8,7 +8,7 @@ export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
 export type { BaseMsg } from './models/BaseMsg';
-export type { BaseToken } from './models/BaseToken';
+export type { Body_login_jwt_token_api_user_login_post } from './models/Body_login_jwt_token_api_user_login_post';
 export type { DataCreateChat } from './models/DataCreateChat';
 export type { DataCreateComp } from './models/DataCreateComp';
 export type { DataEmailPass } from './models/DataEmailPass';
@@ -19,10 +19,11 @@ export type { DBMsg } from './models/DBMsg';
 export type { DBUser } from './models/DBUser';
 export type { DBUserWithToken } from './models/DBUserWithToken';
 export type { HTTPValidationError } from './models/HTTPValidationError';
+export type { Token } from './models/Token';
 export type { ValidationError } from './models/ValidationError';
 
 export { $BaseMsg } from './schemas/$BaseMsg';
-export { $BaseToken } from './schemas/$BaseToken';
+export { $Body_login_jwt_token_api_user_login_post } from './schemas/$Body_login_jwt_token_api_user_login_post';
 export { $DataCreateChat } from './schemas/$DataCreateChat';
 export { $DataCreateComp } from './schemas/$DataCreateComp';
 export { $DataEmailPass } from './schemas/$DataEmailPass';
@@ -33,6 +34,7 @@ export { $DBMsg } from './schemas/$DBMsg';
 export { $DBUser } from './schemas/$DBUser';
 export { $DBUserWithToken } from './schemas/$DBUserWithToken';
 export { $HTTPValidationError } from './schemas/$HTTPValidationError';
+export { $Token } from './schemas/$Token';
 export { $ValidationError } from './schemas/$ValidationError';
 
 export { DefaultService } from './services/DefaultService';

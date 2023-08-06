@@ -3,7 +3,8 @@
 /* tslint:disable */
 /* eslint-disable */
 
-export type BaseToken = {
-    token: string;
+export type Token = {
+    access_token: string;
+    token_type: string;
 };
 

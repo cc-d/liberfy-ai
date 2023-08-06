@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  BaseMsg, BaseToken,
+  BaseMsg,
   DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
-  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+  DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
 import {
   Box, Typography, Divider, List,

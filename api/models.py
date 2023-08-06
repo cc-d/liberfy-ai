@@ -64,11 +64,3 @@ class Completion(Base):
 
     temperature: Mapped[float] = Column(Float, default=1.0)
     model: Mapped[str] = Column(String, default=DEFAULT_GPTMODEL)
-
-
-class UserToken(Base):
-    __tablename__ = "usertokens"
-    user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
-    token: Mapped[str] = Column(
-        String, unique=True, primary_key=True, default=lambda: str(uuid4())
-    )

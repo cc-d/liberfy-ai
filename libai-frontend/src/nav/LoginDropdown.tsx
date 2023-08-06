@@ -10,9 +10,9 @@ import {
 import { useAuthContext } from '../AuthContext';
 import apios from '../apios';
 import {
-  BaseMsg, BaseToken,
+  BaseMsg,
   DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
-  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+  DBComp, DBMsg, DBUserWithToken, DBChat, DBUser
 } from "../api";
 
 const LoginDropdown = () => {

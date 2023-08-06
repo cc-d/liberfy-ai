@@ -2,9 +2,9 @@ import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import apios from "../../apios";
 import {
-  BaseMsg, BaseToken,
+  BaseMsg,
   DataCreateChat, DataCreateComp, DataEmailPass, DataMsgAdd,
-  DBComp, DBMsg, DBUser, DBUserWithToken, DBChat
+  DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
 import { useAuthContext } from "../../AuthContext";
 import {

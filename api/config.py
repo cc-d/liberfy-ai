@@ -1,7 +1,7 @@
 import os
 
-SECRET_KEY = 'secret'
-ALGORITHM = 'HS256'
+JWT_SECRET_KEY = 'secret'
+JWT_ALGORITHM = 'HS256'
 ACCESS_TOKEN_EXPIRE_MINUTES = 600
 PORT = 8888
 HOST = os.environ.get('LIBAI_HOST', '127.0.0.1')

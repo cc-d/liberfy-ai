@@ -1,6 +1,6 @@
 import React, { useState, createContext, useContext } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './components/HomePage';
+import LogRegPage from './components/LogRegPage';
 import { AuthProvider } from './AuthContext';
 import NavBar from './nav';
 import ChatPage from './components/ChatPage';
@@ -57,7 +57,7 @@ function App() {
           >
             <NavBar darkMode={true ? themeMode == 'dark' : false} handleThemeChange={toggleThemeMode} />
             <Routes>
-              <Route path="/" element={<Home />} />
+              <Route path="/" element={<LogRegPage />} />
               <Route path="/chats" element={<ChatListPage />} />
               <Route path="/chat/:chatId" element={<ChatPage />} />
             </Routes>
