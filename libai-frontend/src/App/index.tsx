@@ -9,7 +9,7 @@ import { DBUser } from '../api';
 
 import { ThemeProvider, createTheme, Theme } from '@mui/material/styles';
 import {
-  CssBaseline, Container, Box, useMediaQuery, useTheme, IconButton, Divider,
+  CssBaseline, Container, Box, useMediaQuery, useTheme, IconButton, Divider, Typography,
 } from '@mui/material';
 import {
   AccountCircle, Chat,
@@ -17,6 +17,7 @@ import {
 } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { drawerWidth } from '../components/Sidebar';
+import { useAuthContext } from '../AuthContext';
 
 // Create a context for the theme
 const ThemeContext = createContext({
@@ -44,10 +45,14 @@ export const useSidebarContext = () => {
 
 
 
-export const TopNav = ({themeMode, toggleThemeMode}) => {
+export const TopNav = ({ themeMode, toggleThemeMode }) => {
   const {
     isSidebarOpen, toggleSidebar, isSmallDevice
   } = useSidebarContext();
+  const {
+    user, logout, autoTokenLogin, isLoading
+  } = useAuthContext();
+
   return (
     <>
       <Box
@@ -63,12 +68,32 @@ export const TopNav = ({themeMode, toggleThemeMode}) => {
           sx={{
             backgroundColor: 'blue',
             flex: '1', // This will take up all the available space
+            display: 'flex',
+            justifyContent: 'left',
+            flexDirection: 'row',
           }}
         >
           {isSmallDevice && (
             <IconButton onClick={toggleSidebar} sx={{ color: 'inherit' }}>
               <MenuIcon />
             </IconButton>
+          )}
+          {user && (
+            <Box
+              sx={{ alignContent: 'center', display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+            >
+
+              <Typography variant="subtitle2" noWrap component="div">
+                {user.email}
+              </Typography>
+              <IconButton
+                color="inherit"
+                onClick={logout}
+                sx={{}}
+              >
+                <LogoutOutlined />
+              </IconButton>
+            </Box>
           )}
         </Box>
         <Box
@@ -88,6 +113,8 @@ export const TopNav = ({themeMode, toggleThemeMode}) => {
           >
             {themeMode === 'dark' ? <DarkMode /> : <LightMode />}
           </IconButton>
+
+
         </Box>
       </Box>
       <Divider />
@@ -98,15 +125,14 @@ export const TopNav = ({themeMode, toggleThemeMode}) => {
 
 
 
-const AppContent = ({themeMode, toggleThemeMode, theme }) => {
+const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const location = useLocation();
   const themeObj = useTheme();
 
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(!isSmallDevice && location.pathname.startsWith('/chat/'))
   // Modify the showSidebar logic to also consider isSidebarOpen
-  const showSidebar = !isSmallDevice || (location.pathname.startsWith('/chat/') && isSidebarOpen);
-  const marginLeft = (showSidebar && !isSmallDevice) ? '240px' : '0px';
+  const marginLeft = (isSidebarOpen && !isSmallDevice) ? '240px' : '0px';
   const toggleSidebar = () => setSidebarOpen(!isSidebarOpen);
 
   return (
@@ -117,23 +143,24 @@ const AppContent = ({themeMode, toggleThemeMode, theme }) => {
         isSmallDevice,
       }}
     >
-    <Box
-      sx={{
-        marginLeft: marginLeft, // This will apply the margin only if the conditions are met
-      }}
-    >
-      <TopNav
-        themeMode={themeMode}
-        toggleThemeMode={toggleThemeMode}
-      />
-      <Routes>
-        <Route path="/" element={<LogRegPage />} />
-        <Route path="/chats" element={<ChatListPage />} />
-        <Route path="/chat/:chatId" element={
-          <ChatPage />
-        } />
-      </Routes>
-    </Box>
+      <Box
+        sx={{
+          marginLeft: marginLeft, // This will apply the margin only if the conditions are met
+        }}
+      >
+        <TopNav
+          themeMode={themeMode}
+          toggleThemeMode={toggleThemeMode}
+
+        />
+        <Routes>
+          <Route path="/" element={<LogRegPage />} />
+          <Route path="/chats" element={<ChatListPage />} />
+          <Route path="/chat/:chatId" element={
+            <ChatPage />
+          } />
+        </Routes>
+      </Box>
     </SidebarContext.Provider>
   );
 };
@@ -143,11 +170,12 @@ function App() {
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
-  const [navTopUser, setNavTopUser] = useState('')
+  const [navTopUstr, setNavTopUstr] = useState('')
 
   const setTopUserEmail = (uemail: string) => {
-    setNavTopUser(uemail)
+    setNavTopUstr(uemail)
   }
+
 
   // Create your theme
   const theme = createTheme({
@@ -160,9 +188,6 @@ function App() {
       // Add other customizations here...
     },
   });
-
-
-
 
   return (
     <Router>

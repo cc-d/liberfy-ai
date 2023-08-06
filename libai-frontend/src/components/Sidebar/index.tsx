@@ -6,15 +6,17 @@ import {
   Divider,
   List,
   useMediaQuery,
+  Typography,
 } from "@mui/material";
 import {
-  AddBox, Chat
+  AddBox, Chat, ThreeP, ThreePOutlined
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "../ChatPage/CompListElem";
 import NewCompModal from "../ChatPage/NewCompModal";
 import { DBComp, DBChat, DBUser } from "../../api";
 import { useSidebarContext } from '../../App';
+
 
 interface ChatSidebarProps {
   chat: DBChat;
@@ -51,13 +53,26 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
       <Box
         display="flex"
         flexDirection="column"
-        sx={{ p: 2 }}
+        sx={{ p: 1 }}
       >
+              <Typography
+                fontSize={theme.typography.h5.fontSize}
+                display={'inline-block'}
+              >
+                <ThreeP
+                  sx={{
+                    fontSize: theme.typography.h5.fontSize,
+                    verticalAlign: "middle",
+                    mr: 0.5,
+                  }}
+                />
+                {chat.name}
+              </Typography>
         <Button
           variant="contained"
           startIcon={<AddBox />}
           onClick={() => setActiveComp(null)}
-          sx={{ mt: -1, mb: 1 }}
+          sx={{ mb: 1 }}
           size="small"
         >
           New

@@ -38,7 +38,6 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   const [user, setUser] = useState<DBUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
-  const wut = '';
 
   const toDBUser = (userWithToken: DBUserWithToken): DBUser => {
     const { token, ...userWithoutToken } = userWithToken;
@@ -100,10 +99,8 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   };
 
   const logout = () => {
-
     localStorage.removeItem("token");
-    setUser(null);
-    navigate('/');
+    window.location.href = '/'
   };
 
   useEffect(() => {

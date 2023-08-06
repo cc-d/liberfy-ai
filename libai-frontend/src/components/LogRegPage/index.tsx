@@ -11,11 +11,17 @@ import {
 } from "@mui/material";
 import { useAuthContext, jwtLoginData } from "../../AuthContext";
 import LogRegForm from "./LogRegForm";
+import { useNavigate } from "react-router-dom";
 
 const LogRegPage = () => {
   const {
     login, register, user, logout, autoTokenLogin, isLoading,
   } = useAuthContext();
+  const nav = useNavigate();
+
+  if (user) {
+    nav('/chats')
+  }
 
   const [logForm, setLogForm] = useState({
     username: "",
