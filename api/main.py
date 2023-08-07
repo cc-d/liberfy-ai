@@ -181,24 +181,18 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
 async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     chat = db.query(Chat).filter(Chat.id == chat_id).first()
     user = db.query(User).filter(User.id == chat.user_id).first()
-    completions = list(
-        db.query(Completion)
-        .filter(Completion.chat_id == chat.id)
-        .options(selectinload(Completion.messages))
-        .all()
-    )
     comps = []
-    for c in completions:
-        msgs = [DBMsg(**model_to_dict(m)) for m in c.messages]
-        comps.append(DBComp(messages=msgs, **model_to_dict(c)))
+    for c in chat.completions:
+        print('orgiinal', c.messages)
+        c.messages = list(db.query(Message).filter(Message.completion_id == c.id).all())
+        print(c, c.messages, len(c.messages))
 
-    print('compscomps', comps)
-
-    return DBChat(id=chat.id, user_id=user.id, completions=comps, name=chat.name)
+    return chat
 
 
 @arouter.post("/completion/new", response_model=DBComp)
 async def create_completion(data: DataCreateComp, db: Session = Depends(get_db)):
+    print('promptdatanew', data)
     user = db.query(User).filter(User.id == data.user_id).first()
     logger.debug("user %s", user)
     completion = Completion(chat_id=data.chat_id, user_id=user.id)
@@ -208,10 +202,7 @@ async def create_completion(data: DataCreateComp, db: Session = Depends(get_db))
 
     logger.debug("completion created %s %s", completion, vars(completion))
 
-    comptitle = (
-        'System message' if not hasattr(data, 'sysprompt') else str(data.sysprompt)
-    )
-    msg = Message(role='system', content=comptitle, completion_id=completion.id)
+    msg = Message(role='system', content=data.sysprompt, completion_id=completion.id)
     msg = add_commit_refresh(msg, db)
 
     msgs = [DBMsg(**model_to_dict(msg))]
@@ -229,8 +220,9 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
             status_code=status.HTTP_404_NOT_FOUND, detail="Completion not found"
         )
 
-    msg = db.query(Message).filter(Message.completion_id == completion.id).all()
-    completion.messages = list(msg)
+    msgs = db.query(Message).filter(Message.completion_id == completion.id).all()
+    print('querymsgs', msgs)
+    completion.messages = list(msgs)
 
     return completion
 

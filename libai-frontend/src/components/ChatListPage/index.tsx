@@ -24,7 +24,7 @@ import {
   Edit as EditIcon,
   Chat as ChatIcon,
 } from "@mui/icons-material";
-import { useThemeContext } from "../../App";
+import { useThemeContext } from "../../App/ThemeContext";
 import { Link as RouterLink } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
 

@@ -1,5 +1,8 @@
 import React, {useState} from 'react';
 import {
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
   Box,
   Drawer,
   Button,
@@ -9,13 +12,13 @@ import {
   Typography,
 } from "@mui/material";
 import {
-  AddBox, Chat, ThreeP, ThreePOutlined
+  AddBox, Chat, ThreeP, ThreePOutlined, ExpandMore
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import CompListElem from "../ChatPage/CompListElem";
-import NewCompModal from "../ChatPage/NewCompModal";
-import { DBComp, DBChat, DBUser } from "../../api";
-import { useSidebarContext } from '../../App';
+import CompListElem from "./CompListElem";
+import NewCompModal from "./NewCompModal";
+import { DBComp, DBChat, DBUser } from "../../../api";
+import { useSidebarContext } from '../../../App/SidebarContext';
 
 
 interface ChatSidebarProps {
@@ -25,16 +28,19 @@ interface ChatSidebarProps {
   completions: DBComp[];
   activeComp: DBComp | null;
   setActiveComp: (completion: DBComp | null) => void;
+  handleModalOpen: () => void;
+  handleModalClose: () => void;
 }
 
 export const drawerWidth = 240;
 
 export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chat, user, addCompletion, completions, activeComp,
-  setActiveComp,
+  setActiveComp, handleModalOpen, handleModalClose
 }) => {
   const theme = useTheme();
   const { isSidebarOpen, toggleSidebar, isSmallDevice } = useSidebarContext();
+  const [showNewCompModal, setShowNewCompModal] = useState(false);
 
   return (
     <Drawer
@@ -53,7 +59,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
       <Box
         display="flex"
         flexDirection="column"
-        sx={{ p: 1 }}
+        sx={{ p: 0 }}
       >
               <Typography
                 fontSize={theme.typography.h5.fontSize}
@@ -68,30 +74,40 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 />
                 {chat.name}
               </Typography>
-        <Button
-          variant="contained"
-          startIcon={<AddBox />}
-          onClick={() => setActiveComp(null)}
-          sx={{ mb: 1 }}
-          size="small"
-        >
-          New
-        </Button>
 
-        <Divider />
+              <Accordion disableGutters >
+          <AccordionSummary
+            expandIcon={<ExpandMore />}
+          >
+            <Typography variant="body1">Completions</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
 
-        <List dense={true}>
-          {completions.length > 0 &&
-            completions.map((completion) => (
-              <CompListElem
-                key={completion.id}
-                completion={completion}
-                theme={theme}
-                setActiveComp={setActiveComp}
-              />
-            ))
-          }
-        </List>
+            <Button
+              variant="contained"
+              startIcon={<AddBox />}
+              onClick={() => handleModalOpen()} // Open the modal
+              sx={{ mt: -1, mb: 1, width: '100%' }}
+              size="small"
+            >
+                New
+            </Button>
+
+            <Divider />
+            <List dense={true}>
+            {completions.length > 0 &&
+                completions.map((completion) => (
+                  <CompListElem
+                    key={completion.id}
+                    completion={completion}
+                    theme={theme}
+                    setActiveComp={setActiveComp}
+                  />
+                ))
+              }
+            </List>
+          </AccordionDetails>
+        </Accordion>
       </Box>
     </Drawer>
   );

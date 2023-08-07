@@ -1,12 +1,12 @@
 import React, { FC, FormEvent, ChangeEvent, useState } from 'react';
 import Modal from '@mui/material/Modal';
 import { Box, Button, TextField, Paper } from "@mui/material";
-import apios from "../../apios";
+import apios from "../../../apios";
 import {
   BaseMsg,
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
-} from "../../api";
+} from "../../../api";
 
 
 interface NewCompModalProps {

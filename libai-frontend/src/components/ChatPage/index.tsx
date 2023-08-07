@@ -21,9 +21,9 @@ import {
   ThreeP, AddBox
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import CompListElem from "./CompListElem";
-import NewCompModal from "./NewCompModal";
-import ChatSidebar, {drawerWidth} from "../Sidebar";
+import CompListElem from "./Sidebar/CompListElem";
+import NewCompModal from "./Sidebar/NewCompModal";
+import ChatSidebar, {drawerWidth} from "./Sidebar";
 import CompMsgElem from "./CompMsgElem";
 
 const ChatPage = () => {
@@ -31,8 +31,11 @@ const ChatPage = () => {
   const { chatId } = useParams<{ chatId: string }>();
   const [chat, setChat] = useState<DBChat | null>(null);
   const [completions, setCompletions] = useState<DBComp[]>([]);
+
   const [activeComp, setActiveComp] = useState<DBComp | null>(null);
   const [showModal, setShowModal] = useState(false);
+
+
   const theme = useTheme();
   const handleModalOpen = () => {
     setShowModal(true);
@@ -50,7 +53,7 @@ const ChatPage = () => {
       setChat(response.data);
       setCompletions(response.data.completions);
     });
-  }, [user, chatId, setChat, setCompletions]);
+  }, [user]);
 
   if (!chat) {
     return <div>Loading...</div>;
@@ -67,24 +70,20 @@ const ChatPage = () => {
               completions={completions}
               activeComp={activeComp}
               setActiveComp={setActiveComp}
+              handleModalOpen={handleModalOpen}
+              handleModalClose={handleModalClose}
             />
 
-            <Box display='flex' alignItems='center'>
-              <Typography
-                fontSize={theme.typography.h5.fontSize}
-                display={'inline-block'}
-              >
-                <ThreeP
-                  sx={{
-                    fontSize: theme.typography.h5.fontSize,
-                    verticalAlign: "middle",
-                    mr: 0.5,
-                  }}
-                />
-                {chat.name}
-              </Typography>
+      <NewCompModal
+        open={showModal} // Control the modal open state
+        handleClose={handleModalClose}
+        addCompletion={addCompletion}
+        chat_id={chat.id}
+        user_id={user.id}
+        temperature={1} // Or whatever temperature value you need
+      />
 
-            </Box>
+
 
             <Box display='flex' alignItems='center' mb={0.5}>
               <CommentOutlined sx={{ mr: 0.5 }} />

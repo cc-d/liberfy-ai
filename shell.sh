@@ -1,6 +1,6 @@
 #!/bin/sh
 #alias dc="docker compose"
-ROOTDIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" >/dev/null 2>&1 && pwd)"
+ROOTDIR="$HOME/liberfy-ai"
 FRONTDIR="$ROOTDIR/libai-frontend"
 APIDIR="$ROOTDIR/api"
 

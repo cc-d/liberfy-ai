@@ -27,6 +27,9 @@ class User(Base):
         "Completion", back_populates="user"
     )
 
+    def __repr__(self):
+        return f"<User id={self.id} email={self.email}>"
+
 
 class Chat(Base):
     __tablename__ = "chats"
@@ -38,6 +41,9 @@ class Chat(Base):
         "Completion", back_populates="chat", uselist=True
     )
 
+    def __repr__(self):
+        return f"<Chat id={self.id} name={self.name} user_id={self.user_id}>"
+
 
 class Message(Base):
     __tablename__ = "messages"
@@ -48,6 +54,9 @@ class Message(Base):
 
     # Define the relationship with the Completion model
     completion: Mapped["Completion"] = relationship("Completion", backref="messages")
+
+    def __repr__(self):
+        return f"<Message id={self.id} role={self.role} content={self.content} completion_id={self.completion_id}>"
 
 
 class Completion(Base):
@@ -64,3 +73,6 @@ class Completion(Base):
 
     temperature: Mapped[float] = Column(Float, default=1.0)
     model: Mapped[str] = Column(String, default=DEFAULT_GPTMODEL)
+
+    def __repr__(self):
+        return f'<Completion id={self.id} chat_id={self.chat_id} user_id={self.user_id} temperature={self.temperature} model={self.model}>'
