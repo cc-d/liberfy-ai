@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import React, { useCallback, useEffect, useState } from "react";
+import { useParams, useLocation } from "react-router-dom";
 import apios from "../../apios";
 import {
   BaseMsg,
@@ -25,6 +25,9 @@ import CompListElem from "./Sidebar/CompListElem";
 import NewCompModal from "./Sidebar/NewCompModal";
 import ChatSidebar, { drawerWidth } from "./Sidebar";
 import CompMsgElem from "./CompMsgElem";
+import {useSidebarContext} from "../../App/SidebarContext";
+
+
 
 const ChatPage = () => {
   const { user } = useAuthContext();
@@ -34,7 +37,7 @@ const ChatPage = () => {
 
   const [activeComp, setActiveComp] = useState<DBComp | null>(null);
   const [showModal, setShowModal] = useState(false);
-
+  const [isLoading, setIsLoading] = useState(false);
 
   const theme = useTheme();
   const handleModalOpen = () => {
@@ -48,7 +51,23 @@ const ChatPage = () => {
     setCompletions([...completions, completion]);
   }
 
+  const { marginLeft, setMarginLeft} = useSidebarContext();
+
+  const location = useLocation();
+
   useEffect(() => {
+    console.log('usereffectchatpage')
+    if (location.pathname.startsWith('/chat/')) {
+      setMarginLeft('240px')
+    } else {
+      setMarginLeft('0px')
+    }
+    console.log('chatpage location')
+    console.log(location)
+  }, []);
+
+  useEffect(() => {
+    setIsLoading(true);
     apios.get(`/chat/${chatId}`).then((response) => {
       setChat(response.data);
       setCompletions(response.data.completions);
@@ -62,6 +81,7 @@ const ChatPage = () => {
   if (!user || !user?.id) {
     return <></>
   }
+
   return (
 
     <>

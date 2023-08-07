@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Box, useMediaQuery, useTheme } from '@mui/material';
 import { useLocation, Routes, Route } from 'react-router-dom';
 import LogRegPage from '../components/LogRegPage';
@@ -8,6 +8,7 @@ import TopNav from './TopNav';
 import SidebarContext from './SidebarContext';
 
 const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
+  console.log('AppContent')
   const location = useLocation();
   const themeObj = useTheme();
 
@@ -15,7 +16,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   //!isSmallDevice && location.pathname.startsWith('/chat/')
   const [isSidebarOpen, setSidebarOpen] = useState(true)
   // Modify the showSidebar logic to also consider isSidebarOpen
-  const [marginLeft, setMarginLeft] = useState((isSidebarOpen && !isSmallDevice) ? '240px' : '0px');
+  const [marginLeft, setMarginLeft] = useState('0px')
 
   const toggleSidebar = () => {
     console.log('togglesider')
@@ -27,6 +28,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     }
   }
 
+
   /*
   const getPageMargin = () => {
     if (isSmallDevice || !location.pathname.startsWith('/chat/')) {
@@ -37,8 +39,15 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   }*/
 
   useEffect(() => {
-    setMarginLeft((!isSmallDevice) ? '240px' : '0px')
+    setMarginLeft(!isSmallDevice && location.pathname.startsWith('/chat/') ? '240px' : '0px')
   }, [isSmallDevice]);
+
+  useEffect(() => {
+    console.log('useeffect marginleft')
+    console.log(location.pathname)
+    console.log(isSmallDevice)
+    console.log(marginLeft)
+  }, [marginLeft]);
 
   return (
     <SidebarContext.Provider
@@ -46,6 +55,8 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         isSidebarOpen,
         toggleSidebar,
         isSmallDevice,
+        marginLeft,
+        setMarginLeft
       }}
     >
       <Box
@@ -56,7 +67,6 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         <TopNav
           themeMode={themeMode}
           toggleThemeMode={toggleThemeMode}
-
         />
         <Routes>
           <Route path="/" element={<LogRegPage />} />

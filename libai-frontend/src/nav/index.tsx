@@ -21,7 +21,7 @@ const NavBar = ({ darkMode, handleThemeChange }: NavBarProps) => {
 
   useEffect(() => {
     autoTokenLogin();
-  }, [user]);
+  }, []);
 
   return (
 

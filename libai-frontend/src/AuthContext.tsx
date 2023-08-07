@@ -83,8 +83,10 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   };
 
   const autoTokenLogin = async () => {
+    console.log('autotokenlogin')
     const locToken: string | null = localStorage.getItem("token");
     if (locToken && !user && !isLoading) {
+      setIsLoading(true)
       try {
         const resp = await apios.post("/user_from_token", { token: locToken });
         if (resp) {
@@ -94,6 +96,7 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
       } catch (error) {
         console.error("Auto login error:", error);
       } finally {
+        setIsLoading(false)
       }
     }
   };

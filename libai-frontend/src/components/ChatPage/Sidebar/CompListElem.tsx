@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   BaseMsg,
   DataCreateChat, DataCreateComp, DataMsgAdd,
@@ -21,11 +21,14 @@ interface CompListElemProps {
 export const CompListElem: React.FC<CompListElemProps> = ({
   completion, theme, setActiveComp
 }) => {
-  console.log('badcomps', completion)
+  //console.log('badcomps', completion)
   const compTitle: string = completion.messages.length > 0
     ? completion.messages[0].content : "No messages yet";
 
-  console.log(completion)
+  useEffect(() => {
+    console.log('CompListElem')
+  }, []);
+
   return (
     <ListItemButton
       onClick={() => (setActiveComp(completion))}

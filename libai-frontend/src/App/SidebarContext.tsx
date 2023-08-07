@@ -1,9 +1,11 @@
-import { createContext, useContext } from 'react';
+import React, { createContext, useContext } from 'react';
 
 export interface SidebarContextProps {
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
   isSmallDevice: boolean;
+  marginLeft: string;
+  setMarginLeft: React.Dispatch<React.SetStateAction<string>>;
 }
 
 const SidebarContext = createContext<SidebarContextProps | undefined>(undefined);
