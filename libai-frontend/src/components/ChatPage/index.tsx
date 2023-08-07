@@ -57,11 +57,11 @@ const ChatPage = () => {
 
   useEffect(() => {
     console.log('usereffectchatpage')
-    if (location.pathname.startsWith('/chat/')) {
+    //if (location.pathname.startsWith('/chat/')) {
       setMarginLeft('240px')
-    } else {
-      setMarginLeft('0px')
-    }
+    //} else {
+    //  setMarginLeft('0px')
+    //}
     console.log('chatpage location')
     console.log(location)
   }, []);

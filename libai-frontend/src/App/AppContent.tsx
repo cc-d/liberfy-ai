@@ -12,20 +12,23 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const location = useLocation();
   const themeObj = useTheme();
 
+
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   //!isSmallDevice && location.pathname.startsWith('/chat/')
   const [isSidebarOpen, setSidebarOpen] = useState(true)
+
+  const getMarg = (): string => {
+    return (isSidebarOpen && !isSmallDevice && location.pathname.startsWith('/chat/') ? '240px' : '0px');
+  }
+
+  console.log('getMarg: ' + getMarg())
   // Modify the showSidebar logic to also consider isSidebarOpen
-  const [marginLeft, setMarginLeft] = useState('0px')
+  const [marginLeft, setMarginLeft] = useState(getMarg());
+
 
   const toggleSidebar = () => {
     console.log('togglesider')
     setSidebarOpen(!isSidebarOpen)
-    if (isSidebarOpen && !isSmallDevice) {
-      setMarginLeft('240px')
-    } else {
-      setMarginLeft('0px')
-    }
   }
 
 
@@ -38,16 +41,19 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     }
   }*/
 
-  useEffect(() => {
-    setMarginLeft(!isSmallDevice && location.pathname.startsWith('/chat/') ? '240px' : '0px')
-  }, [isSmallDevice]);
+
+  if (getMarg() !== marginLeft) {
+    setMarginLeft(getMarg())
+  }
+
 
   useEffect(() => {
-    console.log('useeffect marginleft')
-    console.log(location.pathname)
-    console.log(isSmallDevice)
-    console.log(marginLeft)
-  }, [marginLeft]);
+    //console.log('useeffect marginleft')
+    //console.log(location.pathname)
+    //console.log(isSmallDevice)
+    //console.log(marginLeft)
+    //setMarginLeft(getMarg())//location.pathname.startsWith('/chat/') ? '240px': '0px')
+  }, []);
 
   return (
     <SidebarContext.Provider

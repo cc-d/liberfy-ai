@@ -58,7 +58,7 @@ const ChatListPage = () => {
   }, [user]);
 
   useEffect(() => {
-    setMarginLeft('0px')
+    //setMarginLeft('0px')
   }, []);
 
   return (
