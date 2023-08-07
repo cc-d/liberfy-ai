@@ -23,7 +23,7 @@ import {
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "./Sidebar/CompListElem";
 import NewCompModal from "./Sidebar/NewCompModal";
-import ChatSidebar, {drawerWidth} from "./Sidebar";
+import ChatSidebar, { drawerWidth } from "./Sidebar";
 import CompMsgElem from "./CompMsgElem";
 
 const ChatPage = () => {
@@ -59,58 +59,56 @@ const ChatPage = () => {
     return <div>Loading...</div>;
   }
 
+  if (!user || !user?.id) {
+    return <></>
+  }
   return (
-    <Container maxWidth="xl" disableGutters>
-      {user && user.id &&
-        <Box>
-            <ChatSidebar
-              chat={chat}
-              user={user}
-              addCompletion={addCompletion}
-              completions={completions}
-              activeComp={activeComp}
-              setActiveComp={setActiveComp}
-              handleModalOpen={handleModalOpen}
-              handleModalClose={handleModalClose}
-            />
 
-      <NewCompModal
-        open={showModal} // Control the modal open state
-        handleClose={handleModalClose}
-        addCompletion={addCompletion}
-        chat_id={chat.id}
-        user_id={user.id}
-        temperature={1} // Or whatever temperature value you need
-      />
+    <>
+      <Box >
+        <ChatSidebar
+          chat={chat}
+          user={user}
+          addCompletion={addCompletion}
+          completions={completions}
+          activeComp={activeComp}
+          setActiveComp={setActiveComp}
+          handleModalOpen={handleModalOpen}
+          handleModalClose={handleModalClose}
+        />
+      </Box>
+      <Box>
+        <NewCompModal
+          open={showModal} // Control the modal open state
+          handleClose={handleModalClose}
+          addCompletion={addCompletion}
+          chat_id={chat.id}
+          user_id={user.id}
+          temperature={1} // Or whatever temperature value you need
+        />
 
-
-
-            <Box display='flex' alignItems='center' mb={0.5}>
-              <CommentOutlined sx={{ mr: 0.5 }} />
-              <Typography variant="body1">Messages</Typography>
-              <Button
-                variant="contained"
-                startIcon={<AddBox />}
-                sx={{ ml: 2 }}
-                size="small"
-              >
-                Add
-              </Button>
-            </Box>
-            <Divider />
-            {
-            activeComp && activeComp.messages &&
-            activeComp.messages.map((msg) => (
-
-
-                <CompMsgElem message={msg} />
-
-            ))
-          }
+        <Box display='flex' alignItems='center' mb={0.5}>
+          <CommentOutlined sx={{ mr: 0.5 }} />
+          <Typography variant="body1">Messages</Typography>
+          <Button
+            variant="contained"
+            startIcon={<AddBox />}
+            sx={{ ml: 2 }}
+            size="small"
+          >
+            Add
+          </Button>
         </Box>
-      }
+        <Divider />
+        {
+          activeComp && activeComp.messages &&
+          activeComp.messages.map((msg) => (
+            <CompMsgElem message={msg} />
+          ))
+        }
+      </Box>
+    </>
 
-    </Container>
   );
 };
 

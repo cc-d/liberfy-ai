@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Accordion,
   AccordionSummary,
@@ -44,11 +44,13 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
   return (
     <Drawer
+
       variant={isSmallDevice ? "temporary" : "permanent"}
       open={isSidebarOpen}
       onClose={toggleSidebar}
       sx={{
         width: drawerWidth,
+
         flexShrink: 0,
         '& .MuiDrawer-paper': {
           width: drawerWidth,
@@ -61,21 +63,21 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
         flexDirection="column"
         sx={{ p: 0 }}
       >
-              <Typography
-                fontSize={theme.typography.h5.fontSize}
-                display={'inline-block'}
-              >
-                <ThreeP
-                  sx={{
-                    fontSize: theme.typography.h5.fontSize,
-                    verticalAlign: "middle",
-                    mr: 0.5,
-                  }}
-                />
-                {chat.name}
-              </Typography>
+        <Typography
+          fontSize={theme.typography.h5.fontSize}
+          display={'inline-block'}
+        >
+          <ThreeP
+            sx={{
+              fontSize: theme.typography.h5.fontSize,
+              verticalAlign: "middle",
+              mr: 0.5,
+            }}
+          />
+          {chat.name}
+        </Typography>
 
-              <Accordion disableGutters >
+        <Accordion disableGutters >
           <AccordionSummary
             expandIcon={<ExpandMore />}
           >
@@ -90,12 +92,12 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
               sx={{ mt: -1, mb: 1, width: '100%' }}
               size="small"
             >
-                New
+              New
             </Button>
 
             <Divider />
             <List dense={true}>
-            {completions.length > 0 &&
+              {completions.length > 0 &&
                 completions.map((completion) => (
                   <CompListElem
                     key={completion.id}
