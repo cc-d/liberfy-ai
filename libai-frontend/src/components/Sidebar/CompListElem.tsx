@@ -3,7 +3,7 @@ import {
 
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
-} from "../../../api";
+} from "../../api";
 import { Link as RouterLink } from "react-router-dom";
 import {
   ListItem, ListItemIcon, ListItemText,

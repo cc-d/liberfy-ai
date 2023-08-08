@@ -27,14 +27,12 @@ import {
 import { useThemeContext } from "../../App/ThemeContext";
 import { Link as RouterLink } from "react-router-dom";
 import { useTheme } from "@mui/material/styles";
-import { useSidebarContext } from "../../App/SidebarContext";
 
 const ChatListPage = () => {
   console.log('ChatListPage')
   const { user } = useAuthContext();
   const [chats, setChats] = useState<DBChat[]>([]);
   const theme = useTheme();
-  const {marginLeft, setMarginLeft} = useSidebarContext();
 
   const refreshChats = () => {
     if (user) {

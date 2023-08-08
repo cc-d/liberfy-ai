@@ -2,14 +2,10 @@ import React from 'react';
 import { Box, IconButton, Typography, Divider } from '@mui/material';
 import { LogoutOutlined, DarkMode, LightMode } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
-import { useSidebarContext } from './SidebarContext';
 import { useAuthContext } from './AuthContext';
 import { useTheme } from '@emotion/react';
 
 export const TopNav = ({ themeMode, toggleThemeMode, theme }) => {
-  const {
-    isSidebarOpen, toggleSidebar, isSmallDevice
-  } = useSidebarContext();
   const {
     user, logout
   } = useAuthContext();
@@ -36,11 +32,7 @@ export const TopNav = ({ themeMode, toggleThemeMode, theme }) => {
             flexDirection: 'row',
           }}
         >
-          {isSmallDevice && (
-            <IconButton onClick={toggleSidebar} sx={{ color: 'inherit' }}>
-              <MenuIcon />
-            </IconButton>
-          )}
+
           {user && (
             <Box
               sx={{ alignContent: 'center', display: 'flex', flexDirection: 'row', alignItems: 'center' }}

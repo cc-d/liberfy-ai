@@ -20,11 +20,10 @@ import {
   ThreeP, AddBox
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
-import CompListElem from "./Sidebar/CompListElem";
-import NewCompModal from "./Sidebar/NewCompModal";
-import ChatSidebar, { drawerWidth } from "./Sidebar";
+import CompListElem from "../Sidebar/CompListElem";
+import NewCompModal from "../Sidebar/NewCompModal";
+import ChatSidebar, { drawerWidth } from "../Sidebar";
 import CompMsgElem from "./CompMsgElem";
-import { useSidebarContext } from "../../App/SidebarContext";
 import AddEditMsgModal from './AddEditMsgModal';
 
 
@@ -40,15 +39,6 @@ const ChatPage = () => {
 
   const theme = useTheme();
 
-  // Completion Modal
-  const [showCompModal, setShowCompModal] = useState(false);
-  const handleCompModalOpen = () => {
-    setShowCompModal(true);
-  };
-  const handleCompModalClose = () => {
-    setShowCompModal(false);
-  };
-
   // Message Modal
   const [showMsgModal, setShowMsgModal] = useState(false);
   const handleMsgModalOpen = () => {
@@ -61,21 +51,6 @@ const ChatPage = () => {
   const addCompletion = (completion: DBComp) => {
     setCompletions([...completions, completion]);
   }
-
-  const { marginLeft, setMarginLeft } = useSidebarContext();
-
-  const location = useLocation();
-
-  useEffect(() => {
-    console.log('useEffect()[] ChatPage')
-    //if (location.pathname.startsWith('/chat/')) {
-    setMarginLeft('240px')
-    //} else {
-    //  setMarginLeft('0px')
-    //}
-    //console.log('chatpage location')
-    //console.log(location)
-  }, []);
 
   useEffect(() => {
     !isLoading && user &&
@@ -97,28 +72,7 @@ const ChatPage = () => {
   return (
 
     <>
-      <Box >
-        <ChatSidebar
-          chat={chat}
-          user={user}
-          addCompletion={addCompletion}
-          completions={completions}
-          activeComp={activeComp}
-          setActiveComp={setActiveComp}
-          handleCompModalOpen={handleCompModalOpen}
-          handleCompModalClose={handleCompModalClose}
-        />
-      </Box>
       <Box>
-        <NewCompModal
-          open={showCompModal} // Control the modal open state
-          handleClose={handleCompModalClose}
-          addCompletion={addCompletion}
-          chat_id={chat.id}
-          user_id={user.id}
-          temperature={1} // Or whatever temperature value you need
-        />
-
         {activeComp ? (
           <Box display='flex' alignItems='center' m='1'>
             <CommentOutlined
