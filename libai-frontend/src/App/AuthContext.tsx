@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import apios from "../apios";
+import { AxiosError } from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
   Token,
@@ -34,7 +35,7 @@ export const useAuthContext = () => {
   return context;
 };
 
-export const AuthProvider = ({setTopUserEmail, children }) => {
+export const AuthProvider = ({children }) => {
   console.log('AuthProvider')
   const [user, setUser] = useState<DBUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -46,7 +47,6 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   };
 
   const setActiveUser = (user: DBUser) => {
-    setTopUserEmail(user.email);
     setUser(user);
   };
 
@@ -90,8 +90,13 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
           const tokUser: DBUserWithToken = resp.data;
           setActiveUser(toDBUser(tokUser));
         }
-      } catch (error) {
+      } catch (error: AxiosError | any) {
         console.error("Auto login error:", error);
+        if (error?.response && error?.response?.status === 401) {
+          console.log('received 401 deleting token')
+          localStorage.removeItem("token");
+          navigate('/')
+        }
       } finally {
         setIsLoading(false)
       }

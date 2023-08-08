@@ -10,12 +10,6 @@ function App() {
   const toggleThemeMode = () => {
     setThemeMode((prevMode) => (prevMode === 'light' ? 'dark' : 'light'));
   };
-  const [navTopUstr, setNavTopUstr] = useState('')
-
-  const setTopUserEmail = (uemail: string) => {
-    setNavTopUstr(uemail)
-  }
-
 
   // Create your theme
   const theme = createTheme({
@@ -33,9 +27,7 @@ function App() {
     <Router>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-        <AuthProvider
-          setTopUserEmail={setTopUserEmail}
-        >
+        <AuthProvider>
           <AppContent
             themeMode={themeMode}
             toggleThemeMode={toggleThemeMode}
