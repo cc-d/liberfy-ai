@@ -75,4 +75,4 @@ class Completion(Base):
     model: Mapped[str] = Column(String, default=DEFAULT_GPTMODEL)
 
     def __repr__(self):
-        return f'<Completion id={self.id} chat_id={self.chat_id} user_id={self.user_id} temperature={self.temperature} model={self.model}>'
+        return f'<Completion id={self.id} chat_id={self.chat_id} user_id={self.user_id} temperature={self.temperature} model={self.model} msgs={self.messages}>'

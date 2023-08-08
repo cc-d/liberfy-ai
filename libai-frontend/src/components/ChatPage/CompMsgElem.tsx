@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  BaseMsg,
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
@@ -45,24 +44,16 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
 }
 
 
-export const CompMsgElem: React.FC<{ message: BaseMsg }> = ({ message }) => {
+export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
   const theme = useTheme();
   return (
-    <>
-    <Box sx={{mt: 0.5}}
+    <Box sx={{m: 0.5}}
       display="flex"
       flexDirection="column"
-    >
-      <Typography
-        variant="body1"
-      >
-        <MsgRoleElem
-          role={message.role}
-        />
-      </Typography>
-      <Typography variant="caption">{message.content}</Typography>
+>     <MsgRoleElem role={message.role} />
+      {JSON.stringify(message)}
     </Box>
-    </>
+
   )
 }
 

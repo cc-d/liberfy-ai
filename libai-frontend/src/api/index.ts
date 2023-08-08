@@ -7,7 +7,6 @@ export { CancelablePromise, CancelError } from './core/CancelablePromise';
 export { OpenAPI } from './core/OpenAPI';
 export type { OpenAPIConfig } from './core/OpenAPI';
 
-export type { BaseMsg } from './models/BaseMsg';
 export type { DataCreateChat } from './models/DataCreateChat';
 export type { DataCreateComp } from './models/DataCreateComp';
 export type { DataJustToken } from './models/DataJustToken';
@@ -22,7 +21,6 @@ export type { HTTPValidationError } from './models/HTTPValidationError';
 export type { Token } from './models/Token';
 export type { ValidationError } from './models/ValidationError';
 
-export { $BaseMsg } from './schemas/$BaseMsg';
 export { $DataCreateChat } from './schemas/$DataCreateChat';
 export { $DataCreateComp } from './schemas/$DataCreateComp';
 export { $DataJustToken } from './schemas/$DataJustToken';

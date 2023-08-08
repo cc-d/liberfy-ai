@@ -9,13 +9,13 @@ import {
   Paper,
   Divider,
 } from "@mui/material";
-import { useAuthContext, jwtLoginData } from "../../AuthContext";
+import { useAuthContext, jwtLoginData } from "../../App/AuthContext";
 import LogRegForm from "./LogRegForm";
 import { useNavigate } from "react-router-dom";
 
 const LogRegPage = () => {
   const {
-    login, register, user, logout, autoTokenLogin, isLoading,
+    login, register, user,
   } = useAuthContext();
 
   const nav = useNavigate();

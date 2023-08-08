@@ -8,9 +8,9 @@ import React, {
   FormEvent,
 } from "react";
 import apios from "../../apios";
-import { useAuthContext } from "../../AuthContext";
+import { useAuthContext } from "../../App/AuthContext";
 import {
-  BaseMsg,
+
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";

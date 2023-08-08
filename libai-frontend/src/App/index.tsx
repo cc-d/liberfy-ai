@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider, createTheme, CssBaseline } from '@mui/material';
-import { AuthProvider } from '../AuthContext';
+import { AuthProvider } from './AuthContext';
 import ThemeContext from './ThemeContext';
 import AppContent from './AppContent';
 

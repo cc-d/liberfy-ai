@@ -11,7 +11,7 @@ import {
   FormLabel,
   InputLabel,
 } from "@mui/material";
-import { useAuthContext } from "../../AuthContext";
+import { useAuthContext } from "../../App/AuthContext";
 
 
 const LogRegForm = ({ formType, onSubmit, onChange }): JSX.Element => {

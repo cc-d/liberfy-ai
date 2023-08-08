@@ -53,6 +53,9 @@ class GPTComp(BaseComp):
 class DBComp(GPTComp):
     id: int
     user_id: int
+    messages: List[DBMsg]
+    model: str
+    temperature: float
 
 
 class BaseChat(BaseModel):

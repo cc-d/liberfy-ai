@@ -3,7 +3,7 @@ import Modal from '@mui/material/Modal';
 import { Box, Button, TextField, Paper } from "@mui/material";
 import apios from "../../../apios";
 import {
-  BaseMsg,
+
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../../api";
@@ -26,6 +26,7 @@ const NewCompModal: FC<NewCompModalProps> = ({
   user_id,
   temperature,
 }) => {
+  console.log('NewCompModal')
   const [sysprompt, setSysPrompt] = useState("");
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {

@@ -13,3 +13,14 @@ def get_gptmodels() -> List[str]:
     """
     with open(opjoin(dirname(abspath(__file__)), 'files', 'gptmodels.txt')) as f:
         return list({line.strip() for line in f.readlines() if line.strip()})
+
+
+@logf()
+def get_gptroles() -> List[str]:
+    """Returns a list of GPT roles in files/gptroles.txt
+
+    Returns:
+        List[str]: List of GPT roles
+    """
+    with open(opjoin(dirname(abspath(__file__)), 'files', 'gptroles.txt')) as f:
+        return list({line.strip() for line in f.readlines() if line.strip()})

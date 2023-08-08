@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import {
-  BaseMsg,
+
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../../api";
@@ -21,13 +21,14 @@ interface CompListElemProps {
 export const CompListElem: React.FC<CompListElemProps> = ({
   completion, theme, setActiveComp
 }) => {
+  //console.log('CompListElem')
   //console.log('badcomps', completion)
   const compTitle: string = completion.messages.length > 0
     ? completion.messages[0].content : "No messages yet";
 
-  useEffect(() => {
-    console.log('CompListElem')
-  }, []);
+  /*useEffect(() => {
+    console.log('useEffect()[] CompListElem')
+  }, []);*/
 
   return (
     <ListItemButton

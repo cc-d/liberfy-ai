@@ -3,10 +3,10 @@
 /* tslint:disable */
 /* eslint-disable */
 
-import type { BaseMsg } from './BaseMsg';
+import type { DBMsg } from './DBMsg';
 
 export type DBComp = {
-    messages: Array<BaseMsg>;
+    messages: Array<DBMsg>;
     model: string;
     temperature: number;
     id: number;

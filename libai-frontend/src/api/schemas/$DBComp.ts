@@ -7,7 +7,7 @@ export const $DBComp = {
         messages: {
             type: 'array',
             contains: {
-                type: 'BaseMsg',
+                type: 'DBMsg',
             },
             isRequired: true,
         },

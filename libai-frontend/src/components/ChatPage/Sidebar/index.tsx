@@ -28,15 +28,15 @@ interface ChatSidebarProps {
   completions: DBComp[];
   activeComp: DBComp | null;
   setActiveComp: (completion: DBComp | null) => void;
-  handleModalOpen: () => void;
-  handleModalClose: () => void;
+ handleCompModalOpen: () => void;
+ handleCompModalClose: () => void;
 }
 
 export const drawerWidth = 240;
 
 export const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chat, user, addCompletion, completions, activeComp,
-  setActiveComp, handleModalOpen, handleModalClose
+  setActiveComp,handleCompModalOpen,handleCompModalClose
 }) => {
   const theme = useTheme();
   const { isSidebarOpen, toggleSidebar, isSmallDevice } = useSidebarContext();
@@ -77,7 +77,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
           {chat.name}
         </Typography>
 
-        <Accordion disableGutters >
+        <Accordion disableGutters defaultExpanded>
           <AccordionSummary
             expandIcon={<ExpandMore />}
           >
@@ -88,7 +88,7 @@ export const ChatSidebar: React.FC<ChatSidebarProps> = ({
             <Button
               variant="contained"
               startIcon={<AddBox />}
-              onClick={() => handleModalOpen()} // Open the modal
+              onClick={() =>handleCompModalOpen()} // Open the modal
               sx={{ mt: -1, mb: 1, width: '100%' }}
               size="small"
             >

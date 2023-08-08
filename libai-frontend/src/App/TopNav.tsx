@@ -3,9 +3,10 @@ import { Box, IconButton, Typography, Divider } from '@mui/material';
 import { LogoutOutlined, DarkMode, LightMode } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useSidebarContext } from './SidebarContext';
-import { useAuthContext } from '../AuthContext';
+import { useAuthContext } from './AuthContext';
+import { useTheme } from '@emotion/react';
 
-export const TopNav = ({ themeMode, toggleThemeMode }) => {
+export const TopNav = ({ themeMode, toggleThemeMode, theme }) => {
   const {
     isSidebarOpen, toggleSidebar, isSmallDevice
   } = useSidebarContext();
@@ -13,11 +14,13 @@ export const TopNav = ({ themeMode, toggleThemeMode }) => {
     user, logout
   } = useAuthContext();
 
+
+
   return (
     <>
       <Box
         sx={{
-
+          backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between', // This will push items to the edges

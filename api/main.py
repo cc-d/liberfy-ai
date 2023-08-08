@@ -181,13 +181,28 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
 async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     chat = db.query(Chat).filter(Chat.id == chat_id).first()
     user = db.query(User).filter(User.id == chat.user_id).first()
-    comps = []
-    for c in chat.completions:
-        print('orgiinal', c.messages)
-        c.messages = list(db.query(Message).filter(Message.completion_id == c.id).all())
-        print(c, c.messages, len(c.messages))
 
-    return chat
+    completions = []
+    for c in chat.completions:
+        messages = list(db.query(Message).filter(Message.completion_id == c.id).all())
+        messages_db = [
+            DBMsg(
+                id=m.id, role=m.role, content=m.content, completion_id=m.completion_id
+            )
+            for m in messages
+        ]
+        comp = DBComp(
+            id=c.id,
+            user_id=c.user_id,
+            messages=messages_db,
+            model=c.model,
+            temperature=c.temperature,
+        )
+        completions.append(comp)
+
+    return DBChat(
+        id=chat.id, name=chat.name, user_id=chat.user_id, completions=completions
+    )
 
 
 @arouter.post("/completion/new", response_model=DBComp)
@@ -222,7 +237,7 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
 
     msgs = db.query(Message).filter(Message.completion_id == completion.id).all()
     print('querymsgs', msgs)
-    completion.messages = list(msgs)
+    completion.messages = list({DBMsg(**model_to_dict(m)) for m in msgs})
 
     return completion
 

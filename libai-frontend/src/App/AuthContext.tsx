@@ -1,11 +1,11 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import apios from "./apios";
+import apios from "../apios";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
-  BaseMsg, Token,
+  Token,
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBChat, DBUserWithToken, DBUser
-} from "./api";
+} from "../api";
 
 interface AuthContextProps {
   user: DBUser | null;
@@ -35,6 +35,7 @@ export const useAuthContext = () => {
 };
 
 export const AuthProvider = ({setTopUserEmail, children }) => {
+  console.log('AuthProvider')
   const [user, setUser] = useState<DBUser | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
@@ -45,9 +46,7 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   };
 
   const setActiveUser = (user: DBUser) => {
-    console.log('setactive', user)
     setTopUserEmail(user.email);
-    console.log('setnavtop', user.email)
     setUser(user);
   };
 
@@ -56,9 +55,7 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
       const resp = await apios.post("/user/login", { username: data.username, password: data.password });
       if (resp) {
         const tokUser: DBUserWithToken = resp.data;
-        console.log(tokUser, 'tokUser')
         localStorage.setItem("token", tokUser.token.access_token);
-        console.log(toDBUser(tokUser));
         setActiveUser(tokUser);
         navigate('/chats')
       }
@@ -83,7 +80,7 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   };
 
   const autoTokenLogin = async () => {
-    console.log('autotokenlogin')
+    console.log("const autoTokenLogin()")
     const locToken: string | null = localStorage.getItem("token");
     if (locToken && !user && !isLoading) {
       setIsLoading(true)
@@ -107,8 +104,9 @@ export const AuthProvider = ({setTopUserEmail, children }) => {
   };
 
   useEffect(() => {
-    autoTokenLogin();
-  }, []); // Add auto login on mount
+    !user && !isLoading && autoTokenLogin();
+  }, [user, isLoading]);
+
 
   return (
     <AuthContext.Provider

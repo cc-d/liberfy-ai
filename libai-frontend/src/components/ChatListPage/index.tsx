@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
-import { useAuthContext } from "../../AuthContext";
+import { useAuthContext } from "../../App/AuthContext";
 import {
-  BaseMsg,
+
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
@@ -30,6 +30,7 @@ import { useTheme } from "@mui/material/styles";
 import { useSidebarContext } from "../../App/SidebarContext";
 
 const ChatListPage = () => {
+  console.log('ChatListPage')
   const { user } = useAuthContext();
   const [chats, setChats] = useState<DBChat[]>([]);
   const theme = useTheme();

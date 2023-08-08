@@ -17,29 +17,41 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   //!isSmallDevice && location.pathname.startsWith('/chat/')
   const [isSidebarOpen, setSidebarOpen] = useState(true)
 
-  const getMarg = (): string => {
-    return (isSidebarOpen && !isSmallDevice && location.pathname.startsWith('/chat/') ? '240px' : '0px');
+
+  const showLeftMarg = () => {
+    const onChatPage = location.pathname.startsWith('/chat/')
+    if (!onChatPage) {
+      return false
+    }
+    if (!isSmallDevice) {
+      return true
+    } else {
+      if (isSidebarOpen) {
+        return true
+      } else {
+        return false
+      }
+    }
+
   }
 
-  console.log('getMarg: ' + getMarg())
+  const getMarg = (): string => {
+    let marg: string = showLeftMarg() ? '240px' : '0px';
+    /*console.log(
+      'marg', marg, 'isSidebarOpen', isSidebarOpen,
+      'isSmallDevice', isSmallDevice, 'location.pathname', location.pathname
+    )*/
+    return marg
+  }
+
+  //console.log('getMarg: ' + getMarg())
   // Modify the showSidebar logic to also consider isSidebarOpen
   const [marginLeft, setMarginLeft] = useState(getMarg());
 
 
   const toggleSidebar = () => {
-    console.log('togglesider')
     setSidebarOpen(!isSidebarOpen)
   }
-
-
-  /*
-  const getPageMargin = () => {
-    if (isSmallDevice || !location.pathname.startsWith('/chat/')) {
-      return '0px';
-    } else {
-      return '240px';
-    }
-  }*/
 
 
   if (getMarg() !== marginLeft) {
@@ -52,8 +64,8 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     //console.log(location.pathname)
     //console.log(isSmallDevice)
     //console.log(marginLeft)
-    //setMarginLeft(getMarg())//location.pathname.startsWith('/chat/') ? '240px': '0px')
-  }, []);
+    setMarginLeft(getMarg())//location.pathname.startsWith('/chat/') ? '240px': '0px')
+  }, [isSmallDevice]);
 
   return (
     <SidebarContext.Provider
@@ -73,6 +85,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         <TopNav
           themeMode={themeMode}
           toggleThemeMode={toggleThemeMode}
+          theme={theme}
         />
         <Routes>
           <Route path="/" element={<LogRegPage />} />
