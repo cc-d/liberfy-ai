@@ -11,18 +11,22 @@ import apios from '../apios';
 import { DBChat, DBComp } from '../api'; // Import DBChat type as required
 
 const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
-  const location = useLocation();
   const { user } = useAuthContext();
-
-  const [isSidebarOpen, setSidebarOpen] = useState(true);
+  const loc = useLocation();
+  const chatPageRE = /\/chat\/\d+\/?/;
+  const [isSidebarOpen, setSidebarOpen] = useState(chatPageRE.test(loc.pathname));
   const [chat, setChat] = useState<DBChat | null>(null);
   const [completions, setCompletions] = useState<DBComp[]>([]);
 
   const [activeComp, setActiveComp] = useState<DBComp | null>(null);
 
   const toggleSidebar = (openclose?: boolean) => {
+    if (openclose === true || openclose === false) {
+      setSidebarOpen(openclose);
+    } else {
+      setSidebarOpen(!isSidebarOpen);
 
-    setSidebarOpen(!isSidebarOpen);
+    }
   };
 
   const addCompletion = (completion: DBComp) => {
@@ -43,18 +47,18 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
 
   useEffect(() => {
-    if (location.pathname.startsWith('/chat/')) {
-      const chatId = location.pathname.split('/')[2];
+    if (loc.pathname.startsWith('/chat/')) {
+      const chatId = loc.pathname.split('/')[2];
       apios.get(`/chat/${chatId}`).then((response) => {
         setChat(response.data);
         setCompletions(response.data.completions);
       });
     }
-  }, [location]);
+  }, [loc]);
 
   return (
     <Box display="flex">
-      {user && location.pathname !== '/' && (
+      {user && loc.pathname !== '/' && (
         <ChatSidebar
           chat={chat}
           user={user}

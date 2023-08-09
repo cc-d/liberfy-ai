@@ -1,6 +1,9 @@
 import React from 'react';
-import { Box, IconButton, Typography, Divider } from '@mui/material';
-import { LogoutOutlined, DarkMode, LightMode, AccountBox, AccountCircle, Menu } from "@mui/icons-material";
+import { Box, IconButton, Typography, Divider, Link  } from '@mui/material';
+import {
+  LogoutOutlined, DarkMode, LightMode,
+  AccountBox, AccountCircle, Menu, ChatBubble
+} from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAuthContext } from './AuthContext';
 import { useTheme } from '@emotion/react';
@@ -21,6 +24,7 @@ export const TopNav = ({
   } = useAuthContext();
 
   const loc: Location  = useLocation();
+  const ChatListPageRE = /\/chats\/?$/;
 
   return (
     <>
@@ -39,6 +43,7 @@ export const TopNav = ({
             display: 'flex',
             justifyContent: 'left',
             flexDirection: 'row',
+            gap: 0.8,
           }}
         >
           {loc.pathname !== '/' && (
@@ -47,12 +52,32 @@ export const TopNav = ({
             </IconButton>
           )
           }
+          { user  && (
+            <Box
+              sx={{
+                alignContent: 'center', display: 'flex', alignItems: 'center',
+                textDecoration: 'none', color: 'inherit',
+              }}
+            >
+           <Link
+              href="/chats"
+              sx={{
+                alignContent: 'center', display: 'flex', alignItems: 'center',
+                textDecoration: 'none', color: 'inherit',
+              }}
+           >
+            <ChatBubble sx={{height: '1rem', width: '1rem'}} />
+            Chats
+           </Link>
+           </Box>
+          )
+          }
           {user && (
             <Box
               sx={{
                 alignContent: 'center', display: 'flex',
                 flexDirection: 'row', alignItems: 'center',
-                gap: 1,
+                gap: 0,
               }}
             >
               <Box sx={{ml: 1, display: 'flex', alignItems: 'center'}}>
@@ -71,14 +96,14 @@ export const TopNav = ({
               </IconButton>
             </Box>
           )}
-
-        </Box>
         <Box
           sx={{
-            width: '100px', // Set to the desired width
+            //width: '20px', // Set to the desired width
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'right',
+            backgroundColor: 'pink',
+            flex: 1,
             // This will push items to the right
           }}
         >
@@ -92,6 +117,8 @@ export const TopNav = ({
 
 
         </Box>
+        </Box>
+
       </Box>
       <Divider />
     </>

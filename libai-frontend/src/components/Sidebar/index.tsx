@@ -110,11 +110,9 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             </Typography>
           )}
 
-          <Typography variant="h6">
-            {chat ? chat.name : 'Select Chat'}
-          </Typography>
 
-          {chat && completions && (
+
+          {chat && completions ? (
             <Accordion disableGutters defaultExpanded>
               <AccordionSummary expandIcon={<ExpandMore />}>
                 <Typography variant="body1">Completions</Typography>
@@ -143,7 +141,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 </List>
               </AccordionDetails>
             </Accordion>
-          )}
+          ) : (
+            <Typography variant="body1">
+              Select a chat to view completions
+            </Typography>
+          )
+          }
         </Box>
       </Drawer>
     </>

@@ -17,7 +17,7 @@ import {
 } from "@mui/material";
 import {
   AddCircleOutline, Chat, CommentOutlined, Comment, ExpandMore,
-  ThreeP, AddBox
+  ThreeP, AddBox, QuestionAnswer, QuestionAnswerOutlined, QuestionAnswerRounded, QuestionAnswerTwoTone
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "../Sidebar/CompListElem";
@@ -81,13 +81,9 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
     <>
       <Box>
         {activeComp ? (
-          <Box display='flex' alignItems='center' m='1'>
-            <CommentOutlined
-              sx={{
-                mr: 0.5,
-              }}
-            />
-            <Typography variant="body1">Messages</Typography>
+          <Box display='flex' alignItems='center' m='1' gap={1}>
+            <QuestionAnswerTwoTone />
+            <Typography variant="h6">Messages</Typography>
             <Button
               variant="contained"
               startIcon={<AddBox />}
