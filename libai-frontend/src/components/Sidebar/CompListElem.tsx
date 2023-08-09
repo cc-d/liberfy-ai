@@ -30,9 +30,14 @@ export const CompListElem: React.FC<CompListElemProps> = ({
     console.log('useEffect()[] CompListElem')
   }, []);*/
 
+  const test = (c) => {
+    console.log('test test', c);
+    setActiveComp(c);
+  }
+
   return (
     <ListItemButton
-      onClick={() => (setActiveComp(completion))}
+      onClick={() => (test(completion))}
       disableGutters
       sx={{ m: 0 }}
       key={completion.id}

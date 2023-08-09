@@ -17,9 +17,11 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const [isSidebarOpen, setSidebarOpen] = useState(true);
   const [chat, setChat] = useState<DBChat | null>(null);
   const [completions, setCompletions] = useState<DBComp[]>([]);
+
   const [activeComp, setActiveComp] = useState<DBComp | null>(null);
 
-  const toggleSidebar = () => {
+  const toggleSidebar = (openclose?: boolean) => {
+
     setSidebarOpen(!isSidebarOpen);
   };
 
@@ -36,6 +38,8 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     setShowCompModal(false);
   };
 
+
+  const [showSidebar, setShowSidebar ] = useState(false);
 
 
   useEffect(() => {
@@ -61,20 +65,24 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
           handleCompModalClose={handleCompModalClose}
-          handleCompModalOpen = {handleCompModalOpen}
+          handleCompModalOpen={handleCompModalOpen}
           showCompModal={showCompModal}
+          setChat={setChat}
         />
       )}
       <Box flex="1">
         <TopNav
           themeMode={themeMode}
           toggleThemeMode={toggleThemeMode}
-          theme={theme}
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
         />
         <Routes>
           <Route path="/" element={<LogRegPage />} />
           <Route path="/chats" element={<ChatListPage />} />
-          <Route path="/chat/:chatId" element={<ChatPage />} />
+          <Route path="/chat/:chatId" element={
+          <ChatPage activeComp={activeComp} setActiveComp={setActiveComp} />
+          } />
         </Routes>
       </Box>
     </Box>

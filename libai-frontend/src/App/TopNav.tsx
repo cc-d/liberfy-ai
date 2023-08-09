@@ -1,16 +1,26 @@
 import React from 'react';
 import { Box, IconButton, Typography, Divider } from '@mui/material';
-import { LogoutOutlined, DarkMode, LightMode } from "@mui/icons-material";
+import { LogoutOutlined, DarkMode, LightMode, AccountBox, AccountCircle, Menu } from "@mui/icons-material";
 import MenuIcon from "@mui/icons-material/Menu";
 import { useAuthContext } from './AuthContext';
 import { useTheme } from '@emotion/react';
+import { useLocation, Location } from 'react-router-dom';
 
-export const TopNav = ({ themeMode, toggleThemeMode, theme }) => {
+interface TopNavProps {
+  themeMode: 'light' | 'dark';
+  toggleThemeMode: () => void;
+  toggleSidebar: () => void;
+  isSidebarOpen: boolean;
+}
+
+export const TopNav = ({
+  themeMode, toggleThemeMode, toggleSidebar, isSidebarOpen
+}: TopNavProps) => {
   const {
     user, logout
   } = useAuthContext();
 
-
+  const loc: Location  = useLocation();
 
   return (
     <>
@@ -25,22 +35,33 @@ export const TopNav = ({ themeMode, toggleThemeMode, theme }) => {
       >
         <Box
           sx={{
-
             flex: '1', // This will take up all the available space
             display: 'flex',
             justifyContent: 'left',
             flexDirection: 'row',
           }}
         >
-
+          {loc.pathname !== '/' && (
+            <IconButton onClick={toggleSidebar} sx={{ color: 'inherit' }}>
+              <Menu />
+            </IconButton>
+          )
+          }
           {user && (
             <Box
-              sx={{ alignContent: 'center', display: 'flex', flexDirection: 'row', alignItems: 'center' }}
+              sx={{
+                alignContent: 'center', display: 'flex',
+                flexDirection: 'row', alignItems: 'center',
+                gap: 1,
+              }}
             >
-
-              <Typography variant="subtitle2" ml={1}>
+              <Box sx={{ml: 1, display: 'flex', alignItems: 'center'}}>
+              <AccountBox sx={{height: '1rem', width: '1rem'}} />
+              <Typography
+              >
                 {user.email}
               </Typography>
+              </Box>
               <IconButton
                 color="inherit"
                 onClick={logout}
@@ -50,6 +71,7 @@ export const TopNav = ({ themeMode, toggleThemeMode, theme }) => {
               </IconButton>
             </Box>
           )}
+
         </Box>
         <Box
           sx={{

@@ -26,15 +26,18 @@ import ChatSidebar, { drawerWidth } from "../Sidebar";
 import CompMsgElem from "./CompMsgElem";
 import AddEditMsgModal from './AddEditMsgModal';
 
+interface ChatPageProps {
+  activeComp: DBComp | null;
+  setActiveComp: (completion: DBComp | null) => any;
+}
 
-const ChatPage = () => {
+const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
   console.log('ChatPage')
   const { user } = useAuthContext();
   const { chatId } = useParams<{ chatId: string }>();
   const [chat, setChat] = useState<DBChat | null>(null);
   const [completions, setCompletions] = useState<DBComp[]>([]);
 
-  const [activeComp, setActiveComp] = useState<DBComp | null>(null);
   const [isLoading, setIsLoading] = useState(false);
 
   const theme = useTheme();
@@ -54,12 +57,16 @@ const ChatPage = () => {
 
   useEffect(() => {
     !isLoading && user &&
-      setIsLoading(true);
+    setIsLoading(true);
     apios.get(`/chat/${chatId}`).then((response) => {
       setChat(response.data);
       setCompletions(response.data.completions);
     });
   }, [user]);
+
+  useEffect(() => {
+    console.log('activecomp', activeComp)
+  }, [activeComp]);
 
   if (!chat) {
     return <div>Loading...</div>;
