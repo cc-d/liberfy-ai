@@ -81,7 +81,7 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
     <>
       <Box>
         {activeComp ? (
-          <Box display='flex' alignItems='center' m='1' gap={1}>
+          <Box display='flex' alignItems='center' m={0.5} gap={1}>
             <QuestionAnswerTwoTone />
             <Typography variant="h6">Messages</Typography>
             <Button

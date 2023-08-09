@@ -34,7 +34,7 @@ export const TopNav = ({
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between', // This will push items to the edges
-          width: '100%',
+          width: '100vw',
         }}
       >
         <Box
@@ -102,7 +102,7 @@ export const TopNav = ({
             display: 'flex',
             flexDirection: 'row',
             justifyContent: 'right',
-            backgroundColor: 'pink',
+            //backgroundColor: 'pink',
             flex: 1,
             // This will push items to the right
           }}
