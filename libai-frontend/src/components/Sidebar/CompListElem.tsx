@@ -42,10 +42,19 @@ export const CompListElem: React.FC<CompListElemProps> = ({
       sx={{ m: 0 }}
       key={completion.id}
     >
-      <Box display='flex' alignItems='center'>
+      <Box display='flex'
+        alignItems='center'
+        sx={{
+            color: theme.palette.text.primary,
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            maxWidth: '100%',
+          }}>
         <Chat sx={{ mr: 0.5 }} />
         <ListItemText
-          sx={{ color: theme.palette.text.primary }}
+          sx={{
+           }}
         >
           {compTitle}
         </ListItemText>

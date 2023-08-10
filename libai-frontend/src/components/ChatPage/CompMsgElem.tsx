@@ -46,26 +46,50 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
 
 
 export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
-  const excerpt = message.content.slice(0, 20) + '...'; // Short excerpt of the content
-
   return (
-    <Box sx={{m: 0.5, mt: 1}}>
+    <Box
+      sx={{
+        m: 1, maxWidth: '98vw'
+    }}>
       <Accordion
         disableGutters
-
         sx={{}}
       >
-        <AccordionSummary
-          sx={{p: 0, pl: 1, pr: 1 }}
-          expandIcon={<ExpandMore />}
-        >
-          <Box display='flex' alignItems='center'>
-            {getIcon(message.role)}
-            <Typography variant='body1' noWrap>
-              {message.role}: {excerpt}
-            </Typography>
-          </Box>
-        </AccordionSummary>
+<AccordionSummary
+  expandIcon={<ExpandMore />}
+  sx={{
+    display: 'flex',
+    alignItems: 'center',
+    width: '100%',
+  }}
+>
+  <Box
+    display='flex'
+    alignItems='center'
+    sx={{
+      flexGrow: 1,
+      overflow: 'hidden',
+      maxWidth: '80vw'  // Assuming expandIcon takes approx. 40px width
+    }}
+  >
+    <MsgRoleElem role={message.role} />
+
+    <Box
+      sx={{
+        flexGrow: 1,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap'
+      }}
+    >
+      {message.content}
+    </Box>
+  </Box>
+</AccordionSummary>
+
+
+
+
         <AccordionDetails
           sx={{p:1, pt: 0}}
         >
