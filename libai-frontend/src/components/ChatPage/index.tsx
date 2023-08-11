@@ -44,7 +44,7 @@ export const ChatPage = ({
   console.log(chat);
   const { useChatId } = useParams<{ useChatId: string }>();
 
-  const [isLoading, setIsLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const theme = useTheme();
 
@@ -75,14 +75,14 @@ export const ChatPage = ({
   }
 
   useEffect(() => {
-    if (!isLoading && user && !chat) {
-      setIsLoading(true);
+    if (!loading && user && !chat) {
+      setLoading(true);
       apios.get(`/chat/${useChatId}`).then((response) => {
         setChat(response.data);
       }).catch((error) => {
         console.error(error);
       }).finally(() => {
-        setIsLoading(false);
+        setLoading(false);
       });
     }
   }, [user]);

@@ -11,14 +11,19 @@ import apios from '../utils/apios';
 import { DBChat, DBComp } from '../api'; // Import DBChat type as required
 
 const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
-  const { user } = useAuthContext();
+  const { user, userLoading, setIsUserLoading } = useAuthContext();
   const loc = useLocation();
   const chatPageRE = /\/chat\/\d+\/?/;
+
   const [isSidebarOpen, setSidebarOpen] = useState(chatPageRE.test(loc.pathname));
   const [chat, setChat] = useState<DBChat | null>(null);
-
   const [activeCompId, setActiveCompId] = useState<number | null>(null);
+
+  const [loading, setLoading] = useState(false);
+
   console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
+
+
   const toggleSidebar = (openclose?: boolean) => {
     if (openclose === true || openclose === false) {
       setSidebarOpen(openclose);
@@ -57,9 +62,8 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   };
 
 
-  const [showSidebar, setShowSidebar] = useState(false);
 
-  console.log('chat', chat, 'user', user, 'loc', loc, 'isSidebarOpen', isSidebarOpen, 'showSidebar', showSidebar)
+  console.log('chat', chat, 'user', user, 'loc', loc, 'isSidebarOpen', isSidebarOpen)
 
   return (
     <Box display="flex">

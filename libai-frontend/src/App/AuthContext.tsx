@@ -11,8 +11,8 @@ import {
 interface AuthContextProps {
   user: DBUser | null;
   setUser: React.Dispatch<React.SetStateAction<DBUser | null>>;
-  isLoading: boolean;
-  setIsLoading: React.Dispatch<React.SetStateAction<boolean>>;
+  userLoading: boolean;
+  setIsUserLoading: React.Dispatch<React.SetStateAction<boolean>>;
 
   login: (data: jwtLoginData) => Promise<void>;
   register: (data: jwtLoginData) => Promise<void>;
@@ -38,7 +38,7 @@ export const useAuthContext = () => {
 export const AuthProvider = ({children }) => {
   console.log('AuthProvider')
   const [user, setUser] = useState<DBUser | null>(null);
-  const [isLoading, setIsLoading] = useState(false);
+  const [userLoading, setIsUserLoading] = useState(false);
   const navigate = useNavigate();
 
   const toDBUser = (userWithToken: DBUserWithToken): DBUser => {
@@ -82,8 +82,8 @@ export const AuthProvider = ({children }) => {
   const autoTokenLogin = async () => {
     console.log("const autoTokenLogin()")
     const locToken: string | null = localStorage.getItem("token");
-    if (locToken && !user && !isLoading) {
-      setIsLoading(true)
+    if (locToken && !user && !userLoading) {
+      setIsUserLoading(true)
       try {
         const resp = await apios.post("/user_from_token", { token: locToken });
         if (resp) {
@@ -98,7 +98,7 @@ export const AuthProvider = ({children }) => {
           navigate('/')
         }
       } finally {
-        setIsLoading(false)
+        setIsUserLoading(false)
       }
     }
   };
@@ -109,14 +109,14 @@ export const AuthProvider = ({children }) => {
   };
 
   useEffect(() => {
-    !user && !isLoading && autoTokenLogin();
-  }, [user, isLoading]);
+    !user && !userLoading && autoTokenLogin();
+  }, [user, userLoading]);
 
 
   return (
     <AuthContext.Provider
       value={{
-        setUser, user, isLoading, setIsLoading, login,
+        setUser, user, userLoading, setIsUserLoading, login,
         register, logout, autoTokenLogin
       }}
     >

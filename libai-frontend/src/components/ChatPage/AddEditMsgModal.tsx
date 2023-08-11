@@ -37,7 +37,7 @@ const AddEditMsgModal: React.FC<AddEditMsgModalProps> = (
   const handleContentChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setMsgContent(e.target.value);
   };
-  const [loading, isLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const handleSubmit = (e) => {
     console.log('clicke', e)
@@ -47,7 +47,7 @@ const AddEditMsgModal: React.FC<AddEditMsgModalProps> = (
       role: msgRole,
       completion_id: completion_id,
     };
-    isLoading(true);
+    setLoading(true);
     apios.post(`/completion/${completion_id}/messages/add`, data)
       .then((resp) => {
         if (resp && resp?.data) {
@@ -59,7 +59,7 @@ const AddEditMsgModal: React.FC<AddEditMsgModalProps> = (
         console.error(err);
       })
       .finally(() => {
-        isLoading(false);
+        setLoading(false);
       });
   };
 

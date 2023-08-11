@@ -15,7 +15,7 @@ import { useNavigate } from "react-router-dom";
 
 const LogRegPage = () => {
   const {
-    login, register, user,
+    login, register, user, userLoading, setIsUserLoading
   } = useAuthContext();
 
   const nav = useNavigate();
@@ -55,17 +55,19 @@ const LogRegPage = () => {
   };
 
   return (
-    <Container maxWidth='md'>
-
-      <Typography variant='h4' ml={1}>
-        Login or Register
-      </Typography>
-      <Box display='flex'>
-        <LogRegForm formType='log' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'log')} />
-        <LogRegForm formType='reg' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'reg')} />
-      </Box>
-    </Container>
-  );
+    <>
+      {!userLoading && !user && (
+        <Container maxWidth='md'>
+          <Typography variant='h4' ml={1}>
+            Login or Register
+          </Typography>
+          <Box display='flex'>
+            <LogRegForm formType='log' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'log')} />
+            <LogRegForm formType='reg' onSubmit={handleSubmit} onChange={(e) => handleChange(e, 'reg')} />
+          </Box>
+        </Container>
+      )}
+    </>)
 };
 
 export default LogRegPage;
