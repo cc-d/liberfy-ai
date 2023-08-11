@@ -6,7 +6,7 @@ import {
   DBComp, DBMsg, DBUserWithToken, DBChat
 } from "../../api";
 import CreateChat from "./CreateChat";
-import apios from "../../apios";
+import apios from "../../utils/apios";
 import {
   Container,
   Divider,
@@ -61,12 +61,14 @@ const ChatListPage = () => {
   }, []);
 
   return (
-    <Container id="chat-list-page" maxWidth="xl" sx={{}}>
+    <Container sx={{maxWidth: 'xl'}}>
       <CreateChat refreshChats={refreshChats} addChat={addChat} />
       <Typography variant="h5" component="h5">
         Your Chats:
       </Typography>
-      <List>
+      <List
+
+      >
         <Divider />
         {chats && chats.map((chat) => (
           <ListItem
@@ -75,8 +77,17 @@ const ChatListPage = () => {
             to={`/chat/${chat.id}`}
             divider
             style={{ color: theme.palette.text.primary }}
-            sx={{ "&:hover": { backgroundColor: theme.palette.action.hover } }}          >
+            sx={{
+              "&:hover": { backgroundColor: theme.palette.action.hover },
+
+            }}
+
+          >
             <ListItemAvatar
+              sx={{
+                height: '40px',
+                width: '40px',
+              }}
             >
               <Avatar
                 style={{ backgroundColor: theme.palette.text.primary }}
@@ -84,11 +95,18 @@ const ChatListPage = () => {
                 <ChatIcon />
               </Avatar>
             </ListItemAvatar>
-            <ListItemText>{chat.name}</ListItemText>
+            <ListItemText primary={chat.name} primaryTypographyProps={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              width: '100%',
+              display: 'block'
+            }}></ListItemText>
           </ListItem>
         ))}
       </List>
     </Container>
+
   );
 };
 

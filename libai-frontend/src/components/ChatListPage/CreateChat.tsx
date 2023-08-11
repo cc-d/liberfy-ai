@@ -7,7 +7,7 @@ import React, {
   ChangeEvent,
   FormEvent,
 } from "react";
-import apios from "../../apios";
+import apios from "../../utils/apios";
 import { useAuthContext } from "../../App/AuthContext";
 import {
 

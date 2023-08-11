@@ -1,4 +1,4 @@
-import React, {Dispatch, SetStateAction, useEffect} from 'react';
+import React, { Dispatch, SetStateAction, useEffect } from 'react';
 import { useLocation } from 'react-router-dom';
 import {
   Box,
@@ -88,66 +88,68 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             boxSizing: 'border-box',
           },
         }}
-      >
+      > {user && chat && (
         <Box
           display="flex"
-          flexDirection="column"
-          sx={{ p: 0 }}
+          flexDirection="row"
+          sx={{ p: 0, width: '100%', alignItems: 'center', gap: 0.5 }}
         >
-          {user && chat && (
-            <Typography
-              fontSize={theme.typography.h5.fontSize}
-              display={'inline-block'}
-            >
-              <ThreeP
-                sx={{
-                  fontSize: theme.typography.h5.fontSize,
-                  verticalAlign: "middle",
-                  mr: 0.5,
-                }}
-              />
-              {chat?.name}
-            </Typography>
-          )}
+          <ThreeP
+            sx={{
+              fontSize: theme.typography.h5.fontSize,
 
-
-
-          {chat && completions ? (
-            <Accordion disableGutters defaultExpanded>
-              <AccordionSummary expandIcon={<ExpandMore />}>
-                <Typography variant="body1">Completions</Typography>
-              </AccordionSummary>
-              <AccordionDetails>
-                <Button
-                  variant="contained"
-                  onClick={handleCompModalOpen} // Open the modal
-                  sx={{ mt: -1, mb: 1, width: '100%' }}
-                  size="small"
-                >
-                  New
-                </Button>
-                <Divider />
-                <List dense={true}>
-                  {completions.length > 0 &&
-                    completions.map((completion) => (
-                      <CompListElem
-                        key={completion.id}
-                        completion={completion}
-                        theme={theme}
-                        setActiveComp={setActiveComp}
-                      />
-                    ))
-                  }
-                </List>
-              </AccordionDetails>
-            </Accordion>
-          ) : (
-            <Typography variant="body1">
-              Select a chat to view completions
-            </Typography>
-          )
-          }
+            }}
+          />
+          <Typography
+            fontSize={theme.typography.h5.fontSize}
+            sx={{
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
+              display: 'block',
+            }}
+          >
+            {chat?.name}
+          </Typography>
         </Box>
+      )}
+
+        {chat && completions ? (
+          <Accordion disableGutters defaultExpanded>
+            <AccordionSummary expandIcon={<ExpandMore />}>
+              <Typography variant="body1">Completions</Typography>
+            </AccordionSummary>
+            <AccordionDetails>
+              <Button
+                variant="contained"
+                onClick={handleCompModalOpen} // Open the modal
+                sx={{ mt: -1, mb: 1, width: '100%' }}
+                size="small"
+              >
+                New
+              </Button>
+              <Divider />
+              <List dense={true}>
+                {completions.length > 0 &&
+                  completions.map((completion) => (
+                    <CompListElem
+                      key={completion.id}
+                      completion={completion}
+                      theme={theme}
+                      setActiveComp={setActiveComp}
+                    />
+                  ))
+                }
+              </List>
+            </AccordionDetails>
+          </Accordion>
+        ) : (
+          <Typography variant="body1">
+            Select a chat to view completions
+          </Typography>
+        )
+        }
+
       </Drawer>
     </>
   );

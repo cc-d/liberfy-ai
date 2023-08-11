@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import apios from '../../apios';
+import apios from '../../utils/apios';
 import {
   DBMsg, DBComp, DBUserWithToken, DBChat, DataCreateChat, DataCreateComp, DataMsgAdd
 } from '../../api';

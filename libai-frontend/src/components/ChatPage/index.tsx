@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { useParams, useLocation } from "react-router-dom";
-import apios from "../../apios";
+import apios from "../../utils/apios";
 import {
   DataCreateChat, DataCreateComp, DataMsgAdd,
   DBComp, DBMsg, DBUserWithToken, DBChat

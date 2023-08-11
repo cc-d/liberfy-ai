@@ -7,7 +7,7 @@ import ChatPage from '../components/ChatPage';
 import TopNav from './TopNav';
 import { useAuthContext } from '../App/AuthContext';
 import ChatSidebar from '../components/Sidebar';
-import apios from '../apios';
+import apios from '../utils/apios';
 import { DBChat, DBComp } from '../api'; // Import DBChat type as required
 
 const AppContent = ({ themeMode, toggleThemeMode, theme }) => {

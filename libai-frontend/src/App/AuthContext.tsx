@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
-import apios from "../apios";
+import apios from "../utils/apios";
 import { AxiosError } from "axios";
 import { useNavigate, useLocation } from "react-router-dom";
 import {
