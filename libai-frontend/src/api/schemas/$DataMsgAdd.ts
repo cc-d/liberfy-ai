@@ -5,12 +5,7 @@
 export const $DataMsgAdd = {
     properties: {
         completion_id: {
-            type: 'any-of',
-            contains: [{
-                type: 'number',
-            }, {
-                type: 'null',
-            }],
+            type: 'number',
             isRequired: true,
         },
         role: {

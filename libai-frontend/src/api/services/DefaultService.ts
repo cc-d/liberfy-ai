@@ -213,13 +213,13 @@ export class DefaultService {
      * @returns DBMsg Successful Response
      * @throws ApiError
      */
-    public static addMessageApiCompletionCompletionIdMessageAddPost(
+    public static addMessageApiCompletionCompletionIdMessagesAddPost(
         completionId: number,
         requestBody: DataMsgAdd,
     ): CancelablePromise<DBMsg> {
         return __request(OpenAPI, {
             method: 'POST',
-            url: '/api/completion/{completion_id}/message/add',
+            url: '/api/completion/{completion_id}/messages/add',
             path: {
                 'completion_id': completionId,
             },

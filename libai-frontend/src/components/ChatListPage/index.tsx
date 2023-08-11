@@ -61,7 +61,7 @@ const ChatListPage = () => {
   }, []);
 
   return (
-    <Container sx={{maxWidth: 'xl'}}>
+    <Container sx={{maxWidth: '100vw'}}>
       <CreateChat refreshChats={refreshChats} addChat={addChat} />
       <Typography variant="h5" component="h5">
         Your Chats:

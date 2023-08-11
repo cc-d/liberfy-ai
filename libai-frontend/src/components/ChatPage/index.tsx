@@ -53,6 +53,18 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
 
   const addCompletion = (completion: DBComp) => {
     setCompletions([...completions, completion]);
+    if (chat) {
+      setChat({ ...chat, completions: [...chat.completions, completion] });
+    }
+  }
+
+  const addMsg = (msg: DBMsg) => {
+    if (activeComp && activeComp.messages && msg ) {
+      setActiveComp({
+        ...activeComp,
+        messages: [...activeComp.messages, msg]
+      })
+    }
   }
 
   useEffect(() => {
@@ -61,12 +73,16 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
     apios.get(`/chat/${chatId}`).then((response) => {
       setChat(response.data);
       setCompletions(response.data.completions);
+    }).catch((error) => {
+      console.error(error);
+    }).finally(() => {
+      setIsLoading(false);
     });
   }, [user]);
 
   useEffect(() => {
     console.log('activecomp', activeComp)
-  }, [activeComp]);
+  }, [activeComp, chat, completions]);
 
   if (!chat) {
     return <div>Loading...</div>;
@@ -75,6 +91,8 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
   if (!user || !user?.id) {
     return <></>
   }
+
+
 
   return (
 
@@ -108,6 +126,7 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
             chat_id={chat.id}
             completion_id={activeComp.id}
             msg={null}
+            addMsg={addMsg}
           />
         )
         }

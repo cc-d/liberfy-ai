@@ -4,7 +4,7 @@
 /* eslint-disable */
 
 export type DataMsgAdd = {
-    completion_id: (number | null);
+    completion_id: number;
     role: string;
     content: string;
 };

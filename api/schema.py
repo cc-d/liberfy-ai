@@ -91,7 +91,7 @@ class DataCreateComp(BaseModel):
 
 
 class DataMsgAdd(BaseModel):
-    completion_id: Optional[int]
+    completion_id: int
     role: str
     content: str
 

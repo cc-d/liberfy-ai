@@ -19,15 +19,15 @@ export const getIcon = (role: string) => {
   if (role == 'user') {
     return <Person sx={{
       mr: 0.5, verticalAlign: "middle", height: '1rem', width: '1rem'
-    }}/>;
+    }} />;
   } else if (role == 'assistant') {
     return <Assistant sx={{
       mr: 0.5, verticalAlign: "middle", height: '1rem', width: '1rem'
-    }}/>;
+    }} />;
   } else {
     return <Computer sx={{
       mr: 0.5, verticalAlign: "middle", height: '1rem', width: '1rem'
-    }}/>;
+    }} />;
   }
 }
 
@@ -49,52 +49,49 @@ export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
   return (
     <Box
       sx={{
-        m: 1, maxWidth: '98vw'
-    }}>
+        m: 1,
+      }}>
       <Accordion
         disableGutters
         sx={{}}
       >
-<AccordionSummary
-  expandIcon={<ExpandMore />}
-  sx={{
-    display: 'flex',
-    alignItems: 'center',
-    width: '100%',
-  }}
->
-  <Box
-    display='flex'
-    alignItems='center'
-    sx={{
-      flexGrow: 1,
-      overflow: 'hidden',
-      maxWidth: '80vw'  // Assuming expandIcon takes approx. 40px width
-    }}
-  >
-    <MsgRoleElem role={message.role} />
+        <AccordionSummary
+          expandIcon={<ExpandMore />}
+          sx={{
+            display: 'flex',
+            alignItems: 'center',
+            width: '100%', m: 0, p: 0, pl: 1, pr: 1,
+          }}
+        >
+          <Box
+            sx={{
+              display: 'flex',
+              flexGrow: 1,
+              overflow: 'hidden',
+              maxWidth: 'calc(100vw - 60px)'  // Assuming expandIcon takes approx. 40px width
+            }}
+          >
+            <MsgRoleElem role={message.role} />
 
-    <Box
-      sx={{
-        flexGrow: 1,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap'
-      }}
-    >
-      {message.content}
-    </Box>
-  </Box>
-</AccordionSummary>
-
-
-
-
+            <Box
+              sx={{
+                flexGrow: 1,
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                ml: 1,
+                opacity: 0.8,
+              }}
+            >
+              {message.content}
+            </Box>
+          </Box>
+        </AccordionSummary>
         <AccordionDetails
-          sx={{p:1, pt: 0}}
+          sx={{ p: 1, pt: 0 }}
         >
           <TextField
-            sx={{p: 0, m: 0 }}
+            sx={{ p: 0, m: 0 }}
             fullWidth
             multiline
             disabled

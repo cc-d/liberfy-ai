@@ -242,15 +242,13 @@ async def get_completion(completion_id: int, db: Session = Depends(get_db)):
     return completion
 
 
-@arouter.post("/completion/{completion_id}/message/add", response_model=DBMsg)
+@arouter.post("/completion/{completion_id}/messages/add", response_model=DBMsg)
 async def add_message(
     completion_id: int, data: DataMsgAdd, db: Session = Depends(get_db)
 ):
     role, content = data.role, data.content
     msg = Message(role=role, content=content, completion_id=completion_id)
-    db.add(msg)
-    db.commit()
-    db.refresh(msg)
+    msg = add_commit_refresh(msg, db)
     return msg
 
 
