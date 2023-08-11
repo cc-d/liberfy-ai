@@ -47,19 +47,15 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   showCompModal, toggleSidebar, isSidebarOpen, setChat, getCompFromId,
 }) => {
   const theme = useTheme();
-  const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
   const loc = useLocation();
 
   const chatPageRE = /\/chat\/\d+\/?/;
-  const chatListPageRE = /\/chats\/?$/;
 
   useEffect(() => {
-    if (!chatPageRE.test(loc.pathname)) {
-      setChat(null)
-    }
-  }, [loc.pathname])
 
+  }, [chat])
 
+  console.log('ChatSidebar')
   return (
     <>
       {chat && chat.id && (
@@ -113,7 +109,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </Box>
       )}
 
-        {chat && chat.completions ? (
+        {chat ? (
           <Accordion disableGutters defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography variant="body1">Completions</Typography>
@@ -136,6 +132,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       completion={completion}
                       theme={theme}
                       setActiveCompId={setActiveCompId}
+                      activeCompId={activeCompId}
                     />
                   ))
                 }

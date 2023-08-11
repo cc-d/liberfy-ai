@@ -32,13 +32,16 @@ interface ChatPageProps {
   getCompFromId: (id: number | null) => DBComp | null;
   chat: (DBChat | null);
   setChat: (chat: DBChat | null) => void;
+  addCompletion: (completion: DBComp) => any;
 }
 
-const ChatPage = ({chat, setChat, activeCompId, setActiveCompId, getCompFromId}: ChatPageProps) => {
+export const ChatPage = ({
+  chat, setChat, addCompletion, activeCompId, setActiveCompId, getCompFromId
+}: ChatPageProps) => {
   console.log('ChatPage')
   const { user } = useAuthContext();
 
-
+  console.log(chat);
   const { useChatId } = useParams<{ useChatId: string }>();
 
   const [isLoading, setIsLoading] = useState(false);
@@ -54,14 +57,10 @@ const ChatPage = ({chat, setChat, activeCompId, setActiveCompId, getCompFromId}:
     setShowMsgModal(false);
   };
 
-  const addCompletion = (completion: DBComp) => {
-    if (chat && completion) {
-      setChat({ ...chat, completions: [...chat.completions, completion] });
-    }
-  }
-
+  const [activeComp, setActiveComp] = useState<DBComp | null>(null);
+  console.log(activeComp, activeCompId);
   const addMsg = (msg: DBMsg) => {
-    if (msg && msg.completion_id && chat) {
+    if (chat && chat.completions) {
       // Find the index of the completion to which the message belongs
       const compIndex = chat.completions.findIndex(comp => comp.id === msg.completion_id);
       if (compIndex !== -1) {
@@ -89,22 +88,19 @@ const ChatPage = ({chat, setChat, activeCompId, setActiveCompId, getCompFromId}:
   }, [user]);
 
 
+  useEffect(() => {
+    if (chat) {
+      const comp: DBComp | null = getCompFromId(activeCompId);
+      setActiveComp(comp);
+    }
+  }, [chat, activeCompId]);
 
-  if (!chat) {
-    return <div>Loading...</div>;
-  }
-
-  if (!user || !user?.id) {
-    return <></>
-  }
-
-  const activeComp = getCompFromId(activeCompId);
 
   return (
 
     <>
       <Box>
-        {activeCompId ? (
+        {activeComp? (
           <Box display='flex' alignItems='center' m={0.5} gap={1}>
             <QuestionAnswerTwoTone />
             <Typography variant="h6">Messages</Typography>
@@ -125,12 +121,12 @@ const ChatPage = ({chat, setChat, activeCompId, setActiveCompId, getCompFromId}:
         )}
         <Divider />
 
-        {showMsgModal && activeCompId && chat && chat.id && (
+        {showMsgModal && activeComp && chat && chat.id && (
           <AddEditMsgModal
             isOpen={showMsgModal}
             handleClose={handleMsgModalClose}
             chat_id={chat.id}
-            completion_id={activeCompId}
+            completion_id={activeComp.id}
             msg={null}
             addMsg={addMsg}
           />
@@ -138,8 +134,7 @@ const ChatPage = ({chat, setChat, activeCompId, setActiveCompId, getCompFromId}:
         }
 
 
-        {
-          activeComp && activeComp.messages && activeComp.messages.map((msg) => (
+        {activeComp && activeComp.messages.map((msg) => (
             <CompMsgElem key={msg.id} message={msg} />
           ))
         }

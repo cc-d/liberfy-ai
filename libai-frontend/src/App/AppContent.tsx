@@ -15,10 +15,10 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const loc = useLocation();
   const chatPageRE = /\/chat\/\d+\/?/;
   const [isSidebarOpen, setSidebarOpen] = useState(chatPageRE.test(loc.pathname));
-  const [chat, setChat] = useState<DBChat | null >(null);
+  const [chat, setChat] = useState<DBChat | null>(null);
 
-  const [activeCompId, setActiveCompId] = useState<number | null >(null);
-
+  const [activeCompId, setActiveCompId] = useState<number | null>(null);
+  console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
   const toggleSidebar = (openclose?: boolean) => {
     if (openclose === true || openclose === false) {
       setSidebarOpen(openclose);
@@ -57,8 +57,9 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   };
 
 
-  const [showSidebar, setShowSidebar ] = useState(false);
+  const [showSidebar, setShowSidebar] = useState(false);
 
+  console.log('chat', chat, 'user', user, 'loc', loc, 'isSidebarOpen', isSidebarOpen, 'showSidebar', showSidebar)
 
   return (
     <Box display="flex">
@@ -88,15 +89,19 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         <Routes>
           <Route path="/" element={<LogRegPage />} />
           <Route path="/chats" element={<ChatListPage />} />
-          <Route path="/chat/:useChatId" element={
-          <ChatPage
-            chat={chat}
-            setChat={setChat}
-            activeCompId={activeCompId}
-            setActiveCompId={setActiveCompId}
-            getCompFromId={getCompFromId}
-          />
-          } />
+          <Route path="/chat/:useChatId"
+            element={
+
+                <ChatPage
+                  chat={chat}
+                  setChat={setChat}
+                  activeCompId={activeCompId}
+                  setActiveCompId={setActiveCompId}
+                  getCompFromId={getCompFromId}
+                  addCompletion={addCompletion}
+                />
+
+            } />
         </Routes>
       </Box>
     </Box>

@@ -180,29 +180,20 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
 @arouter.get("/chat/{chat_id}", response_model=DBChat)
 async def get_chat(chat_id: int, db: Session = Depends(get_db)):
     chat = db.query(Chat).filter(Chat.id == chat_id).first()
-    user = db.query(User).filter(User.id == chat.user_id).first()
-
-    completions = []
-    for c in chat.completions:
-        messages = list(db.query(Message).filter(Message.completion_id == c.id).all())
-        messages_db = [
-            DBMsg(
-                id=m.id, role=m.role, content=m.content, completion_id=m.completion_id
-            )
-            for m in messages
-        ]
-        comp = DBComp(
-            id=c.id,
-            user_id=c.user_id,
-            messages=messages_db,
-            model=c.model,
-            temperature=c.temperature,
-        )
-        completions.append(comp)
-
-    return DBChat(
-        id=chat.id, name=chat.name, user_id=chat.user_id, completions=completions
+    raw_completions = list(
+        db.query(Completion).filter(Completion.chat_id == chat_id).all()
     )
+
+    transformed_completions = []
+
+    for c in raw_completions:
+        messages = list(db.query(Message).filter(Message.completion_id == c.id).all())
+        messages_db = [DBMsg(**model_to_dict(m)) for m in messages]
+        comp = DBComp(**model_to_dict(c), messages=messages_db)
+        transformed_completions.append(comp)
+
+    print('comocmp', transformed_completions, chat.completions)
+    return DBChat(**model_to_dict(chat), completions=transformed_completions)
 
 
 @arouter.post("/completion/new", response_model=DBComp)
