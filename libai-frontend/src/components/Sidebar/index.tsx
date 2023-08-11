@@ -28,23 +28,23 @@ interface ChatSidebarProps {
   chat: DBChat | null;
   user: DBUser;
   addCompletion: (completion: DBComp) => void;
-  completions: DBComp[];
-  activeComp: DBComp | null;
-  setActiveComp: (completion: DBComp | null) => void;
+  activeCompId: number | null;
+  setActiveCompId;
+  getCompFromId: (id: number) => DBComp | null;
   handleCompModalOpen: () => void;
   handleCompModalClose: () => void;
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
   showCompModal: boolean;
-  setChat: any;
+  setChat: (chat: DBChat | null) => void;
 }
 
 export const drawerWidth = 240;
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
-  chat, user, addCompletion, completions, activeComp,
-  setActiveComp, handleCompModalOpen, handleCompModalClose,
-  showCompModal, toggleSidebar, isSidebarOpen, setChat,
+  chat, user, addCompletion, activeCompId,
+  setActiveCompId, handleCompModalOpen, handleCompModalClose,
+  showCompModal, toggleSidebar, isSidebarOpen, setChat, getCompFromId,
 }) => {
   const theme = useTheme();
   const isSmallDevice = useMediaQuery(theme.breakpoints.down('sm'));
@@ -57,9 +57,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     if (!chatPageRE.test(loc.pathname)) {
       setChat(null)
     }
-  })
+  }, [loc.pathname])
 
-  chatPageRE.test(loc.pathname)
 
   return (
     <>
@@ -114,7 +113,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </Box>
       )}
 
-        {chat && completions ? (
+        {chat && chat.completions ? (
           <Accordion disableGutters defaultExpanded>
             <AccordionSummary expandIcon={<ExpandMore />}>
               <Typography variant="body1">Completions</Typography>
@@ -130,13 +129,13 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
               </Button>
               <Divider />
               <List dense={true}>
-                {completions.length > 0 &&
-                  completions.map((completion) => (
+                {chat.completions.length > 0 &&
+                  chat.completions.map((completion) => (
                     <CompListElem
                       key={completion.id}
                       completion={completion}
                       theme={theme}
-                      setActiveComp={setActiveComp}
+                      setActiveCompId={setActiveCompId}
                     />
                   ))
                 }

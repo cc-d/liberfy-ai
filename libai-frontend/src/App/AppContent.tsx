@@ -15,10 +15,9 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const loc = useLocation();
   const chatPageRE = /\/chat\/\d+\/?/;
   const [isSidebarOpen, setSidebarOpen] = useState(chatPageRE.test(loc.pathname));
-  const [chat, setChat] = useState<DBChat | null>(null);
-  const [completions, setCompletions] = useState<DBComp[]>([]);
+  const [chat, setChat] = useState<DBChat | null >(null);
 
-  const [activeComp, setActiveComp] = useState<DBComp | null>(null);
+  const [activeCompId, setActiveCompId] = useState<number | null >(null);
 
   const toggleSidebar = (openclose?: boolean) => {
     if (openclose === true || openclose === false) {
@@ -30,7 +29,22 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   };
 
   const addCompletion = (completion: DBComp) => {
-    setCompletions([...completions, completion]);
+    if (chat && chat.completions) {
+      setChat({
+        ...chat,
+        completions: [...chat.completions, completion]
+      })
+    }
+  }
+
+  const getCompFromId = (cid: number | null) => {
+    if (chat && chat.completions) {
+      const fComp: DBComp | undefined = chat.completions.find((comp) => comp.id === cid);
+      if (fComp) {
+        return fComp;
+      }
+    }
+    return null;
   }
 
   // Completion Modal
@@ -46,16 +60,6 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const [showSidebar, setShowSidebar ] = useState(false);
 
 
-  useEffect(() => {
-    if (loc.pathname.startsWith('/chat/')) {
-      const chatId = loc.pathname.split('/')[2];
-      apios.get(`/chat/${chatId}`).then((response) => {
-        setChat(response.data);
-        setCompletions(response.data.completions);
-      });
-    }
-  }, [loc]);
-
   return (
     <Box display="flex">
       {user && loc.pathname !== '/' && (
@@ -63,9 +67,9 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           chat={chat}
           user={user}
           addCompletion={addCompletion}
-          completions={completions}
-          activeComp={activeComp}
-          setActiveComp={setActiveComp}
+          getCompFromId={getCompFromId}
+          activeCompId={activeCompId}
+          setActiveCompId={setActiveCompId}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
           handleCompModalClose={handleCompModalClose}
@@ -84,8 +88,14 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         <Routes>
           <Route path="/" element={<LogRegPage />} />
           <Route path="/chats" element={<ChatListPage />} />
-          <Route path="/chat/:chatId" element={
-          <ChatPage activeComp={activeComp} setActiveComp={setActiveComp} />
+          <Route path="/chat/:useChatId" element={
+          <ChatPage
+            chat={chat}
+            setChat={setChat}
+            activeCompId={activeCompId}
+            setActiveCompId={setActiveCompId}
+            getCompFromId={getCompFromId}
+          />
           } />
         </Routes>
       </Box>

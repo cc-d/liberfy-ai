@@ -13,45 +13,47 @@ import { Chat, QuestionAnswerOutlined } from "@mui/icons-material";
 interface CompListElemProps {
   completion: DBComp;
   theme: any;
-  setActiveComp: (completion: DBComp) => void;
+  setActiveCompId;
 }
 
 export const CompListElem: React.FC<CompListElemProps> = ({
-  completion, theme, setActiveComp
+  completion, theme, setActiveCompId
 }) => {
   const compTitle: string = completion.messages.length > 0
     ? completion.messages[0].content : "No messages yet";
 
-  const test = (c) => {
-    console.log('test test', c);
-    setActiveComp(c);
-  }
 
   return (
-    <ListItemButton
-      onClick={() => (test(completion))}
-      disableGutters
-      sx={{ m: 0 }}
-      key={completion.id}
-    >
-      <Box display='flex'
-        alignItems='center'
-        sx={{
-          color: theme.palette.text.primary,
-          width: '100%'
-        }}>
-        <Chat sx={{ mr: 0.5 }} />
-          <ListItemText
-            primary={compTitle}  primaryTypographyProps={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              display: 'block',
-            }}
-          />
-      </Box>
-    </ListItemButton>
-  );
+    <>
+      {completion && completion.id !== null && (
+        <ListItemButton
+          onClick={setActiveCompId(completion.id)}
+          disableGutters
+          sx={{ m: 0 }}
+          key={completion.id}
+        >
+          <Box display='flex'
+            alignItems='center'
+            sx={{
+              color: theme.palette.text.primary,
+              width: '100%'
+            }}>
+            <Chat sx={{ mr: 0.5 }} />
+            <ListItemText
+              primary={compTitle} primaryTypographyProps={{
+                overflow: 'hidden',
+                textOverflow: 'ellipsis',
+                whiteSpace: 'nowrap',
+                display: 'block',
+              }}
+            />
+          </Box>
+        </ListItemButton>
+      )
+      }
+
+    </>
+  )
 };
 
 export default CompListElem;

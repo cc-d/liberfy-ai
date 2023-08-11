@@ -27,16 +27,19 @@ import CompMsgElem from "./CompMsgElem";
 import AddEditMsgModal from './AddEditMsgModal';
 
 interface ChatPageProps {
-  activeComp: DBComp | null;
-  setActiveComp: (completion: DBComp | null) => any;
+  activeCompId: number | null;
+  setActiveCompId: (id: number | null) => void;
+  getCompFromId: (id: number | null) => DBComp | null;
+  chat: (DBChat | null);
+  setChat: (chat: DBChat | null) => void;
 }
 
-const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
+const ChatPage = ({chat, setChat, activeCompId, setActiveCompId, getCompFromId}: ChatPageProps) => {
   console.log('ChatPage')
   const { user } = useAuthContext();
-  const { chatId } = useParams<{ chatId: string }>();
-  const [chat, setChat] = useState<DBChat | null>(null);
-  const [completions, setCompletions] = useState<DBComp[]>([]);
+
+
+  const { useChatId } = useParams<{ useChatId: string }>();
 
   const [isLoading, setIsLoading] = useState(false);
 
@@ -52,37 +55,40 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
   };
 
   const addCompletion = (completion: DBComp) => {
-    setCompletions([...completions, completion]);
-    if (chat) {
+    if (chat && completion) {
       setChat({ ...chat, completions: [...chat.completions, completion] });
     }
   }
 
   const addMsg = (msg: DBMsg) => {
-    if (activeComp && activeComp.messages && msg ) {
-      setActiveComp({
-        ...activeComp,
-        messages: [...activeComp.messages, msg]
-      })
+    if (msg && msg.completion_id && chat) {
+      // Find the index of the completion to which the message belongs
+      const compIndex = chat.completions.findIndex(comp => comp.id === msg.completion_id);
+      if (compIndex !== -1) {
+        // Clone the completions list and add the message to the specified completion
+        const newCompletions = [...chat.completions];
+        newCompletions[compIndex].messages = [...newCompletions[compIndex].messages, msg];
+
+        // Update the chat's completions list
+        setChat({ ...chat, completions: newCompletions });
+      }
     }
   }
 
   useEffect(() => {
-    !isLoading && user &&
-    setIsLoading(true);
-    apios.get(`/chat/${chatId}`).then((response) => {
-      setChat(response.data);
-      setCompletions(response.data.completions);
-    }).catch((error) => {
-      console.error(error);
-    }).finally(() => {
-      setIsLoading(false);
-    });
+    if (!isLoading && user && !chat) {
+      setIsLoading(true);
+      apios.get(`/chat/${useChatId}`).then((response) => {
+        setChat(response.data);
+      }).catch((error) => {
+        console.error(error);
+      }).finally(() => {
+        setIsLoading(false);
+      });
+    }
   }, [user]);
 
-  useEffect(() => {
-    console.log('activecomp', activeComp)
-  }, [activeComp, chat, completions]);
+
 
   if (!chat) {
     return <div>Loading...</div>;
@@ -92,13 +98,13 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
     return <></>
   }
 
-
+  const activeComp = getCompFromId(activeCompId);
 
   return (
 
     <>
       <Box>
-        {activeComp ? (
+        {activeCompId ? (
           <Box display='flex' alignItems='center' m={0.5} gap={1}>
             <QuestionAnswerTwoTone />
             <Typography variant="h6">Messages</Typography>
@@ -119,12 +125,12 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
         )}
         <Divider />
 
-        {showMsgModal && activeComp && (
+        {showMsgModal && activeCompId && chat && chat.id && (
           <AddEditMsgModal
             isOpen={showMsgModal}
             handleClose={handleMsgModalClose}
             chat_id={chat.id}
-            completion_id={activeComp.id}
+            completion_id={activeCompId}
             msg={null}
             addMsg={addMsg}
           />
@@ -133,7 +139,7 @@ const ChatPage = ({activeComp, setActiveComp}: ChatPageProps) => {
 
 
         {
-          activeComp && activeComp.messages.map((msg) => (
+          activeComp && activeComp.messages && activeComp.messages.map((msg) => (
             <CompMsgElem key={msg.id} message={msg} />
           ))
         }
