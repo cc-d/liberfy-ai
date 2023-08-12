@@ -35,7 +35,9 @@ class Chat(Base):
     __tablename__ = "chats"
     id: Mapped[int] = Column(Integer, primary_key=True)
     name: Mapped[str] = Column(String, default="New chat")
-    user: Mapped[User] = relationship("User", back_populates="chats", uselist=False)
+    user: Mapped[User] = relationship(
+        "User", back_populates="chats", uselist=False
+    )
     user_id: Mapped[int] = Column(Integer, ForeignKey("users.id"))
     completions: "Mapped[List[Completion]]" = relationship(
         "Completion", back_populates="chat", uselist=True
@@ -53,7 +55,9 @@ class Message(Base):
     completion_id: Mapped[int] = Column(Integer, ForeignKey("completions.id"))
 
     # Define the relationship with the Completion model
-    completion: Mapped["Completion"] = relationship("Completion", backref="messages")
+    completion: Mapped["Completion"] = relationship(
+        "Completion", backref="messages"
+    )
 
     def __repr__(self):
         return f"<Message id={self.id} role={self.role} content={self.content} completion_id={self.completion_id}>"
