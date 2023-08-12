@@ -67,7 +67,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
   return (
     <Box display="flex">
-      {user && loc.pathname !== '/' && (
+      {user && loc.pathname !== '/' && isSidebarOpen && (
         <ChatSidebar
           chat={chat}
           user={user}

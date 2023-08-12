@@ -51,9 +51,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
   const chatPageRE = /\/chat\/\d+\/?/;
 
+  const sidebarType = useMediaQuery(theme.breakpoints.up('sm'));
+
   useEffect(() => {
 
-  }, [chat])
+  }, [sidebarType, chat])
 
   console.log('ChatSidebar')
   return (
@@ -71,7 +73,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
       }
 
       <Drawer
-        variant="temporary"
+        variant={sidebarType ? "permanent" : "temporary"}
         anchor="left"
         open={isSidebarOpen}
         onClose={toggleSidebar}
