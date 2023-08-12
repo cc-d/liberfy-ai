@@ -8,23 +8,24 @@ import MenuIcon from "@mui/icons-material/Menu";
 import { useAuthContext } from './AuthContext';
 import { useTheme } from '@emotion/react';
 import { useLocation, Location } from 'react-router-dom';
+import { Theme } from '@mui/material/styles';
 
 interface TopNavProps {
+  theme: Theme;
   themeMode: 'light' | 'dark';
   toggleThemeMode: () => void;
   toggleSidebar: () => void;
   isSidebarOpen: boolean;
+  smallScreen: boolean;
 }
 
 export const TopNav = ({
-  themeMode, toggleThemeMode, toggleSidebar, isSidebarOpen
+  theme, themeMode, toggleThemeMode, toggleSidebar, isSidebarOpen, smallScreen,
 }: TopNavProps) => {
   const {
     user, logout
   } = useAuthContext();
-
-  const loc: Location  = useLocation();
-  const ChatListPageRE = /\/chats\/?$/;
+  const loc = useLocation();
 
   return (
     <>
@@ -34,7 +35,7 @@ export const TopNav = ({
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between', // This will push items to the edges
-          width: '100vw',
+          width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw',
         }}
       >
         <Box

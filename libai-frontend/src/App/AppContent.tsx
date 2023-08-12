@@ -20,6 +20,9 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const [activeCompId, setActiveCompId] = useState<number | null>(null);
 
   const [loading, setLoading] = useState(false);
+  const smallScreen = useMediaQuery(theme.breakpoints.down('sm'));
+
+
 
   console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
 
@@ -66,7 +69,10 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   console.log('chat', chat, 'user', user, 'loc', loc, 'isSidebarOpen', isSidebarOpen)
 
   return (
-    <Box display="flex">
+    <Box sx={{
+      display: 'flex',
+    }}
+    >
       {user && loc.pathname !== '/' && isSidebarOpen && (
         <ChatSidebar
           chat={chat}
@@ -83,12 +89,15 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           setChat={setChat}
         />
       )}
-      <Box flex="1">
+      <Box flex="1" sx={{flexGrow: 1, width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw',}}
+      >
         <TopNav
+          theme={theme}
           themeMode={themeMode}
           toggleThemeMode={toggleThemeMode}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
+          smallScreen={smallScreen}
         />
         <Routes>
           <Route path="/" element={<LogRegPage />} />

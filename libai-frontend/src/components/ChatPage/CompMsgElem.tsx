@@ -10,9 +10,6 @@ import {
 import {
   Computer, Person, Assistant, ExpandMore
 } from '@mui/icons-material';
-import {
-  useTheme
-} from '@mui/material/styles';
 
 export const getIcon = (role: string) => {
   role = role.toLowerCase();
@@ -45,11 +42,13 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
 
 
 
-export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
+export const CompMsgElem: React.FC<{ message: DBMsg,  }> = ({ message }) => {
+
   return (
     <Box
       sx={{
         m: 1,
+
       }}>
       <Accordion
         disableGutters
@@ -59,8 +58,9 @@ export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
           expandIcon={<ExpandMore />}
           sx={{
             display: 'flex',
-            alignItems: 'center',
+            alignItems: 'left',
             width: '100%', m: 0, p: 0, pl: 1, pr: 1,
+            overflow: 'hidden',
           }}
         >
           <Box
@@ -68,7 +68,8 @@ export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
               display: 'flex',
               flexGrow: 1,
               overflow: 'hidden',
-              maxWidth: 'calc(100vw - 60px)'  // Assuming expandIcon takes approx. 40px width
+              alignItems: 'left',
+              maxWidth: 'calc(100vw - 300px)'
             }}
           >
             <MsgRoleElem role={message.role} />
