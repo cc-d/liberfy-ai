@@ -29,7 +29,7 @@ class User(Base):
     )
 
     def __repr__(self):
-        default_repr()
+        return default_repr(self)
 
 
 class Chat(Base):
@@ -45,7 +45,7 @@ class Chat(Base):
     )
 
     def __repr__(self):
-        default_repr()
+        return default_repr(self)
 
 
 class Message(Base):
@@ -61,7 +61,7 @@ class Message(Base):
     )
 
     def __repr__(self):
-        default_repr()
+        return default_repr(self)
 
 
 class Completion(Base):
@@ -80,4 +80,4 @@ class Completion(Base):
     model: Mapped[str] = Column(String, default=DEFAULT_GPTMODEL)
 
     def __repr__(self):
-        default_repr()
+        return default_repr(self)
