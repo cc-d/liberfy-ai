@@ -4,11 +4,12 @@ from sqlalchemy import Column, Integer, String, create_engine, Boolean, inspect
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, Mapped
 from sqlalchemy.orm.session import Session
-from typing import Optional, List, Union
+from typing import List, Tuple, Union, Set, Optional
 from sqlalchemy import Column, Integer, String, ForeignKey, Float, Boolean, Text
 from sqlalchemy.orm import Mapped, relationship, backref
 from uuid import uuid4
 
+from myfuncs import default_repr
 
 from utils import get_gptmodels
 
@@ -28,7 +29,7 @@ class User(Base):
     )
 
     def __repr__(self):
-        return f"<User id={self.id} email={self.email}>"
+        default_repr()
 
 
 class Chat(Base):
@@ -44,7 +45,7 @@ class Chat(Base):
     )
 
     def __repr__(self):
-        return f"<Chat id={self.id} name={self.name} user_id={self.user_id}>"
+        default_repr()
 
 
 class Message(Base):
@@ -60,7 +61,7 @@ class Message(Base):
     )
 
     def __repr__(self):
-        return f"<Message id={self.id} role={self.role} content={self.content} completion_id={self.completion_id}>"
+        default_repr()
 
 
 class Completion(Base):
@@ -79,4 +80,4 @@ class Completion(Base):
     model: Mapped[str] = Column(String, default=DEFAULT_GPTMODEL)
 
     def __repr__(self):
-        return f'<Completion id={self.id} chat_id={self.chat_id} user_id={self.user_id} temperature={self.temperature} model={self.model} msgs={self.messages}>'
+        default_repr()

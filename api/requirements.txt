@@ -90,4 +90,4 @@ uvicorn==0.23.1
 wandb==0.15.5
 webencodings==0.5.1
 yarl==1.9.2
-myfuncs~=1.2.0
+myfuncs~=1.4.0
