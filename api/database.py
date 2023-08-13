@@ -1,7 +1,13 @@
 import os
 from sqlalchemy import Column, Integer, String, create_engine, inspect
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker, class_mapper, DeclarativeMeta, Session
+from sqlalchemy.orm import (
+    sessionmaker,
+    class_mapper,
+    DeclarativeMeta,
+    Session,
+    DeclarativeBase,
+)
 
 from typing import Optional
 
@@ -58,7 +64,8 @@ def model_to_dict(
     if exclude_internal:
         column_names = [col.name for col in model_instance.__table__.columns]
         data = {
-            col_name: getattr(model_instance, col_name) for col_name in column_names
+            col_name: getattr(model_instance, col_name)
+            for col_name in column_names
         }
     else:
         # Get the dictionary representation of the model instance
@@ -74,8 +81,17 @@ def model_to_dict(
 
 
 @logf()
-def add_commit_refresh(obj, db: Session):
-    """Add object to database, commit and refresh"""
+def add_commit_refresh(obj: DeclarativeBase, db: Session) -> DeclarativeBase:
+    """
+    Add an object to the database, commit the transaction, and refresh the object.
+
+    Parameters:
+        obj (DeclarativeBase): The SQLAlchemy model instance to be added to the database.
+        db (Session): The SQLAlchemy session instance.
+
+    Returns:
+        DeclarativeBase: The refreshed SQLAlchemy model instance after being added to the database.
+    """
     db.add(obj)
     db.commit()
     db.refresh(obj)
