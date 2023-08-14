@@ -11,7 +11,7 @@ import {
   Computer, Person, Assistant, ExpandMore
 } from '@mui/icons-material';
 
-export const getIcon = (role: string) => {
+export const RoleIcon: React.FC<{role: string}> = ({ role }) => {
   role = role.toLowerCase();
   if (role == 'user') {
     return <Person sx={{
@@ -33,7 +33,7 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
   role = role.toLowerCase();
   return (
     <Box display='flex' alignItems='center'>
-      {getIcon(role)}
+      <RoleIcon role={role} />
       <Typography variant='body1'
       >{role}</Typography>
     </Box>
