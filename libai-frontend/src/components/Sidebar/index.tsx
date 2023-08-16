@@ -34,7 +34,7 @@ interface ChatSidebarProps {
   chat: DBChat | null;
   user: DBUser;
   addCompletion: (completion: DBComp) => void;
-  activeCompId: number | null;
+  activeCompId: number | string | null;
   getCompFromId: (id: number) => DBComp | null;
   handleCompModalOpen: () => void;
   handleCompModalClose: () => void;
@@ -42,7 +42,7 @@ interface ChatSidebarProps {
   toggleSidebar: () => void;
   showCompModal: boolean;
   setChatPlusId: (chat: DBChat | null) => void;
-  setCompPlusId: (id: number | null) => void;
+  setCompPlusId: (id: number | string | null) => void;
   chats: DBChat[];
   setChats: Dispatch<SetStateAction<DBChat[]>>;
   addChat: (chat: DBChat) => void;  // New line: Adding new chats to state
@@ -61,8 +61,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   const theme = useTheme();
   const sidebarType = useMediaQuery(theme.breakpoints.up('sm'));
 
-
-
   const activeChatId = chat ? chat.id : null;
 
   const [isChatModalOpen, setIsChatModalOpen] = useState(false);
@@ -73,7 +71,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   const handleChatModalClose = () => {
     setIsChatModalOpen(false);
   };
-
 
   const handleCreateChat = (newChatName: string) => {
     if (user && newChatName) {
@@ -93,7 +90,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
   useEffect(() => {
 
-  }, [sidebarType, chat])
+  }, [sidebarType, chat, chats, activeChatId, activeCompId])
 
   console.log('ChatSidebar')
   return (

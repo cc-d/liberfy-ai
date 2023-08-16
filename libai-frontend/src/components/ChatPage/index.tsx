@@ -28,9 +28,9 @@ import CompMsgElem from "./CompMsgElem";
 import AddEditMsgModal from './AddEditMsgModal';
 
 interface ChatPageProps {
-  activeCompId: number | null;
-  setCompPlusId: (id: number | null) => void;
-  getCompFromId: (id: number | null) => DBComp | null;
+  activeCompId: number | string | null;
+  setCompPlusId: (id: number | string | null) => void;
+  getCompFromId: (id: number | string | null) => DBComp | null;
   chat: (DBChat | null);
   setChatPlusId: (chat: DBChat | null) => void;
   addCompletion: (completion: DBComp) => any;
@@ -55,7 +55,10 @@ export const ChatPage = ({
     setShowMsgModal(false);
   };
 
-  const [activeComp, setActiveComp] = useState<DBComp | null>(null);
+  const [activeComp, setActiveComp] = useState<DBComp | null>(
+    activeCompId ? getCompFromId(activeCompId) : null
+  );
+
   console.log(activeComp, activeCompId);
   const addMsg = (msg: DBMsg) => {
     if (chat && chat.completions) {
@@ -102,12 +105,13 @@ export const ChatPage = ({
     }
   }
 
+
   useEffect(() => {
-    if (chat) {
-      const comp: DBComp | null = getCompFromId(activeCompId);
-      setActiveComp(comp);
+    if (chat && chat.completions) {
+      const compIndex = chat.completions.findIndex(comp => comp.id === activeCompId);
+      setActiveComp(chat.completions[compIndex]);
     }
-  }, [chat, activeCompId]);
+  }, [activeComp, activeCompId, chat])
 
 
   return (

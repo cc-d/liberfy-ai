@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   Link as RouterLink,
 } from "react-router-dom";
@@ -37,12 +37,15 @@ const ChatListElem: React.FC<ChatListElemProps> = ({
     }
   };
 
+  useEffect(() => {
+    console.log('chatlistelem', chat, theme, activeChatId)
+  }, [activeChatId, chat]);
+
   return (
     <>
       {chat && chat.id && (
         <ListItemButton
-          component={RouterLink}
-          to={`/chat/${chat.id}`}
+
           onClick={() => setChatPlusId(chat)}
           disableGutters
           sx={{ m: 0, }}

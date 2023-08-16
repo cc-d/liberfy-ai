@@ -15,21 +15,26 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const [chat, setChat] = useState<DBChat | null>(null);
   const [chats, setChats] = useState<DBChat[]>([]);
 
-  const [activeCompId, setActiveCompId] = useState<number | null>(null);
+  const [activeCompId, setActiveCompId] = useState<number | string | null>(null);
 
 
   const setChatPlusId = (newChat: DBChat | null) => {
-    setChat(newChat);
     if (newChat && newChat.id !== null) {
       localStorage.setItem('lastChatId', newChat.id.toString());
+    } else {
+      localStorage.removeItem('lastChatId');
     }
+    setActiveCompId(null);
+    localStorage.removeItem('lastCompId');
+    setChat(newChat);
   };
 
-  const setCompPlusId = (newCompId: number | null) => {
-    setActiveCompId(newCompId);
-    if (newCompId !== null) {
-      localStorage.setItem('lastCompId', newCompId.toString());
+  const setCompPlusId = (newCompId: number | string | null) => {
+    localStorage.removeItem('lastCompId');
+    if (newCompId) {
+      localStorage.setItem('lastCompId', newCompId.toString())
     }
+    setActiveCompId(newCompId);
   };
 
 
@@ -42,22 +47,6 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
 
   console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
-
-  useEffect(() => {
-    const lsChatId = localStorage.getItem('lastChatId');
-    const lsCompId = localStorage.getItem('lastCompId');
-
-    if (lsChatId) {
-      setCompPlusId(Number(lsChatId));
-      // Find the chat object by ID and set it to state
-      const foundChat = chats.find(chat => chat.id === Number(lsChatId));
-      setChat(foundChat || null);
-    }
-
-    if (lsCompId) {
-      setCompPlusId(Number(lsCompId));
-    }
-  }, [chat, chats]);
 
 
   const refreshChats = () => {
@@ -93,20 +82,47 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
   const addCompletion = (completion: DBComp) => {
     if (chat && chat.completions) {
-      setChat({
+      const updatedCompletions = [...chat.completions, completion];
+
+      setChatPlusId({
         ...chat,
-        completions: [...chat.completions, completion]
-      })
+        completions: updatedCompletions
+      });
+
+      // Also update the corresponding chat object in the `chats` array
+      const updatedChats = chats.map(c => {
+        if (c.id === chat.id) {
+          return { ...c, completions: updatedCompletions };
+        } else {
+          return c;
+        }
+      });
+
+      setChats(updatedChats);
     }
-  }
+  };
+
 
   const removeComp = (cid: number | string) => {
     if (chat && chat.completions) {
       const newComps = chat.completions.filter((comp) => comp.id !== cid);
-      setChat({
+
+      setChatPlusId({
         ...chat,
         completions: newComps
       })
+
+
+      // Also update the corresponding chat object in the `chats` array
+      const updatedChats = chats.map(c => {
+        if (c.id === chat.id) {
+          return { ...c, completions: newComps };
+        } else {
+          return c;
+        }
+      });
+
+      setChats(updatedChats);
     }
   }
 
@@ -114,11 +130,11 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     const newChats = chats.filter((chat) => chat.id !== cid);
     setChats(newChats);
     if (chat && chat.id === cid) {
-      setChat(null);
+      setChatPlusId(null);
     }
   }
 
-  const getCompFromId = (cid: number | null) => {
+  const getCompFromId = (cid: number | string | null) => {
     if (chat && chat.completions) {
       const fComp: DBComp | undefined = chat.completions.find((comp) => comp.id === cid);
       if (fComp) {
@@ -146,7 +162,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
   useEffect(() => {
 
-  }, [chat, isSidebarOpen, loading]);
+  }, [chat, isSidebarOpen, loading, activeCompId, chats]);
 
 
   console.log('chat', chat, 'user', user, 'isSidebarOpen', isSidebarOpen,
@@ -199,7 +215,6 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
                 setCompPlusId={setCompPlusId}
                 setChatPlusId={setChatPlusId}
                 activeCompId={activeCompId}
-
                 getCompFromId={getCompFromId}
                 addCompletion={addCompletion}
               />

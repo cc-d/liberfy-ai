@@ -16,8 +16,8 @@ import apios from '../../utils/apios';
 interface CompListElemProps {
   completion: DBComp;
   theme: Theme;
-  setCompPlusId: (compId: number | null) => any;
-  activeCompId: number | null;
+  setCompPlusId: (compId: number | string | null) => any;
+  activeCompId: number | string | null;
   removeComp: (compId: number | string) => any;
 }
 
@@ -42,17 +42,12 @@ export const CompListElem: React.FC<CompListElemProps> = ({
     }
   };
 
-  useEffect(() => {
-    console.log('CompListElem useEffect', activeCompId, completion);
-
-  }, [activeCompId]);
-
 
   return (
     <>
       {completion && completion.id && (
         <ListItemButton
-          onClick={() => setCompPlusId(completion.id)}
+          onClick={(e: any) => setCompPlusId(completion.id)}
           disableGutters
 
           key={completion.id}
