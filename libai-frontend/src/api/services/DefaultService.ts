@@ -112,6 +112,27 @@ export class DefaultService {
     }
 
     /**
+     * Delete Chat
+     * @param chatId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteChatApiChatChatIdDeleteDelete(
+        chatId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/chat/{chat_id}/delete',
+            path: {
+                'chat_id': chatId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
      * Get Chat
      * @param userId
      * @returns DBChat Successful Response
@@ -146,6 +167,27 @@ export class DefaultService {
             url: '/api/completion/new',
             body: requestBody,
             mediaType: 'application/json',
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Delete Completion
+     * @param completionId
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static deleteCompletionApiCompletionCompletionIdDeleteDelete(
+        completionId: number,
+    ): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'DELETE',
+            url: '/api/completion/{completion_id}/delete',
+            path: {
+                'completion_id': completionId,
+            },
             errors: {
                 422: `Validation Error`,
             },
