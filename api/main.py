@@ -30,7 +30,7 @@ from config import (
 )
 from database import engine, SessionLocal, get_db, model_to_dict, add_commit_refresh
 from models import User, Base, Chat, Message, Completion
-from schema import (
+from schemas import (
     BaseUser,
     DBUser,
     DBUserWithToken,
@@ -58,6 +58,7 @@ from security import (
     create_access_token,
     user_from_jwt,
 )
+from gptutils import submit_gpt_comp
 from myfuncs import runcmd
 from logfunc import logf
 
@@ -243,7 +244,16 @@ async def add_message(
     return msg
 
 
-app.include_router(arouter, prefix="/api")
+@arouter.post('/completion/{completion_id}/submit', response_model=DBComp)
+async def submit_comp(completion_id: int, db: Session = Depends(get_db)):
+    """submits a completion to chatgpt and saves response"""
+    completion = db.query(Completion).filter(Completion.id == completion_id).first()
+    if not completion:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND, detail="Completion not found"
+        )
+    completion = submit_gpt_comp(completion, db)
+    return completion
 
 
 if (__name__) == "__main__":

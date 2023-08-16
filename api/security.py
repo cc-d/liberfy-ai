@@ -17,7 +17,7 @@ from config import (
     ACCESS_TOKEN_EXPIRE_MINUTES,
 )
 from models import User, Chat, Completion
-from schema import (
+from schemas import (
     BaseUser,
     DBUser,
     DBUserWithToken,

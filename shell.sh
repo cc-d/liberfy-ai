@@ -25,3 +25,7 @@ npmapi() {
 }
 
 alias psqldb="psql -U pguser -h 127.0.0.1 -p 5432 pgdb"
+
+if [ -d "$HOME/.nvm" ]; then 
+    nvm use 20
+fi
