@@ -1,5 +1,5 @@
-import React, { Dispatch, SetStateAction, useEffect } from 'react';
-import { useLocation } from 'react-router-dom';
+import React, { Dispatch, SetStateAction, useEffect, useState } from 'react';
+import { useLocation, Link as RouterLink } from 'react-router-dom';
 import {
   Box,
   Drawer,
@@ -12,24 +12,30 @@ import {
   Divider,
   List,
   IconButton,
+  ListItem,
+  ListItemText,
+  Link,
 } from "@mui/material";
 import {
   ThreeP,
   ExpandMore,
   Menu
-
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "./CompListElem";
 import NewCompModal from "./NewCompModal";
 import { DBComp, DBChat, DBUser } from "../../api";
+import apios from '../../utils/apios';
+import ChatListElem from './ChatListElem';
+import NewChatModal from './NewChatModal';
+
 
 interface ChatSidebarProps {
   chat: DBChat | null;
   user: DBUser;
   addCompletion: (completion: DBComp) => void;
   activeCompId: number | null;
-  setActiveCompId;
+  setActiveCompId: (id: number | null) => void;  // Updated this line for type definition
   getCompFromId: (id: number) => DBComp | null;
   handleCompModalOpen: () => void;
   handleCompModalClose: () => void;
@@ -37,6 +43,9 @@ interface ChatSidebarProps {
   toggleSidebar: () => void;
   showCompModal: boolean;
   setChat: (chat: DBChat | null) => void;
+  chats: DBChat[];
+  setChats: Dispatch<SetStateAction<DBChat[]>>;
+  addChat: (chat: DBChat) => void;  // New line: Adding new chats to state
 }
 
 export const drawerWidth = 240;
@@ -45,13 +54,38 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chat, user, addCompletion, activeCompId,
   setActiveCompId, handleCompModalOpen, handleCompModalClose,
   showCompModal, toggleSidebar, isSidebarOpen, setChat, getCompFromId,
+  chats, setChats, addChat
 }) => {
   const theme = useTheme();
-  const loc = useLocation();
-
-  const chatPageRE = /\/chat\/\d+\/?/;
-
   const sidebarType = useMediaQuery(theme.breakpoints.up('sm'));
+
+  const activeChatId = chat ? chat.id : null;
+
+  const [isChatModalOpen, setIsChatModalOpen] = useState(false);
+  const handleChatModalOpen = () => {
+    setIsChatModalOpen(true);
+  };
+
+  const handleChatModalClose = () => {
+    setIsChatModalOpen(false);
+  };
+
+
+  const handleCreateChat = (newChatName: string) => {
+    if (user && newChatName) {
+      const uid = user.id;
+      apios.post(`/chat/new`, {
+        name: newChatName,
+        user_id: uid,
+      })
+        .then((response) => {
+          addChat(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
 
   useEffect(() => {
 
@@ -60,6 +94,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   console.log('ChatSidebar')
   return (
     <>
+      {user && (
+        <NewChatModal
+          open={isChatModalOpen}
+          handleClose={handleChatModalClose}
+          handleCreateChat={handleCreateChat}
+        />
+
+      )}
       {chat && chat.id && (
         <NewCompModal
           open={showCompModal} // Control the modal open state
@@ -85,31 +127,46 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             boxSizing: 'border-box',
           },
         }}
-      > {user && chat && (
-        <Box
-          display="flex"
-          flexDirection="row"
-          sx={{ p: 0, width: '100%', alignItems: 'center', gap: 0.5 }}
-        >
-          <ThreeP
-            sx={{
-              fontSize: theme.typography.h5.fontSize,
+      >
 
-            }}
-          />
-          <Typography
-            fontSize={theme.typography.h5.fontSize}
-            sx={{
-              overflow: 'hidden',
-              textOverflow: 'ellipsis',
-              whiteSpace: 'nowrap',
-              display: 'block',
-            }}
-          >
-            {chat?.name}
-          </Typography>
-        </Box>
-      )}
+        <Accordion disableGutters defaultExpanded>
+          <AccordionSummary expandIcon={<ExpandMore />}>
+            <Typography variant="body1">Chats</Typography>
+          </AccordionSummary>
+          <AccordionDetails>
+            <Box>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleChatModalOpen} // Change this line
+                sx={{ /* your styling here */ }}
+                size='small'
+              >
+                Create Chat
+              </Button>
+
+            </Box>
+            <Box width="100%">
+              {chats.length > 0 ? (
+                <List dense={true}>
+                  {chats.map((chatItem) => (
+                    <ChatListElem
+                      key={chatItem.id}
+                      chat={chatItem}
+                      theme={theme}
+                      activeChatId={activeChatId}
+                      setChat={setChat}
+                    />
+                  ))}
+                </List>
+
+              ) : (
+                <Typography variant="body2">No chats available.</Typography>
+              )}
+
+            </Box>
+          </AccordionDetails>
+        </Accordion>
 
         {chat ? (
           <Accordion disableGutters defaultExpanded>
@@ -148,7 +205,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         )
         }
 
-      </Drawer>
+      </Drawer >
     </>
   );
 };

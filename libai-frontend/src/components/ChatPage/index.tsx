@@ -104,21 +104,6 @@ export const ChatPage = ({
     }
   }
 
-
-  useEffect(() => {
-    if (!loading && user && !chat) {
-      setLoading(true);
-      apios.get(`/chat/${useChatId}`).then((response) => {
-        setChat(response.data);
-      }).catch((error) => {
-        console.error(error);
-      }).finally(() => {
-        setLoading(false);
-      });
-    }
-  }, [user]);
-
-
   useEffect(() => {
     if (chat) {
       const comp: DBComp | null = getCompFromId(activeCompId);

@@ -92,27 +92,6 @@ export class DefaultService {
     }
 
     /**
-     * Get Chats
-     * @param userId
-     * @returns DBChat Successful Response
-     * @throws ApiError
-     */
-    public static getChatsApiUserUserIdChatsGet(
-        userId: number,
-    ): CancelablePromise<Array<DBChat>> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/user/{user_id}/chats',
-            path: {
-                'user_id': userId,
-            },
-            errors: {
-                422: `Validation Error`,
-            },
-        });
-    }
-
-    /**
      * New Chat
      * @param requestBody
      * @returns DBChat Successful Response
@@ -134,18 +113,18 @@ export class DefaultService {
 
     /**
      * Get Chat
-     * @param chatId
+     * @param userId
      * @returns DBChat Successful Response
      * @throws ApiError
      */
-    public static getChatApiChatChatIdGet(
-        chatId: number,
-    ): CancelablePromise<DBChat> {
+    public static getChatApiUserUserIdChatsGet(
+        userId: number,
+    ): CancelablePromise<Array<DBChat>> {
         return __request(OpenAPI, {
             method: 'GET',
-            url: '/api/chat/{chat_id}',
+            url: '/api/user/{user_id}/chats',
             path: {
-                'chat_id': chatId,
+                'user_id': userId,
             },
             errors: {
                 422: `Validation Error`,

@@ -1,8 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
-import { useLocation, Routes, Route } from 'react-router-dom';
+import { useLocation, Routes, Route, redirect, useNavigate } from 'react-router-dom';
 import LogRegPage from '../components/LogRegPage';
-import ChatListPage from '../components/ChatListPage';
 import ChatPage from '../components/ChatPage';
 import TopNav from './TopNav';
 import { useAuthContext } from '../App/AuthContext';
@@ -12,20 +11,38 @@ import { DBChat, DBComp } from '../api'; // Import DBChat type as required
 
 const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const { user, userLoading, setIsUserLoading } = useAuthContext();
-  const loc = useLocation();
-  const chatPageRE = /\/chat\/\d+\/?/;
-
-  const [isSidebarOpen, setSidebarOpen] = useState(chatPageRE.test(loc.pathname));
   const [chat, setChat] = useState<DBChat | null>(null);
+  const [chats, setChats] = useState<DBChat[]>([]);
   const [activeCompId, setActiveCompId] = useState<number | null>(null);
+
+  const navigate = useNavigate();
 
   const [loading, setLoading] = useState(false);
   const smallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
+  const [isSidebarOpen, setSidebarOpen] = useState(false);
 
 
   console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
 
+
+  const refreshChats = () => {
+    if (user) {
+      const uid = user.id;
+      apios
+        .get(`/user/${uid}/chats`)
+        .then((response) => {
+          setChats(response.data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+    }
+  };
+
+  const addChat = (chat: DBChat) => {
+    setChats([...chats, chat]);
+  };
 
   const toggleSidebar = (openclose?: boolean) => {
     if (openclose === true || openclose === false) {
@@ -64,16 +81,26 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     setShowCompModal(false);
   };
 
+  useEffect(() => {
+    if (user) {
+      navigate('/chats'); // Redirect user to /chats if they are logged in
+    }
+    refreshChats();
+  }, [user, navigate]); // add navigate as dependency
+
+  useEffect(() => {
+
+  }, [chat, isSidebarOpen ]);
 
 
-  console.log('chat', chat, 'user', user, 'loc', loc, 'isSidebarOpen', isSidebarOpen)
+  console.log('chat', chat, 'user', user, 'isSidebarOpen', isSidebarOpen)
 
   return (
     <Box sx={{
       display: 'flex',
     }}
     >
-      {user && loc.pathname !== '/' && isSidebarOpen && (
+      {user && isSidebarOpen && (
         <ChatSidebar
           chat={chat}
           user={user}
@@ -87,8 +114,12 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           handleCompModalOpen={handleCompModalOpen}
           showCompModal={showCompModal}
           setChat={setChat}
+          chats={chats}
+          setChats={setChats}
+          addChat={addChat}
         />
       )}
+
       <Box flex="1" sx={{flexGrow: 1, width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw',}}
       >
         <TopNav
@@ -99,23 +130,23 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           isSidebarOpen={isSidebarOpen}
           smallScreen={smallScreen}
         />
-        <Routes>
-          <Route path="/" element={<LogRegPage />} />
-          <Route path="/chats" element={<ChatListPage />} />
-          <Route path="/chat/:useChatId"
-            element={
+      <Routes>
+        <Route path="/" element={!user ? <LogRegPage /> : null} />
+        {/* Removed <redirect to='/chats' /> from this line and moved the redirect logic to the useEffect above */}
 
-                <ChatPage
-                  chat={chat}
-                  setChat={setChat}
-                  activeCompId={activeCompId}
-                  setActiveCompId={setActiveCompId}
-                  getCompFromId={getCompFromId}
-                  addCompletion={addCompletion}
-                />
+        <Route path="/chats"
+          element={
+            <ChatPage
+              chat={chat}
+              setChat={setChat}
+              activeCompId={activeCompId}
+              setActiveCompId={setActiveCompId}
+              getCompFromId={getCompFromId}
+              addCompletion={addCompletion}
+            />
+          } />
 
-            } />
-        </Routes>
+      </Routes>
       </Box>
     </Box>
   );

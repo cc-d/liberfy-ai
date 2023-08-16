@@ -152,19 +152,6 @@ def jwt_autologin(data: DataJustToken, db: Session = Depends(get_db)) -> DBUser:
     return DBUser(**model_to_dict(user))
 
 
-@arouter.get('/user/{user_id}/chats', response_model=List[DBChat])
-async def get_chats(user_id: int, db: Session = Depends(get_db)):
-    user = db.query(User).filter(User.id == user_id).first()
-
-    chats = db.query(Chat).filter(Chat.user_id == user_id).all()
-
-    bchats = []
-    for c in chats:
-        bchats.append(DBChat(id=c.id, name=c.name, user_id=user.id, completions=[]))
-    print(bchats, 'bchats')
-    return bchats
-
-
 @arouter.post("/chat/new", response_model=DBChat)
 async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     chat = Chat(name=data.name, user_id=data.user_id)
@@ -173,23 +160,35 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     return chat
 
 
-@arouter.get("/chat/{chat_id}", response_model=DBChat)
-async def get_chat(chat_id: int, db: Session = Depends(get_db)):
-    chat = db.query(Chat).filter(Chat.id == chat_id).first()
-    raw_completions = list(
-        db.query(Completion).filter(Completion.chat_id == chat_id).all()
+@arouter.get("/user/{user_id}/chats", response_model=list[DBChat])
+async def get_chat(user_id: int, db: Session = Depends(get_db)):
+    chats = (
+        db.query(Chat)
+        .filter(Chat.user_id == user_id)
+        .options(selectinload(Chat.completions).selectinload(Completion.messages))
+        .all()
     )
 
-    transformed_completions = []
+    result = []
+    for chat in chats:
+        chat_dict = model_to_dict(chat)
 
-    for c in raw_completions:
-        messages = list(db.query(Message).filter(Message.completion_id == c.id).all())
-        messages_db = [DBMsg(**model_to_dict(m)) for m in messages]
-        comp = DBComp(**model_to_dict(c), messages=messages_db)
-        transformed_completions.append(comp)
+        completions_list = []
+        for comp in chat.completions:
+            comp_dict = model_to_dict(comp)
 
-    print('comocmp', transformed_completions, chat.completions)
-    return DBChat(**model_to_dict(chat), completions=transformed_completions)
+            messages_list = []
+            for message in comp.messages:
+                message_dict = model_to_dict(message)
+                messages_list.append(DBMsg(**message_dict))
+
+            comp_dict['messages'] = messages_list
+            completions_list.append(DBComp(**comp_dict))
+
+        chat_dict['completions'] = completions_list
+        result.append(DBChat(**chat_dict))
+
+    return result
 
 
 @arouter.post("/completion/new", response_model=DBComp)
