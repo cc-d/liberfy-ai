@@ -62,6 +62,24 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
     }
   }
 
+  const removeComp = (cid: number | string) => {
+    if (chat && chat.completions) {
+      const newComps = chat.completions.filter((comp) => comp.id !== cid);
+      setChat({
+        ...chat,
+        completions: newComps
+      })
+    }
+  }
+
+  const removeChat = (cid: number | string) => {
+    const newChats = chats.filter((chat) => chat.id !== cid);
+    setChats(newChats);
+    if (chat && chat.id === cid) {
+      setChat(null);
+    }
+  }
+
   const getCompFromId = (cid: number | null) => {
     if (chat && chat.completions) {
       const fComp: DBComp | undefined = chat.completions.find((comp) => comp.id === cid);
@@ -117,6 +135,8 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           chats={chats}
           setChats={setChats}
           addChat={addChat}
+          removeComp={removeComp}
+          removeChat={removeChat}
         />
       )}
 

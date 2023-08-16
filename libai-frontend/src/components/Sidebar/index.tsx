@@ -28,7 +28,7 @@ import { DBComp, DBChat, DBUser } from "../../api";
 import apios from '../../utils/apios';
 import ChatListElem from './ChatListElem';
 import NewChatModal from './NewChatModal';
-
+import './style.css';
 
 interface ChatSidebarProps {
   chat: DBChat | null;
@@ -46,6 +46,8 @@ interface ChatSidebarProps {
   chats: DBChat[];
   setChats: Dispatch<SetStateAction<DBChat[]>>;
   addChat: (chat: DBChat) => void;  // New line: Adding new chats to state
+  removeChat: (cid: number | string) => void;  // New line: Removing chats from state
+  removeComp: (cid: number | string) => void;  // New line: Removing completions from state
 }
 
 export const drawerWidth = 240;
@@ -54,7 +56,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chat, user, addCompletion, activeCompId,
   setActiveCompId, handleCompModalOpen, handleCompModalClose,
   showCompModal, toggleSidebar, isSidebarOpen, setChat, getCompFromId,
-  chats, setChats, addChat
+  chats, setChats, addChat, removeChat, removeComp
 }) => {
   const theme = useTheme();
   const sidebarType = useMediaQuery(theme.breakpoints.up('sm'));
@@ -129,21 +131,27 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         }}
       >
 
-        <Accordion disableGutters defaultExpanded>
-          <AccordionSummary expandIcon={<ExpandMore />}>
-            <Typography variant="body1">Chats</Typography>
+        <Accordion disableGutters defaultExpanded className='sidebar-accord'>
+          <AccordionSummary
+          className='sidebar-accord-summary'
+          expandIcon={<ExpandMore />}>
+            <Typography variant="body1" >Chats</Typography>
           </AccordionSummary>
-          <AccordionDetails>
+          <AccordionDetails
+            className='sidebar-accord-details'
+
+          >
             <Box>
               <Button
                 variant="contained"
                 color="primary"
                 onClick={handleChatModalOpen} // Change this line
-                sx={{ width: '100%', mt: -1, mb: 1 }}
+                sx={{ mt: -1, mb: 1, width: '100%' }}
                 size='small'
               >
                 Create Chat
               </Button>
+              <Divider />
 
             </Box>
             <Divider />
@@ -157,6 +165,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       theme={theme}
                       activeChatId={activeChatId}
                       setChat={setChat}
+                      removeChat={removeChat}
                     />
                   ))}
                 </List>
@@ -170,11 +179,11 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         </Accordion>
 
         {chat ? (
-          <Accordion disableGutters defaultExpanded>
-            <AccordionSummary expandIcon={<ExpandMore />}>
+          <Accordion disableGutters defaultExpanded className='sidebar-accord'>
+            <AccordionSummary className='sidebar-accord-summary' expandIcon={<ExpandMore />}>
               <Typography variant="body1">Completions</Typography>
             </AccordionSummary>
-            <AccordionDetails>
+            <AccordionDetails className='sidebar-accord-details'>
               <Button
                 variant="contained"
                 onClick={handleCompModalOpen} // Open the modal
@@ -193,6 +202,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       theme={theme}
                       setActiveCompId={setActiveCompId}
                       activeCompId={activeCompId}
+                      removeComp={removeComp}
                     />
                   ))
                 }

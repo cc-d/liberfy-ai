@@ -23,6 +23,7 @@ export const NewChatModal: React.FC<NewChatModalProps> = ({
   const [newChatName, setNewChatName] = React.useState("");
 
   const handleSubmit = () => {
+    if (newChatName === "") return;
     handleCreateChat(newChatName);
     setNewChatName("");
     handleClose();

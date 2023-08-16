@@ -69,6 +69,7 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
     <Box
       sx={{
         m: '4px',
+
       }}>
       <Accordion
         disableGutters
@@ -83,6 +84,7 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
             alignItems: 'center',
             width: '100%', m: 0, p: '0px 4px',
             overflow: 'hidden',
+
           }}
 
         >
@@ -103,7 +105,7 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
         </AccordionSummary>
         <AccordionDetails
 
-          sx={{ m: 0, p: '0px 4px'}}
+          sx={{ m: 0, p: '0px 4px',}}
         >
           <ReactMarkdown
             className="markdown-body"

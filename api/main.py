@@ -10,7 +10,7 @@ from fastapi.security import (
     OAuth2PasswordRequestForm,
     OAuth2PasswordBearer,
 )
-from fastapi.openapi.models import OAuthFlows as OAuthFlowsModel
+from fastapi.responses import Response
 from fastapi.openapi.models import OAuthFlowAuthorizationCode
 
 from starlette.middleware import Middleware
@@ -160,6 +160,19 @@ async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     return chat
 
 
+@arouter.delete("/chat/{chat_id}/delete")
+async def delete_chat(chat_id: int, db: Session = Depends(get_db)):
+    chat = db.query(Chat).filter(Chat.id == chat_id).first()
+    if chat is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Chat with id {chat_id} not found.",
+        )
+    db.delete(chat)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
+
+
 @arouter.get("/user/{user_id}/chats", response_model=list[DBChat])
 async def get_chat(user_id: int, db: Session = Depends(get_db)):
     chats = (
@@ -210,6 +223,19 @@ async def create_completion(data: DataCreateComp, db: Session = Depends(get_db))
     print('msgsmsgs', msgs)
     bc = DBComp(messages=msgs, **model_to_dict(completion))
     return bc
+
+
+@arouter.delete('/completion/{completion_id}/delete')
+async def delete_completion(completion_id: int, db: Session = Depends(get_db)):
+    comp = db.query(Completion).filter(Completion.id == completion_id).first()
+    if comp is None:
+        raise HTTPException(
+            status_code=status.HTTP_404_NOT_FOUND,
+            detail=f"Completion with id {completion_id} not found.",
+        )
+    db.delete(comp)
+    db.commit()
+    return Response(status_code=status.HTTP_204_NO_CONTENT)
 
 
 @arouter.get("/completion/{completion_id}", response_model=DBComp)
