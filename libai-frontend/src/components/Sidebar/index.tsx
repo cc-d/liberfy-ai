@@ -139,13 +139,14 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 variant="contained"
                 color="primary"
                 onClick={handleChatModalOpen} // Change this line
-                sx={{ /* your styling here */ }}
+                sx={{ width: '100%', mt: -1, mb: 1 }}
                 size='small'
               >
                 Create Chat
               </Button>
 
             </Box>
+            <Divider />
             <Box width="100%">
               {chats.length > 0 ? (
                 <List dense={true}>

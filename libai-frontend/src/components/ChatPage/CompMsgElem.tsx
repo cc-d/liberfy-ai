@@ -10,8 +10,11 @@ import {
 import {
   Computer, Person, Assistant, ExpandMore
 } from '@mui/icons-material';
+import ReactMarkdown from 'react-markdown';
+import gfm from 'remark-gfm';
+import './styles.css';
 
-export const RoleIcon: React.FC<{role: string}> = ({ role }) => {
+export const RoleIcon: React.FC<{ role: string }> = ({ role }) => {
   role = role.toLowerCase();
   if (role == 'user') {
     return <Person sx={{
@@ -40,65 +43,71 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
   )
 }
 
+export const MsgSummaryText: React.FC<{ message: DBMsg, }> = ({ message }) => {
+  return (
+    <Box
+      sx={{
+        display: 'flex',
+        flexGrow: 1,
+        overflow: 'hidden',
+        textOverflow: 'ellipsis',
+        whiteSpace: 'nowrap',
+        ml: 1,
+        opacity: 0.8,
+        fontSize: '0.8rem',
+        alignItems: 'center',
+      }}
+    >
+      {message.content}
+    </Box>
+  )
+}
 
-
-export const CompMsgElem: React.FC<{ message: DBMsg,  }> = ({ message }) => {
+export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
 
   return (
     <Box
       sx={{
-        m: 1,
-
+        m: '4px',
       }}>
       <Accordion
         disableGutters
-        sx={{}}
+        sx={{
+
+        }}
       >
         <AccordionSummary
           expandIcon={<ExpandMore />}
           sx={{
             display: 'flex',
-            alignItems: 'left',
-            width: '100%', m: 0, p: 0, pl: 1, pr: 1,
+            alignItems: 'center',
+            width: '100%', m: 0, p: '0px 4px',
             overflow: 'hidden',
           }}
+
         >
           <Box
             sx={{
               display: 'flex',
               flexGrow: 1,
               overflow: 'hidden',
-              alignItems: 'left',
-              maxWidth: 'calc(100vw - 300px)'
+              alignItems: 'center',
+              maxWidth: 'calc(100vw - 300px)',
+              alignContent: 'center',
+
             }}
           >
             <MsgRoleElem role={message.role} />
-
-            <Box
-              sx={{
-                flexGrow: 1,
-                overflow: 'hidden',
-                textOverflow: 'ellipsis',
-                whiteSpace: 'nowrap',
-                ml: 1,
-                opacity: 0.8,
-              }}
-            >
-              {message.content}
-            </Box>
+            <MsgSummaryText message={message} />
           </Box>
         </AccordionSummary>
         <AccordionDetails
-          sx={{ p: 1, pt: 0 }}
+
+          sx={{ m: 0, p: '0px 4px'}}
         >
-          <TextField
-            sx={{ p: 0, m: 0 }}
-            fullWidth
-            multiline
-            disabled
-            value={message.content}
-            variant="outlined"
-          />
+          <ReactMarkdown
+            className="markdown-body"
+            remarkPlugins={[gfm]}>{message.content}</ReactMarkdown>
         </AccordionDetails>
       </Accordion>
     </Box>

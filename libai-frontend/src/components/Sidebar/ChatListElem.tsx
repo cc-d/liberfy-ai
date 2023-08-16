@@ -36,7 +36,8 @@ const ChatListElem: React.FC<ChatListElemProps> = ({
             alignItems='center'
             sx={{
               color: theme.palette.text.primary,
-              width: '100%'
+              width: '100%',
+              maxWidth: '100%',
             }}>
             {chat.id === activeChatId ?
               <ChatBubble sx={{ mr: 0.5 }} /> :

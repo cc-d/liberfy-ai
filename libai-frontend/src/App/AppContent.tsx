@@ -20,7 +20,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const [loading, setLoading] = useState(false);
   const smallScreen = useMediaQuery(theme.breakpoints.down('sm'));
 
-  const [isSidebarOpen, setSidebarOpen] = useState(false);
+  const [isSidebarOpen, setSidebarOpen] = useState(true);
 
 
   console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
