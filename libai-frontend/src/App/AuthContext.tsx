@@ -92,7 +92,7 @@ export const AuthProvider = ({children }) => {
         }
       } catch (error: AxiosError | any) {
         console.error("Auto login error:", error);
-        if (error?.response && error?.response?.status === 401) {
+        if (error.response && error.response.status === 401) {
           console.log('received 401 deleting token')
           localStorage.removeItem("token");
           navigate('/')
@@ -110,7 +110,7 @@ export const AuthProvider = ({children }) => {
 
   useEffect(() => {
     !user && !userLoading && autoTokenLogin();
-  }, [user, userLoading]);
+  }, []);
 
 
   return (

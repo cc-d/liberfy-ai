@@ -113,18 +113,6 @@ export class DefaultService {
     }
 
     /**
-     * Get Openapi Schema
-     * @returns any Successful Response
-     * @throws ApiError
-     */
-    public static getOpenapiSchemaApiOpenapiJsonGet(): CancelablePromise<any> {
-        return __request(OpenAPI, {
-            method: 'GET',
-            url: '/api/openapi.json',
-        });
-    }
-
-    /**
      * New Chat
      * @param requestBody
      * @returns DBChat Successful Response
@@ -228,6 +216,40 @@ export class DefaultService {
             errors: {
                 422: `Validation Error`,
             },
+        });
+    }
+
+    /**
+     * Submit Comp
+     * submits a completion to chatgpt and saves response
+     * @param completionId
+     * @returns DBComp Successful Response
+     * @throws ApiError
+     */
+    public static submitCompApiCompletionCompletionIdSubmitPost(
+        completionId: number,
+    ): CancelablePromise<DBComp> {
+        return __request(OpenAPI, {
+            method: 'POST',
+            url: '/api/completion/{completion_id}/submit',
+            path: {
+                'completion_id': completionId,
+            },
+            errors: {
+                422: `Validation Error`,
+            },
+        });
+    }
+
+    /**
+     * Get Openapi Schema
+     * @returns any Successful Response
+     * @throws ApiError
+     */
+    public static getOpenapiSchemaApiOpenapiJsonGet(): CancelablePromise<any> {
+        return __request(OpenAPI, {
+            method: 'GET',
+            url: '/api/openapi.json',
         });
     }
 

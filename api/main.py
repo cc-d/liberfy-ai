@@ -165,11 +165,6 @@ async def get_chats(user_id: int, db: Session = Depends(get_db)):
     return bchats
 
 
-@arouter.get("/openapi.json")
-async def get_openapi_schema():
-    return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
-
-
 @arouter.post("/chat/new", response_model=DBChat)
 async def new_chat(data: DataCreateChat, db: Session = Depends(get_db)):
     chat = Chat(name=data.name, user_id=data.user_id)
@@ -254,6 +249,14 @@ async def submit_comp(completion_id: int, db: Session = Depends(get_db)):
         )
     completion = submit_gpt_comp(completion, db)
     return completion
+
+
+@arouter.get("/openapi.json")
+async def get_openapi_schema():
+    return get_openapi(title="API documentation", version="1.0.0", routes=app.routes)
+
+
+app.include_router(arouter, prefix="/api")
 
 
 if (__name__) == "__main__":

@@ -16,7 +16,7 @@ import {
   Grid,
 } from "@mui/material";
 import {
-  AddCircleOutline, Chat, CommentOutlined, Comment, ExpandMore,
+  AddCircleOutline, Chat, CommentOutlined, Comment, ExpandMore, AddComment,
   ThreeP, AddBox, QuestionAnswer, QuestionAnswerOutlined, QuestionAnswerRounded, QuestionAnswerTwoTone
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
@@ -74,6 +74,37 @@ export const ChatPage = ({
     }
   }
 
+  const submitActiveComp = () => {
+    if (activeComp && activeComp.messages && activeComp.messages.length > 0 && !loading) {
+      setLoading(true);
+      apios.post(`/completion/${activeComp.id}/submit`, activeComp)
+        .then((response) => {
+          // Handle the response data here
+          const updatedActiveComp = response.data;
+
+          // Set the updatedActiveComp to the activeComp state
+          setActiveComp(updatedActiveComp);
+
+          // If you need to update the chat's completions list
+          if (chat && chat.completions) {
+            const newCompletions = [...chat.completions];
+            const compIndex = newCompletions.findIndex(comp => comp.id === updatedActiveComp.id);
+            if (compIndex !== -1) {
+              newCompletions[compIndex] = updatedActiveComp;
+              setChat({ ...chat, completions: newCompletions });
+            }
+          }
+        })
+        .catch((error) => {
+          console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
+        });
+    }
+  }
+
+
   useEffect(() => {
     if (!loading && user && !chat) {
       setLoading(true);
@@ -112,6 +143,14 @@ export const ChatPage = ({
               onClick={handleMsgModalOpen}
             >
               Add
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddComment />}
+              size="small"
+              onClick={submitActiveComp}
+            >
+              Submit
             </Button>
           </Box>
         ) : (
