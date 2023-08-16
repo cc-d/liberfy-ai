@@ -5,6 +5,8 @@ import { AuthProvider } from './AuthContext';
 import ThemeContext from './ThemeContext';
 import AppContent from './AppContent';
 
+import '../styles.css';
+
 function App() {
   const [themeMode, setThemeMode] = useState<'light' | 'dark'>('dark');
   const toggleThemeMode = () => {

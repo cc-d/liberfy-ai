@@ -13,6 +13,9 @@ import {
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
 import './styles.css';
+import '../../styles.css';
+import { Prism as SyntaxHighlighter } from 'react-syntax-highlighter'
+import { vscDarkPlus as mdark } from 'react-syntax-highlighter/dist/esm/styles/prism'
 
 export const RoleIcon: React.FC<{ role: string }> = ({ role }) => {
   role = role.toLowerCase();
@@ -35,10 +38,17 @@ export const RoleIcon: React.FC<{ role: string }> = ({ role }) => {
 export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
   role = role.toLowerCase();
   return (
-    <Box display='flex' alignItems='center'>
+    <Box
+      sx={{
+        display: 'flex',
+        alignContent: 'center',
+        alignItems: 'center',
+      }}
+    >
       <RoleIcon role={role} />
-      <Typography variant='body1'
-      >{role}</Typography>
+      <Typography sx={{}}>
+        {role}
+      </Typography>
     </Box>
   )
 }
@@ -46,6 +56,7 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
 export const MsgSummaryText: React.FC<{ message: DBMsg, }> = ({ message }) => {
   return (
     <Box
+      className='gen-font'
       sx={{
         display: 'flex',
         flexGrow: 1,
@@ -54,7 +65,7 @@ export const MsgSummaryText: React.FC<{ message: DBMsg, }> = ({ message }) => {
         whiteSpace: 'nowrap',
         ml: 1,
         opacity: 0.8,
-        fontSize: '0.8rem',
+        fontSize: '14px',
         alignItems: 'center',
       }}
     >
@@ -64,14 +75,15 @@ export const MsgSummaryText: React.FC<{ message: DBMsg, }> = ({ message }) => {
 }
 
 export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
-
   return (
     <Box
+
       sx={{
         m: '4px',
 
       }}>
       <Accordion
+
         disableGutters
         sx={{
 
@@ -91,9 +103,9 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
           <Box
             sx={{
               display: 'flex',
-              flexGrow: 1,
               overflow: 'hidden',
               alignItems: 'center',
+              width: '100%',
               maxWidth: 'calc(100vw - 300px)',
               alignContent: 'center',
 
@@ -101,15 +113,38 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
           >
             <MsgRoleElem role={message.role} />
             <MsgSummaryText message={message} />
-          </Box>
-        </AccordionSummary>
-        <AccordionDetails
 
-          sx={{ m: 0, p: '0px 4px',}}
+          </Box>
+
+        </AccordionSummary>
+        <Divider />
+        <AccordionDetails
+          sx={{ m: 0, p: '0px 4px', }}
         >
           <ReactMarkdown
-            className="markdown-body"
-            remarkPlugins={[gfm]}>{message.content}</ReactMarkdown>
+            className="markdown-body gen-font"
+            remarkPlugins={[gfm]}
+
+            components={{
+              code({ node, inline, className, children, ...props }) {
+                const match = /language-(\w+)/.exec(className || '')
+                return !inline && match ? (
+                  <SyntaxHighlighter
+                    {...props}
+                    children={String(children)}
+                    style={mdark}
+                    language={match[1]}
+                    PreTag="div"
+                    className='syntax-highlighter'
+                  />
+                ) : (
+                  <code {...props} className={className}>
+                    {children}
+                  </code>
+                )
+              }
+            }}
+          >{message.content}</ReactMarkdown>
         </AccordionDetails>
       </Accordion>
     </Box>

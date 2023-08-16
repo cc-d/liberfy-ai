@@ -28,21 +28,21 @@ import { DBComp, DBChat, DBUser } from "../../api";
 import apios from '../../utils/apios';
 import ChatListElem from './ChatListElem';
 import NewChatModal from './NewChatModal';
-import './style.css';
+import './styles.css';
 
 interface ChatSidebarProps {
   chat: DBChat | null;
   user: DBUser;
   addCompletion: (completion: DBComp) => void;
   activeCompId: number | null;
-  setActiveCompId: (id: number | null) => void;  // Updated this line for type definition
   getCompFromId: (id: number) => DBComp | null;
   handleCompModalOpen: () => void;
   handleCompModalClose: () => void;
   isSidebarOpen: boolean;
   toggleSidebar: () => void;
   showCompModal: boolean;
-  setChat: (chat: DBChat | null) => void;
+  setChatPlusId: (chat: DBChat | null) => void;
+  setCompPlusId: (id: number | null) => void;
   chats: DBChat[];
   setChats: Dispatch<SetStateAction<DBChat[]>>;
   addChat: (chat: DBChat) => void;  // New line: Adding new chats to state
@@ -54,12 +54,14 @@ export const drawerWidth = 240;
 
 const ChatSidebar: React.FC<ChatSidebarProps> = ({
   chat, user, addCompletion, activeCompId,
-  setActiveCompId, handleCompModalOpen, handleCompModalClose,
-  showCompModal, toggleSidebar, isSidebarOpen, setChat, getCompFromId,
-  chats, setChats, addChat, removeChat, removeComp
+  setCompPlusId, handleCompModalOpen, handleCompModalClose,
+  showCompModal, toggleSidebar, isSidebarOpen, setChatPlusId, getCompFromId,
+  chats, setChats, addChat, removeChat, removeComp,
 }) => {
   const theme = useTheme();
   const sidebarType = useMediaQuery(theme.breakpoints.up('sm'));
+
+
 
   const activeChatId = chat ? chat.id : null;
 
@@ -133,8 +135,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
         <Accordion disableGutters defaultExpanded className='sidebar-accord'>
           <AccordionSummary
-          className='sidebar-accord-summary'
-          expandIcon={<ExpandMore />}>
+            className='sidebar-accord-summary'
+            expandIcon={<ExpandMore />}>
             <Typography variant="body1" >Chats</Typography>
           </AccordionSummary>
           <AccordionDetails
@@ -164,7 +166,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       chat={chatItem}
                       theme={theme}
                       activeChatId={activeChatId}
-                      setChat={setChat}
+                      setChatPlusId={setChatPlusId}
                       removeChat={removeChat}
                     />
                   ))}
@@ -200,7 +202,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                       key={completion.id}
                       completion={completion}
                       theme={theme}
-                      setActiveCompId={setActiveCompId}
+                      setCompPlusId={setCompPlusId}
                       activeCompId={activeCompId}
                       removeComp={removeComp}
                     />

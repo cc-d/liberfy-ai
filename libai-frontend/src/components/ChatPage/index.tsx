@@ -17,7 +17,8 @@ import {
 } from "@mui/material";
 import {
   AddCircleOutline, Chat, CommentOutlined, Comment, ExpandMore, AddComment,
-  ThreeP, AddBox, QuestionAnswer, QuestionAnswerOutlined, QuestionAnswerRounded, QuestionAnswerTwoTone
+  ThreeP, AddBox, QuestionAnswer, QuestionAnswerOutlined, QuestionAnswerRounded,
+  QuestionAnswerTwoTone, Send
 } from "@mui/icons-material";
 import { useTheme } from "@mui/material/styles";
 import CompListElem from "../Sidebar/CompListElem";
@@ -28,25 +29,22 @@ import AddEditMsgModal from './AddEditMsgModal';
 
 interface ChatPageProps {
   activeCompId: number | null;
-  setActiveCompId: (id: number | null) => void;
+  setCompPlusId: (id: number | null) => void;
   getCompFromId: (id: number | null) => DBComp | null;
   chat: (DBChat | null);
-  setChat: (chat: DBChat | null) => void;
+  setChatPlusId: (chat: DBChat | null) => void;
   addCompletion: (completion: DBComp) => any;
 }
 
 export const ChatPage = ({
-  chat, setChat, addCompletion, activeCompId, setActiveCompId, getCompFromId
+  chat, setChatPlusId, addCompletion,
+  activeCompId, setCompPlusId, getCompFromId
 }: ChatPageProps) => {
   console.log('ChatPage')
   const { user } = useAuthContext();
 
-  console.log(chat);
-  const { useChatId } = useParams<{ useChatId: string }>();
-
   const [loading, setLoading] = useState(false);
 
-  const theme = useTheme();
 
   // Message Modal
   const [showMsgModal, setShowMsgModal] = useState(false);
@@ -69,7 +67,7 @@ export const ChatPage = ({
         newCompletions[compIndex].messages = [...newCompletions[compIndex].messages, msg];
 
         // Update the chat's completions list
-        setChat({ ...chat, completions: newCompletions });
+        setChatPlusId({ ...chat, completions: newCompletions });
       }
     }
   }
@@ -91,7 +89,7 @@ export const ChatPage = ({
             const compIndex = newCompletions.findIndex(comp => comp.id === updatedActiveComp.id);
             if (compIndex !== -1) {
               newCompletions[compIndex] = updatedActiveComp;
-              setChat({ ...chat, completions: newCompletions });
+              setChatPlusId({ ...chat, completions: newCompletions });
             }
           }
         })
@@ -116,24 +114,39 @@ export const ChatPage = ({
 
     <>
       <Box>
-        {activeComp? (
-          <Box display='flex' alignItems='center' m={0.5} gap={1}>
-            <QuestionAnswerTwoTone />
-            <Typography variant="h6">Messages</Typography>
+        {activeComp ? (
+          <Box
+            display='flex'
+            sx={{ flexGrow: 1, alignContent: 'center', gap: 1, p: '4px' }}
+            alignItems='center'
+          >
+            <Typography variant="h6" display='flex'>Messages</Typography>
             <Button
               variant="contained"
-              startIcon={<AddBox />}
-              sx={{ ml: 2 }}
+              endIcon={<AddBox />}
+              sx={{
+                display: 'flex',
+              }}
               size="small"
+              color='primary'
               onClick={handleMsgModalOpen}
+
             >
               Add
             </Button>
             <Button
               variant="contained"
-              startIcon={<AddComment />}
+              /*startIcon={<AddComment />}*/
+              endIcon={<Send />}
               size="small"
               onClick={submitActiveComp}
+              color='success'
+              sx={{
+                display: 'flex',
+                justifySelf: 'right',
+                alignSel: 'right',
+                ml: 'auto',
+              }}
             >
               Submit
             </Button>
@@ -159,8 +172,8 @@ export const ChatPage = ({
 
 
         {activeComp && activeComp.messages.map((msg) => (
-            <CompMsgElem key={msg.id} message={msg} />
-          ))
+          <CompMsgElem key={msg.id} message={msg} />
+        ))
         }
 
       </Box>

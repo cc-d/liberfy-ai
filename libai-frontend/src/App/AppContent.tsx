@@ -1,4 +1,4 @@
-import React, { useState, useEffect, } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { Box, useMediaQuery } from '@mui/material';
 import { useLocation, Routes, Route, redirect, useNavigate } from 'react-router-dom';
 import LogRegPage from '../components/LogRegPage';
@@ -11,9 +11,27 @@ import { DBChat, DBComp } from '../api'; // Import DBChat type as required
 
 const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
   const { user, userLoading, setIsUserLoading } = useAuthContext();
+
   const [chat, setChat] = useState<DBChat | null>(null);
   const [chats, setChats] = useState<DBChat[]>([]);
+
   const [activeCompId, setActiveCompId] = useState<number | null>(null);
+
+
+  const setChatPlusId = (newChat: DBChat | null) => {
+    setChat(newChat);
+    if (newChat && newChat.id !== null) {
+      localStorage.setItem('lastChatId', newChat.id.toString());
+    }
+  };
+
+  const setCompPlusId = (newCompId: number | null) => {
+    setActiveCompId(newCompId);
+    if (newCompId !== null) {
+      localStorage.setItem('lastCompId', newCompId.toString());
+    }
+  };
+
 
   const navigate = useNavigate();
 
@@ -25,9 +43,26 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
   console.log('AppContent', 'chat', chat, 'activeCompId', activeCompId)
 
+  useEffect(() => {
+    const lsChatId = localStorage.getItem('lastChatId');
+    const lsCompId = localStorage.getItem('lastCompId');
+
+    if (lsChatId) {
+      setCompPlusId(Number(lsChatId));
+      // Find the chat object by ID and set it to state
+      const foundChat = chats.find(chat => chat.id === Number(lsChatId));
+      setChat(foundChat || null);
+    }
+
+    if (lsCompId) {
+      setCompPlusId(Number(lsCompId));
+    }
+  }, [chat, chats]);
+
 
   const refreshChats = () => {
-    if (user) {
+    if (user && !loading) {
+      setLoading(true);
       const uid = user.id;
       apios
         .get(`/user/${uid}/chats`)
@@ -36,6 +71,9 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         })
         .catch((error) => {
           console.error(error);
+        })
+        .finally(() => {
+          setLoading(false);
         });
     }
   };
@@ -108,10 +146,12 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
   useEffect(() => {
 
-  }, [chat, isSidebarOpen ]);
+  }, [chat, isSidebarOpen, loading]);
 
 
-  console.log('chat', chat, 'user', user, 'isSidebarOpen', isSidebarOpen)
+  console.log('chat', chat, 'user', user, 'isSidebarOpen', isSidebarOpen,
+    'activeCompId', activeCompId, 'chats', chats,
+  )
 
   return (
     <Box sx={{
@@ -125,13 +165,13 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           addCompletion={addCompletion}
           getCompFromId={getCompFromId}
           activeCompId={activeCompId}
-          setActiveCompId={setActiveCompId}
+          setCompPlusId={setCompPlusId}
           toggleSidebar={toggleSidebar}
           isSidebarOpen={isSidebarOpen}
           handleCompModalClose={handleCompModalClose}
           handleCompModalOpen={handleCompModalOpen}
           showCompModal={showCompModal}
-          setChat={setChat}
+          setChatPlusId={setChatPlusId}
           chats={chats}
           setChats={setChats}
           addChat={addChat}
@@ -140,7 +180,7 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
         />
       )}
 
-      <Box flex="1" sx={{flexGrow: 1, width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw',}}
+      <Box flex="1" sx={{ flexGrow: 1, width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw', }}
       >
         <TopNav
           theme={theme}
@@ -150,23 +190,24 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
           isSidebarOpen={isSidebarOpen}
           smallScreen={smallScreen}
         />
-      <Routes>
-        <Route path="/" element={!user ? <LogRegPage /> : null} />
-        {/* Removed <redirect to='/chats' /> from this line and moved the redirect logic to the useEffect above */}
+        <Routes>
+          <Route path="/" element={!user ? <LogRegPage /> : null} />
+          <Route path="/chats"
+            element={user && !loading ? (
+              <ChatPage
+                chat={chat}
+                setCompPlusId={setCompPlusId}
+                setChatPlusId={setChatPlusId}
+                activeCompId={activeCompId}
 
-        <Route path="/chats"
-          element={
-            <ChatPage
-              chat={chat}
-              setChat={setChat}
-              activeCompId={activeCompId}
-              setActiveCompId={setActiveCompId}
-              getCompFromId={getCompFromId}
-              addCompletion={addCompletion}
-            />
-          } />
+                getCompFromId={getCompFromId}
+                addCompletion={addCompletion}
+              />
+            ) : (
+              null
+            )} />
 
-      </Routes>
+        </Routes>
       </Box>
     </Box>
   );

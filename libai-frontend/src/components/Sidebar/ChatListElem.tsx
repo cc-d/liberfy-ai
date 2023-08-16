@@ -13,28 +13,29 @@ import apios from '../../utils/apios';
 interface ChatListElemProps {
   chat: DBChat;
   theme: Theme;
-  setChat: (chat: DBChat) => void;
+  setChatPlusId: (chat: DBChat) => void;
   activeChatId: string | number | null;
   removeChat: (chatId: string | number) => void;
 }
 
 const ChatListElem: React.FC<ChatListElemProps> = ({
-  chat, theme, setChat, activeChatId, removeChat,
+  chat, theme, setChatPlusId, activeChatId, removeChat,
+
 }) => {
   const chatTitle: string = chat.name;
 
   const handleDelete = async (e) => {
     e.preventDefault();
     try {
-        const response = await apios.delete(`/chat/${chat.id}/delete`);
-        if (response.status === 204) {
-            console.log('Chat deleted successfully');
-            removeChat(chat.id)
-        }
+      const response = await apios.delete(`/chat/${chat.id}/delete`);
+      if (response.status === 204) {
+        console.log('Chat deleted successfully');
+        removeChat(chat.id)
+      }
     } catch (error) {
-        console.error('An error occurred while deleting the chat: ', error);
+      console.error('An error occurred while deleting the chat: ', error);
     }
-};
+  };
 
   return (
     <>
@@ -42,7 +43,7 @@ const ChatListElem: React.FC<ChatListElemProps> = ({
         <ListItemButton
           component={RouterLink}
           to={`/chat/${chat.id}`}
-          onClick={() => setChat(chat)}
+          onClick={() => setChatPlusId(chat)}
           disableGutters
           sx={{ m: 0, }}
           key={chat.id}
@@ -71,8 +72,8 @@ const ChatListElem: React.FC<ChatListElemProps> = ({
             <IconButton
               onClick={handleDelete}
             >
-            <DeleteIcon />
-          </IconButton>
+              <DeleteIcon />
+            </IconButton>
           </Box>
         </ListItemButton>
       )
