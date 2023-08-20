@@ -12,6 +12,11 @@ pre {
   margin: '0px';
 }
 
+.markdown-body > p, .markdown-body > * > p, .markdown-body > * > * > p, .markdown-body > * > * > * > p, .markdown-body > * > * > * > * > p, .markdown-body > * > * > * > * > * > p {
+  margin-top: 8px;
+  margin-bottom: 8px;
+}
+
 .markdown-body > pre  {
   background-color: #000;
   /* Black background for code blocks */
@@ -48,8 +53,8 @@ pre {
 .markdown-body h4,
 .markdown-body h5,
 .markdown-body h6 {
-  margin-top: 24px;
-  margin-bottom: 16px;
+  margin-top: 16px;
+  margin-bottom: 8px;
 }
 
 .markdown-body table {
