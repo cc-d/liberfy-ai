@@ -62,12 +62,31 @@ export const ChatPage = ({
 }: ChatPageProps) => {
   console.log("ChatPage");
   const [loading, setLoading] = useState(false);
-
   const [chat, setChat] = useState<DBChat | null>(null);
   const [chats, setChats] = useState<DBChat[]>([]);
-
   const savedChatId = localStorage.getItem("lastChatId");
   const savedCompId = localStorage.getItem("lastCompId");
+  const [activeCompId, setActiveCompId] = useState<number | string | null>(
+    savedCompId
+  );
+  const [showMsgModal, setShowMsgModal] = useState(false);
+  const [showCompModal, setShowCompModal] = useState(false);
+
+  // Completion Modal
+  const handleCompModalOpen = () => {
+    setShowCompModal(true);
+  };
+  const handleCompModalClose = () => {
+    setShowCompModal(false);
+  };
+
+  // Message Modal
+  const handleMsgModalOpen = () => {
+    setShowMsgModal(true);
+  };
+  const handleMsgModalClose = () => {
+    setShowMsgModal(false);
+  };
 
   const refreshChats = () => {
     if (user && !loading) {
@@ -110,15 +129,12 @@ export const ChatPage = ({
     }
   }, [chats, savedChatId]);
 
-  const [activeCompId, setActiveCompId] = useState<number | string | null>(
-    savedCompId
-  );
-
   useEffect(() => {
     if (savedCompId) {
       setActiveCompId(savedCompId);
     }
   }, [chat]);
+
 
   const setChatPlusId = (newChat: DBChat | null) => {
     if (newChat && newChat.id !== null) {
@@ -133,25 +149,6 @@ export const ChatPage = ({
     localStorage.setItem("lastChatId", chat.id.toString());
     localStorage.removeItem("lastCompId");
     setChats([...chats, chat]);
-  };
-
-
-  // Completion Modal
-  const [showCompModal, setShowCompModal] = useState(false);
-  const handleCompModalOpen = () => {
-    setShowCompModal(true);
-  };
-  const handleCompModalClose = () => {
-    setShowCompModal(false);
-  };
-
-  // Message Modal
-  const [showMsgModal, setShowMsgModal] = useState(false);
-  const handleMsgModalOpen = () => {
-    setShowMsgModal(true);
-  };
-  const handleMsgModalClose = () => {
-    setShowMsgModal(false);
   };
 
   const setCompPlusId = (newCompId: number | string | null) => {
@@ -216,7 +213,8 @@ export const ChatPage = ({
   };
 
   const getCompFromId = (cid: number | string | null) => {
-    if (chat && chat.completions) {
+    if (chat && chat.completions && cid !== null) {
+      cid = parseInt(cid.toString());
       const fComp: DBComp | undefined = chat.completions.find(
         (comp) => comp.id === cid
       );
@@ -226,9 +224,6 @@ export const ChatPage = ({
     }
     return null;
   };
-
-
-
 
   const addMsg = (msg: DBMsg) => {
     if (chat && chat.completions) {
@@ -287,8 +282,7 @@ export const ChatPage = ({
     }
   };
 
-
-  console.log(activeComp, activeCompId, chat)
+  console.log(activeComp, activeCompId, chat);
 
   return (
     <Box>

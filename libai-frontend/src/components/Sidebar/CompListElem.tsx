@@ -60,7 +60,7 @@ export const CompListElem: React.FC<CompListElemProps> = ({
               color: theme.palette.text.primary,
               width: '100%'
             }}>
-            {completion.id === activeCompId ?
+            {completion.id.toString() === activeCompId?.toString() ?
               <QuestionAnswer sx={{ mr: 0.5 }} /> :
               <QuestionAnswerOutlined sx={{ mr: 0.5 }} />
             }

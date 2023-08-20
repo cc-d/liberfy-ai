@@ -1,5 +1,11 @@
 /* MarkdownStyles.css */
 
+pre {
+  padding: 4px;
+  margin: 8px 0px;
+  background-color: #000;
+}
+
 .markdown-body {
   word-wrap: break-word;
   padding: '0px';
