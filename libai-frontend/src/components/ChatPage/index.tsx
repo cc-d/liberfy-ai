@@ -1,9 +1,12 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, {
+  useCallback, useEffect, useState,
+  Dispatch, SetStateAction
+} from "react";
 import { useParams, useLocation } from "react-router-dom";
 import apios from "../../utils/apios";
 import {
   DataCreateChat, DataCreateComp, DataMsgAdd,
-  DBComp, DBMsg, DBUserWithToken, DBChat
+  DBComp, DBMsg, DBUserWithToken, DBChat, DBUser
 } from "../../api";
 import { useAuthContext } from "../../App/AuthContext";
 import {
@@ -29,16 +32,31 @@ import AddEditMsgModal from './AddEditMsgModal';
 
 interface ChatPageProps {
   activeCompId: number | string | null;
-  setCompPlusId: (id: number | string | null) => void;
+  addChat: (chat: DBChat) => void;
+  addCompletion: (completion: DBComp) => void;
+  chat: DBChat | null;
+  chats: DBChat[];
   getCompFromId: (id: number | string | null) => DBComp | null;
-  chat: (DBChat | null);
+  handleCompModalClose: () => void;
+  handleCompModalOpen: () => void;
+  isSidebarOpen: boolean;
+  removeChat: (cid: number | string) => void;
+  removeComp: (cid: number | string) => void;
   setChatPlusId: (chat: DBChat | null) => void;
-  addCompletion: (completion: DBComp) => any;
+  setChats: Dispatch<SetStateAction<DBChat[]>>;
+  setCompPlusId: (id: number | string | null) => void;
+  showCompModal: boolean;
+  toggleSidebar: () => void;
+  user: DBUser | null;
+  smallScreen: boolean;
 }
 
+
 export const ChatPage = ({
-  chat, setChatPlusId, addCompletion,
-  activeCompId, setCompPlusId, getCompFromId
+  chat, setChatPlusId, addCompletion, isSidebarOpen, toggleSidebar,
+  activeCompId, setCompPlusId, getCompFromId, handleCompModalClose,
+  handleCompModalOpen, showCompModal, chats, setChats, addChat, removeComp,
+  removeChat, smallScreen
 }: ChatPageProps) => {
   console.log('ChatPage')
   const { user } = useAuthContext();
@@ -116,14 +134,51 @@ export const ChatPage = ({
 
   return (
 
-    <>
-      <Box>
+
+
+
+    <Box>
+
+      {user &&
+
+        <ChatSidebar
+          chat={chat}
+          user={user}
+          addCompletion={addCompletion}
+          getCompFromId={getCompFromId}
+          activeCompId={activeCompId}
+          setCompPlusId={setCompPlusId}
+          toggleSidebar={toggleSidebar}
+          isSidebarOpen={isSidebarOpen}
+          handleCompModalClose={handleCompModalClose}
+          handleCompModalOpen={handleCompModalOpen}
+          showCompModal={showCompModal}
+          setChatPlusId={setChatPlusId}
+          chats={chats}
+          setChats={setChats}
+          addChat={addChat}
+          removeComp={removeComp}
+          removeChat={removeChat}
+        />
+      }
+      <Box sx={{
+        display: 'block',
+        ml: isSidebarOpen && !smallScreen ? `240px` : '0px',
+      }}
+      >
+
         {activeComp ? (
           <Box
             display='flex'
-            sx={{ flexGrow: 1, alignContent: 'center', gap: 1, p: '4px' }}
+            sx={{
+              flexGrow: 1,
+              alignContent: 'center',
+              gap: 1,
+              p: '4px',
+            }}
             alignItems='center'
           >
+
             <Typography variant="h6" display='flex'>Messages</Typography>
             <Button
               variant="contained"
@@ -181,7 +236,8 @@ export const ChatPage = ({
         }
 
       </Box>
-    </>
+    </Box>
+
 
   );
 };

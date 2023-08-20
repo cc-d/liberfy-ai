@@ -8,7 +8,7 @@ import {
   Accordion, AccordionSummary, AccordionDetails, Button, TextField
 } from '@mui/material';
 import {
-  Computer, Person, Assistant, ExpandMore
+  Computer, Person, Assistant, ExpandMore, Opacity
 } from '@mui/icons-material';
 import ReactMarkdown from 'react-markdown';
 import gfm from 'remark-gfm';
@@ -55,22 +55,26 @@ export const MsgRoleElem: React.FC<{ role: string }> = ({ role }) => {
 
 export const MsgSummaryText: React.FC<{ message: DBMsg, }> = ({ message }) => {
   return (
-    <Box
-      className='gen-font'
-      sx={{
-        display: 'flex',
-        flexGrow: 1,
-        overflow: 'hidden',
-        textOverflow: 'ellipsis',
-        whiteSpace: 'nowrap',
-        ml: 1,
-        opacity: 0.8,
-        fontSize: '14px',
-        alignItems: 'center',
-      }}
+    <Box sx={{
+      display: 'flex',
+      flexGrow: 1,
+      overflow: 'hidden',
+      maxWidth: '150px',
+      ml: 1,
+      opacity: 0.8,
+    }}
     >
+    <Typography
+      noWrap
+
+      fontSize='14px'
+    >
+
       {message.content}
+    </Typography>
+
     </Box>
+
   )
 }
 
@@ -83,7 +87,6 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
 
       }}>
       <Accordion
-
         disableGutters
         sx={{
 
@@ -94,20 +97,15 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
           sx={{
             display: 'flex',
             alignItems: 'center',
-            width: '100%', m: 0, p: '0px 4px',
             overflow: 'hidden',
-
+            m: 0, p: '0px 8px',
           }}
-
         >
           <Box
             sx={{
               display: 'flex',
-              overflow: 'hidden',
+              flexGrow: 1,
               alignItems: 'center',
-              width: '100%',
-              maxWidth: 'calc(100vw - 300px)',
-              alignContent: 'center',
 
             }}
           >
@@ -119,7 +117,7 @@ export const CompMsgElem: React.FC<{ message: DBMsg, }> = ({ message }) => {
         </AccordionSummary>
         <Divider />
         <AccordionDetails
-          sx={{ m: 0, p: '0px 4px', }}
+          sx={{ m: 0, p: '0px 8px', }}
         >
           <ReactMarkdown
             className="markdown-body gen-font"

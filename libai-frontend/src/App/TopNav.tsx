@@ -28,14 +28,15 @@ export const TopNav = ({
   const loc = useLocation();
 
   return (
-    <>
       <Box
         sx={{
           backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
           display: 'flex',
           flexDirection: 'row',
           justifyContent: 'space-between', // This will push items to the edges
-          width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw',
+          alignItems: 'center',
+          maxWidth: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw',
+          ml: isSidebarOpen && !smallScreen ? `240px` : '0px',
         }}
       >
         <Box
@@ -121,8 +122,6 @@ export const TopNav = ({
         </Box>
 
       </Box>
-      <Divider />
-    </>
   );
 };
 

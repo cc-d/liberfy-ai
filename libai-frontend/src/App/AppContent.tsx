@@ -5,7 +5,6 @@ import LogRegPage from '../components/LogRegPage';
 import ChatPage from '../components/ChatPage';
 import TopNav from './TopNav';
 import { useAuthContext } from '../App/AuthContext';
-import ChatSidebar from '../components/Sidebar';
 import apios from '../utils/apios';
 import { DBChat, DBComp } from '../api'; // Import DBChat type as required
 
@@ -171,59 +170,47 @@ const AppContent = ({ themeMode, toggleThemeMode, theme }) => {
 
   return (
     <Box sx={{
-      display: 'flex',
+
     }}
     >
-      {user && isSidebarOpen && (
-        <ChatSidebar
-          chat={chat}
-          user={user}
-          addCompletion={addCompletion}
-          getCompFromId={getCompFromId}
-          activeCompId={activeCompId}
-          setCompPlusId={setCompPlusId}
-          toggleSidebar={toggleSidebar}
-          isSidebarOpen={isSidebarOpen}
-          handleCompModalClose={handleCompModalClose}
-          handleCompModalOpen={handleCompModalOpen}
-          showCompModal={showCompModal}
-          setChatPlusId={setChatPlusId}
-          chats={chats}
-          setChats={setChats}
-          addChat={addChat}
-          removeComp={removeComp}
-          removeChat={removeChat}
-        />
-      )}
+      <TopNav
+        theme={theme}
+        themeMode={themeMode}
+        toggleThemeMode={toggleThemeMode}
+        toggleSidebar={toggleSidebar}
+        isSidebarOpen={isSidebarOpen}
+        smallScreen={smallScreen}
+      />
 
-      <Box flex="1" sx={{ flexGrow: 1, width: isSidebarOpen && !smallScreen ? 'calc(100vw - 240px)' : '100vw', }}
-      >
-        <TopNav
-          theme={theme}
-          themeMode={themeMode}
-          toggleThemeMode={toggleThemeMode}
-          toggleSidebar={toggleSidebar}
-          isSidebarOpen={isSidebarOpen}
-          smallScreen={smallScreen}
-        />
-        <Routes>
-          <Route path="/" element={!user ? <LogRegPage /> : null} />
-          <Route path="/chats"
-            element={user && !loading ? (
-              <ChatPage
-                chat={chat}
-                setCompPlusId={setCompPlusId}
-                setChatPlusId={setChatPlusId}
-                activeCompId={activeCompId}
-                getCompFromId={getCompFromId}
-                addCompletion={addCompletion}
-              />
-            ) : (
-              null
-            )} />
+      <Routes>
+        <Route path="/" element={!user ? <LogRegPage /> : null} />
+        <Route path="/chats"
+          element={user && !loading ? (
+            <ChatPage
+              chat={chat}
+              user={user}
+              addCompletion={addCompletion}
+              getCompFromId={getCompFromId}
+              activeCompId={activeCompId}
+              setCompPlusId={setCompPlusId}
+              toggleSidebar={toggleSidebar}
+              isSidebarOpen={isSidebarOpen}
+              handleCompModalClose={handleCompModalClose}
+              handleCompModalOpen={handleCompModalOpen}
+              showCompModal={showCompModal}
+              setChatPlusId={setChatPlusId}
+              chats={chats}
+              setChats={setChats}
+              addChat={addChat}
+              removeComp={removeComp}
+              removeChat={removeChat}
+              smallScreen={smallScreen}
+            />
+          ) : (
+            null
+          )} />
 
-        </Routes>
-      </Box>
+      </Routes>
     </Box>
   );
 };

@@ -117,12 +117,12 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
 
       <Drawer
         variant={sidebarType ? "permanent" : "temporary"}
-        anchor="left"
         open={isSidebarOpen}
         onClose={toggleSidebar}
         sx={{
+          display: isSidebarOpen ? 'block' : 'none',
           width: drawerWidth,
-          flexShrink: 0,
+          maxWidth: drawerWidth,
           '& .MuiDrawer-paper': {
             width: drawerWidth,
             boxSizing: 'border-box',
@@ -133,7 +133,8 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
         <Accordion disableGutters defaultExpanded className='sidebar-accord'>
           <AccordionSummary
             className='sidebar-accord-summary'
-            expandIcon={<ExpandMore />}>
+            expandIcon={<ExpandMore />}
+          >
             <Typography variant="body1" >Chats</Typography>
           </AccordionSummary>
           <AccordionDetails
@@ -145,7 +146,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
                 variant="contained"
                 color="primary"
                 onClick={handleChatModalOpen} // Change this line
-                sx={{ mt: -1, mb: 1, width: '100%' }}
+                sx={{ mt: -1, width: '100%' }}
                 size='small'
               >
                 Create Chat
@@ -176,7 +177,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
             </Box>
           </AccordionDetails>
         </Accordion>
-
+        <Divider />
         {chat ? (
           <Accordion disableGutters defaultExpanded className='sidebar-accord'>
             <AccordionSummary className='sidebar-accord-summary' expandIcon={<ExpandMore />}>
@@ -186,7 +187,7 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
               <Button
                 variant="contained"
                 onClick={handleCompModalOpen} // Open the modal
-                sx={{ mt: -1, mb: 1, width: '100%' }}
+                sx={{ mt: -1, width: '100%' }}
                 size="small"
               >
                 New
