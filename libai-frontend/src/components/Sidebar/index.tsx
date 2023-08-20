@@ -88,10 +88,6 @@ const ChatSidebar: React.FC<ChatSidebarProps> = ({
     }
   };
 
-  useEffect(() => {
-
-  }, [sidebarType, chat, chats, activeChatId, activeCompId])
-
   console.log('ChatSidebar')
   return (
     <>

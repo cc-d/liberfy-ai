@@ -9,7 +9,8 @@ import {
   Theme, Divider, Box, ListItemButton,
 } from "@mui/material";
 import {
-  Chat, QuestionAnswerOutlined, Check, CheckCircle, Delete as DeleteIcon
+  Chat, QuestionAnswerOutlined, Check, QuestionAnswer, ChatBubble,
+  CheckCircle, Delete as DeleteIcon, ChatBubbleOutline,
 } from "@mui/icons-material";
 import apios from '../../utils/apios';
 
@@ -51,7 +52,7 @@ export const CompListElem: React.FC<CompListElemProps> = ({
           disableGutters
 
           key={completion.id}
-          selected={completion.id === activeCompId ? true : false}
+          selected={completion.id.toString() === activeCompId?.toString() ? true : false}
         >
           <Box display='flex'
             alignItems='center'
@@ -60,8 +61,8 @@ export const CompListElem: React.FC<CompListElemProps> = ({
               width: '100%'
             }}>
             {completion.id === activeCompId ?
-              <CheckCircle sx={{ mr: 0.5 }} /> :
-              <Chat sx={{ mr: 0.5 }} />
+              <QuestionAnswer sx={{ mr: 0.5 }} /> :
+              <QuestionAnswerOutlined sx={{ mr: 0.5 }} />
             }
             <ListItemText
               primary={compTitle} primaryTypographyProps={{

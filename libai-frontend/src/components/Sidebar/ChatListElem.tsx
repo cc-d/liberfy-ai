@@ -3,7 +3,10 @@ import {
   ListItemButton, ListItemIcon, ListItemText,
   Theme, Box, IconButton,
 } from "@mui/material";
-import { Chat, ChatBubbleOutline, ChatBubble, Delete as DeleteIcon } from "@mui/icons-material";
+import {
+  Chat, ChatBubbleOutline, ChatBubble,
+  Delete as DeleteIcon, ThreeP, ThreePOutlined,
+} from "@mui/icons-material";
 import { DBChat } from '../../api';
 import apios from '../../utils/apios';
 
@@ -34,10 +37,6 @@ const ChatListElem: React.FC<ChatListElemProps> = ({
     }
   };
 
-  useEffect(() => {
-    console.log('chatlistelem', chat, theme, activeChatId)
-  }, [activeChatId, chat]);
-
   return (
     <>
       {chat && chat.id && (
@@ -57,8 +56,8 @@ const ChatListElem: React.FC<ChatListElemProps> = ({
               maxWidth: '100%',
             }}>
             {chat.id === activeChatId ?
-              <ChatBubble sx={{ mr: 0.5 }} /> :
-              <ChatBubbleOutline sx={{ mr: 0.5 }} />
+              <ThreeP sx={{ mr: 0.5 }} /> :
+              <ThreePOutlined sx={{ mr: 0.5 }} />
             }
             <ListItemText
               primary={chatTitle}
