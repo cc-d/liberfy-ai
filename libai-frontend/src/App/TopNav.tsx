@@ -28,6 +28,7 @@ export const TopNav = ({
   const loc = useLocation();
 
   return (
+    <>
       <Box
         sx={{
           backgroundImage: 'linear-gradient(rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.05))',
@@ -53,7 +54,7 @@ export const TopNav = ({
               <Menu />
             </IconButton>
           )
-          }
+        }
           { user  && (
             <Box
               sx={{
@@ -67,20 +68,20 @@ export const TopNav = ({
                 alignContent: 'center', display: 'flex', alignItems: 'center',
                 textDecoration: 'none', color: 'inherit',
               }}
-           >
+              >
             <ChatBubble sx={{height: '1rem', width: '1rem'}} />
             Chats
            </Link>
            </Box>
           )
-          }
+        }
           {user && (
             <Box
-              sx={{
-                alignContent: 'center', display: 'flex',
-                flexDirection: 'row', alignItems: 'center',
-                gap: 0,
-              }}
+            sx={{
+              alignContent: 'center', display: 'flex',
+              flexDirection: 'row', alignItems: 'center',
+              gap: 0,
+            }}
             >
               <Box sx={{ml: 1, display: 'flex', alignItems: 'center'}}>
               <AccountBox sx={{height: '1rem', width: '1rem'}} />
@@ -108,12 +109,12 @@ export const TopNav = ({
             flex: 1,
             // This will push items to the right
           }}
-        >
+          >
           <IconButton
             color="inherit"
             onClick={toggleThemeMode}
             sx={{}}
-          >
+            >
             {themeMode === 'dark' ? <DarkMode /> : <LightMode />}
           </IconButton>
 
@@ -122,6 +123,8 @@ export const TopNav = ({
         </Box>
 
       </Box>
+                <Divider />
+            </>
   );
 };
 

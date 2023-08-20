@@ -310,7 +310,9 @@ export const ChatPage = ({
       <Box
         sx={{
           display: "block",
-          ml: isSidebarOpen && !smallScreen ? `240px` : "0px",
+          p: "4px",
+          m: "4px",
+          ml: isSidebarOpen && !smallScreen ? `244px` : "4px",
         }}
       >
         {activeComp ? (
@@ -320,7 +322,7 @@ export const ChatPage = ({
               flexGrow: 1,
               alignContent: "center",
               gap: 1,
-              p: "4px",
+              m: '0px 4px',
             }}
             alignItems="center"
           >
@@ -361,7 +363,6 @@ export const ChatPage = ({
             Select a completion to view messages
           </Typography>
         )}
-        <Divider />
 
         {showMsgModal && activeComp && chat && chat.id && (
           <AddEditMsgModal

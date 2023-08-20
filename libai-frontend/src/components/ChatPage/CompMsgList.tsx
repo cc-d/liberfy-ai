@@ -57,7 +57,7 @@ export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
   const handleExpandClick = () => setExpanded(!expanded);
 
   return (
-    <Box sx={{ m: "4px" }}>
+    <Box sx={{ m: "8px 0px" }}>
       <Card
         sx={{
           m: 0,
@@ -111,7 +111,7 @@ export const CompMsgElem: React.FC<{ message: DBMsg }> = ({ message }) => {
                 return match ? (
                   <Prism
                     {...props}
-                    children={String(children).replace(/^```(\w+)/, "").replace('^```$', '').trim()}
+                    children={String(children).trim()}
                     style={mdark}
                     language={match[1]}
                     PreTag='div'

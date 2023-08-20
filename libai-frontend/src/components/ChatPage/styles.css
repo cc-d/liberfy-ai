@@ -6,6 +6,13 @@ pre {
   background-color: #000;
 }
 
+blockquote {
+  padding: 2px 8px;
+  margin: 4px 0px;
+  border-left: 2px solid gray !important;
+
+}
+
 .markdown-body {
   word-wrap: break-word;
   padding: '0px';
